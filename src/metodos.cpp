@@ -34,7 +34,8 @@ int knn(Imagen e, Imagenes t){ //devuelve la etiqueta
 	}
 
 	selectionSortVoid(distancias); //los ordeno de acuerdo a las distancias de menor a mayor
-	return(distancias[0].etiqueta); //la etiqueta del minimos
+	
+	return moda(distancias); //la etiqueta del minimos
 }
 
 
@@ -58,3 +59,57 @@ void selectionSortVoid(vector<tuplaDistanciaEtiq>& v) {
 	}
 	 
 }
+
+int moda(vector <tuplaDistanciaEtiq> v, int k ){ //k me dice cuantos ver para sacar la moda
+	
+	vector<int> contadores;
+	for (int i = 0; i <= 9; ++i)
+	{
+		contadores.push_back(0);
+	}
+
+	for (int i = 0; i < k ; ++i)
+	{
+		int aux = v[i].etiqueta;
+		contadores[aux]++; //le sumo 1 al lugar que le corresponde a la etiqueta i
+	}
+
+	return lugarMaximo(contadores);
+	
+}
+
+int lugarMaximo(vector<int> v){
+	int max = 0;
+	for (int i = 0; i <= 9; ++i)
+	{
+		if(v[i]> v[max]){
+			max = i;
+		}
+	}
+
+	return max;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
