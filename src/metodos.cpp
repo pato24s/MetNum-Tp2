@@ -1,6 +1,6 @@
-
 #include <cassert>
 #include <math.h>
+
 struct tuplaDistanciaEtiq
 {	int etiqueta;
 	float distancia;
@@ -8,37 +8,6 @@ struct tuplaDistanciaEtiq
 	tuplaDistanciaEtiq(){};
 	
 };
-
-
-float normaResta(vector<int> &a, vector<int> &b){
-	assert(a.size() == b.size());
-	float res = 0;
-	for (int i = 0; i < a.size(); ++i)
-	{
-		res = res + (a[i] - b[i])*(a[i] - b[i]);
-	}
-	res = sqrt(res);
-	return res;
-}
-
-
-int knn(Imagen e, Imagenes t){ //devuelve la etiqueta
-	//e imagen para etiquetar
-	int n = t.imags.size(); //n es la cantidad de imagenes qe tengo en mi campo train
-	vector<tuplaDistanciaEtiq> distancias;
-	float aux;
-	for (int i = 0; i < n; ++i)
-	{
-		 aux = normaResta(e.pixeles, t.imags[i].pixeles );
-		 distancias.push_back( tuplaDistanciaEtiq(t.imags[i].etiqueta, aux) );
-	}
-
-	selectionSortVoid(distancias); //los ordeno de acuerdo a las distancias de menor a mayor
-	
-	return moda(distancias); //la etiqueta del minimos
-}
-
-
 
 void selectionSortVoid(vector<tuplaDistanciaEtiq>& v) {
 	int actual=0;
@@ -60,6 +29,32 @@ void selectionSortVoid(vector<tuplaDistanciaEtiq>& v) {
 	 
 }
 
+int lugarMaximo(vector<int> v){
+	int max = 0;
+	for (int i = 0; i <= 9; ++i)
+	{
+		if(v[i]> v[max]){
+			max = i;
+		}
+	}
+
+	return max;
+
+}
+
+
+
+float normaResta(vector<int> &a, vector<int> &b){
+	assert(a.size() == b.size());
+	float res = 0;
+	for (int i = 0; i < a.size(); ++i)
+	{
+		res = res + (a[i] - b[i])*(a[i] - b[i]);
+	}
+	res = sqrt(res);
+	return res;
+}
+
 int moda(vector <tuplaDistanciaEtiq> v, int k ){ //k me dice cuantos ver para sacar la moda
 	
 	vector<int> contadores;
@@ -78,18 +73,29 @@ int moda(vector <tuplaDistanciaEtiq> v, int k ){ //k me dice cuantos ver para sa
 	
 }
 
-int lugarMaximo(vector<int> v){
-	int max = 0;
-	for (int i = 0; i <= 9; ++i)
+
+
+
+int knn(Imagen e, Imagenes t, int k){ //devuelve la etiqueta
+	//e imagen para etiquetar
+	int n = t.imags.size(); //n es la cantidad de imagenes qe tengo en mi campo train
+	vector<tuplaDistanciaEtiq> distancias;
+	float aux;
+	for (int i = 0; i < n; ++i)
 	{
-		if(v[i]> v[max]){
-			max = i;
-		}
+		 aux = normaResta(e.pixeles, t.imags[i].pixeles );
+		 distancias.push_back( tuplaDistanciaEtiq(t.imags[i].etiqueta, aux) );
 	}
 
-	return max;
-
+	selectionSortVoid(distancias); //los ordeno de acuerdo a las distancias de menor a mayor
+	
+	return moda(distancias, k); //la etiqueta del minimos
 }
+
+
+
+
+
 
 
 
