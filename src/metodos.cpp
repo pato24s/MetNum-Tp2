@@ -92,6 +92,29 @@ int knn(Imagen e, Imagenes t, int k){ //devuelve la etiqueta
 	return moda(distancias, k); //la etiqueta del minimos
 }
 
+float dameAutovalor(Matriz B, Matriz x, int iter){
+	double autovalor;
+	double normaCuadrado;
+	Matriz v = x.copiarMatriz();
+	for (int i = 1; i <= iter; ++i)
+	{	
+		v = B.multiMatricial(v);
+		double norma = v.norma2Vectorial(); //tiene que darme 1/norma
+		double uno = 1;
+		norma =  uno / norma; //podría fallar
+		v = B.multiEscalar(norma);
+	}
+	Matriz vt = v.copiarMatriz();
+	vt.Traspuesta();
+	double normaCuadrado = norma2Vectorial(v);
+	normaCuadrado = normaCuadrado*normaCuadrado;
+
+	autovalor = vt.multiMatricial(B).multiMatricial(v).multiEscalar(normaCuadrado);
+	
+	x = v; //esto debería dejar en x el autovector
+	return autovalor;
+}
+
 
 
 
