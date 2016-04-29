@@ -29,6 +29,7 @@ using namespace std;
         double multi(const Matriz& b, int i, int j )const;
         Matriz copiarMatriz() const;
         double norma2Vectorial() const;
+        double norma2Cuadrado() const;
          ostream& mostrarMatriz(ostream&) const;
          void mostrar() const;
 
@@ -88,6 +89,7 @@ using namespace std;
 
         
     Matriz& Matriz::operator=( const Matriz& a) {
+        assert( _alto == a.DameAlto() && _ancho == a.DameAncho());
     	_alto=a._alto;
     	_ancho=a._ancho;
     	_matriz = a._matriz;
@@ -109,10 +111,9 @@ using namespace std;
   
     
     void Matriz::Definir( int i,  int j, double s) {
+       assert(i<=_alto && j<=_ancho); 
         
-      if (i <= _alto && j <= _ancho) {
         _matriz[i-1][j-1] = s;
-      }
       
     }
 
@@ -132,7 +133,7 @@ using namespace std;
 
 void Matriz::Traspuesta(){
 	for(int i=0; i<_alto; i++){
-		for(int j=i+1; j<_ancho;j++){
+		for(int j=0; j<_ancho;j++){
 			if(i!=j){
 				int aux=_matriz[i][j];
 				_matriz[i][j]=_matriz[j][i];
@@ -399,6 +400,35 @@ double Matriz::norma2Vectorial() const{
 }
 
 
+double Matriz::norma2Cuadrado() const{
+    int m = _alto;
+    int n = _ancho;
+    assert(n*m == n || n*m == m); //son vectores
+    double norma = 0;
+    double aux;
+    if(n*m == n){ //vector fila
+        for (int i = 1; i <= n; ++i)
+        {
+            aux = this->Obtener(1, i);
+            norma = norma + (aux*aux);
+            //norma = sqrt(norma);
+        }
+    }
+    else{ //vector columna
+        for (int i = 1; i <= m; ++i)
+        {
+            aux = this->Obtener(i, 1);
+            norma = norma + (aux*aux);
+            //norma = sqrt(norma);
+        }
+
+    }
+    return norma;
+
+}
+
+
+
 Matriz Matriz::copiarMatriz()const{
     int m = _alto;
     int n = _ancho;
@@ -421,9 +451,13 @@ Matriz Matriz::copiarMatriz()const{
 double Matriz::multi(const Matriz& b, int i, int j )const{ //fila i (this) * col j(b);
     double res = 0;
     int n = _ancho;
+    double aik;
+    double bkj;
     for (int k = 1; k <= n; ++k)
     {
-        res = res + (this->Obtener(i, k)*b.Obtener(k, j));
+        aik = this->Obtener(i, k);
+        bkj = b.Obtener(k,j);
+        res = res + (aik*bkj);
     }
     return res;
 }
@@ -438,18 +472,32 @@ float Matriz::dameAutovalor(Matriz& x , int iter)const{
     for (int i = 1; i <= iter; ++i)
     {   
         v = this->multiMatricial(v);
+        //v.mostrarMatriz(cout);
         double norma = v.norma2Vectorial(); //tiene que darme 1/norma
-        double uno = 1;
-        norma =  uno / norma; //podría fallar
+        //double uno = 1;
+        //norma =  uno / norma; //podría fallar
+        norma = pow(norma, -1);
+        //cout<<norma;
+        //v.mostrarMatriz(cout);
         v = v.multiEscalar(norma);
     }
     Matriz vt = v.copiarMatriz();
     vt.Traspuesta();
-    normaCuadrado = v.norma2Vectorial();
-    normaCuadrado = normaCuadrado*normaCuadrado;
+    normaCuadrado = v.norma2Cuadrado();
+    //cout<<normaCuadrado;
+    //normaCuadrado = v.norma2Vectorial();
+    //normaCuadrado = normaCuadrado*normaCuadrado;
     Matriz Bv = this->multiMatricial(v);
-    Matriz vtBv = vt.multiMatricial(Bv);  
+    //Bv.mostrarMatriz(cout);
+    Matriz vtBv = vt.multiMatricial(Bv);
+   // vtBv.mostrarMatriz(cout);  
     autovalor = vtBv.multiEscalar(normaCuadrado);
+    cout<<"El autovalor posta es: ";
+    vtBv.mostrarMatriz(cout)<<endl;
+    //autovalor = vt.multiMatricial(this->multiMatricial(v)).multiEscalar(normaCuadrado);
     x = v; //esto debería dejar en x el autovector
-    return autovalor.Obtener(1,1);
+    float result = autovalor.Obtener(1,1);
+    cout<<"El resultado es: "<<result<<endl;
+    
+    return result;
 }
