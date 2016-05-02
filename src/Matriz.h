@@ -20,12 +20,14 @@ using namespace std;
 
         void Definir ( int i,  int j, double s);
         float dameAutovalor(Matriz& x , int iter)const;
-        
+        Matriz deflacion(float autovalor, const Matriz& autovector);
+
         //const vector<double>& operator[](int i) const;
         double Obtener ( int i,  int j) const ;
         void Traspuesta();
         Matriz multiMatricial( const Matriz&  b) const; // Result = this*B  this tambien es por referencia sin poder modificar?
         Matriz multiEscalar(double a) const;
+        Matriz sumaMatricial(const Matriz& b ) const;
         double multi(const Matriz& b, int i, int j )const;
         Matriz copiarMatriz() const;
         double norma2Vectorial() const;
@@ -135,15 +137,29 @@ void Matriz::Traspuesta(){
 	for(int i=0; i<_alto; i++){
 		for(int j=0; j<_ancho;j++){
 			if(i!=j){
-				int aux=_matriz[i][j];
+				double aux=_matriz[i][j];
 				_matriz[i][j]=_matriz[j][i];
 				_matriz[j][i]=aux;
 				}
 		}
 	}
-    int aux = _alto;
+        /*double aux;
+        double pepe;
+        int m = this->DameAlto();
+        int n = this->DameAncho();
+        for (int i = 1; i <= m; ++i)
+        {
+            for (int j = 1; j <= n; ++j)
+            {
+                aux = this->Obtener(i, j);
+                pepe = this->Obtener(j, i);
+                this->Definir(i,j, pepe);
+                this->Definir(j, i, aux);
+            }
+        }*/
+    int aux2 = _alto;
     _alto = _ancho;
-    _ancho = aux;
+    _ancho = aux2;
 
 }
 
@@ -372,6 +388,23 @@ Matriz Matriz::multiEscalar(double a) const{
 
 }
 
+Matriz Matriz::sumaMatricial(const Matriz& b ) const{
+    int m = this->DameAlto();
+    int n = this->DameAncho();
+    assert(b.DameAlto() == m && b.DameAncho() == n);
+    Matriz resultante = Matriz(m, n);
+    double resta;
+    for (int i = 1; i <= m; ++i)
+    {
+        for (int j = 1; j <= n; ++j)
+        {
+            resta = this->Obtener(i, j) - b.Obtener(i, j);
+            resultante.Definir(i, j, resta);
+        }
+    }
+    return resultante;
+}
+
 double Matriz::norma2Vectorial() const{
     int m = _alto;
     int n = _ancho;
@@ -383,16 +416,16 @@ double Matriz::norma2Vectorial() const{
         {
             aux = this->Obtener(1, i);
             norma = norma + (aux*aux);
-            norma = sqrt(norma);
         }
+            norma = sqrt(norma);
     }
     else{ //vector columna
         for (int i = 1; i <= m; ++i)
         {
             aux = this->Obtener(i, 1);
             norma = norma + (aux*aux);
-            norma = sqrt(norma);
         }
+            norma = sqrt(norma);
 
     }
     return norma;
@@ -472,32 +505,23 @@ float Matriz::dameAutovalor(Matriz& x , int iter)const{
     for (int i = 1; i <= iter; ++i)
     {   
         v = this->multiMatricial(v);
-        //v.mostrarMatriz(cout);
         double norma = v.norma2Vectorial(); //tiene que darme 1/norma
-        //double uno = 1;
-        //norma =  uno / norma; //podría fallar
         norma = pow(norma, -1);
-        //cout<<norma;
-        //v.mostrarMatriz(cout);
         v = v.multiEscalar(norma);
     }
     Matriz vt = v.copiarMatriz();
     vt.Traspuesta();
     normaCuadrado = v.norma2Cuadrado();
-    //cout<<normaCuadrado;
-    //normaCuadrado = v.norma2Vectorial();
-    //normaCuadrado = normaCuadrado*normaCuadrado;
-    Matriz Bv = this->multiMatricial(v);
-    //Bv.mostrarMatriz(cout);
-    Matriz vtBv = vt.multiMatricial(Bv);
-   // vtBv.mostrarMatriz(cout);  
-    autovalor = vtBv.multiEscalar(normaCuadrado);
-    cout<<"El autovalor posta es: ";
-    vtBv.mostrarMatriz(cout)<<endl;
-    //autovalor = vt.multiMatricial(this->multiMatricial(v)).multiEscalar(normaCuadrado);
+    autovalor = vt.multiMatricial(this->multiMatricial(v)).multiEscalar(normaCuadrado);
     x = v; //esto debería dejar en x el autovector
-    float result = autovalor.Obtener(1,1);
-    cout<<"El resultado es: "<<result<<endl;
-    
-    return result;
+    return autovalor.Obtener(1,1);
 }
+
+Matriz Matriz::deflacion(float a, const Matriz& v ){
+    Matriz vt = v.copiarMatriz();
+    Matriz vvt = v.multiMatricial(vt);
+    vvt = vvt.multiEscalar(-a);
+    Matriz resta = this->sumaMatricial(vvt);
+   return resta;
+}
+
