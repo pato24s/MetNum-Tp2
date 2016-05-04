@@ -19,11 +19,12 @@ using namespace std;
 
 
         void Definir ( int i,  int j, double s);
-        float dameAutovalor(Matriz& x , int iter)const;
-        Matriz deflacion(float autovalor, const Matriz& autovector);
-
+        double dameAutovalor(Matriz& x , int iter)const;
+        Matriz deflacion(double autovalor, const Matriz& autovector);
+        Matriz baseAutovectores(int iter, Matriz& autovalores)const;
         //const vector<double>& operator[](int i) const;
         double Obtener ( int i,  int j) const ;
+        void insertarEnColumna(Matriz a, int c);
         void Traspuesta();
         Matriz multiMatricial( const Matriz&  b) const; // Result = this*B  this tambien es por referencia sin poder modificar?
         Matriz multiEscalar(double a) const;
@@ -34,6 +35,7 @@ using namespace std;
         double norma2Cuadrado() const;
          ostream& mostrarMatriz(ostream&) const;
          void mostrar() const;
+         void randomizar(int m, int n);
 
          Matriz& operator=( const Matriz& a);
          int DameAlto() const;
@@ -287,22 +289,16 @@ Matriz Matriz::resolverTI(const Matriz& b) const{
     Matriz result(n, 1); //matriz columna de resultados
     double  q = b.Obtener(1, 1) / this->Obtener(1, 1);
     result.Definir(1, 1, q);
-    //result.mostrar();
     double  acum;
     for (int i = 2; i <= n; ++i)
     {
         acum = 0;
         for (int j = 1; j <= i-1 ; ++j)
         {
-            //std::cout<< "J= "<< j <<endl;
             acum = acum + this->Obtener(i, j)*result.Obtener(j, 1);
-            //std::cout<< "acum= "<< acum <<endl;
         }
-        //std::cout<< b.Obtener(i, 1)<<endl;
 
         q = (b.Obtener(i, 1) - acum )/this->Obtener(i, i);
-        //std::cout<< a.Obtener(i, i);
-        //std::cout<< "q= "<< q <<endl;
         result.Definir(i, 1, q);
     }
 
@@ -373,7 +369,7 @@ Matriz Matriz::multiMatricial( const Matriz&  b) const{
 Matriz Matriz::multiEscalar(double a) const{
     int m = _alto; //m filas
     int n = _ancho; //n columnas
-    float aux;
+    double aux;
     Matriz resultante = Matriz(m, n);
     for (int i = 1; i <= m; ++i)
     {
@@ -398,7 +394,7 @@ Matriz Matriz::sumaMatricial(const Matriz& b ) const{
     {
         for (int j = 1; j <= n; ++j)
         {
-            resta = this->Obtener(i, j) - b.Obtener(i, j);
+            resta = this->Obtener(i, j) + b.Obtener(i, j);
             resultante.Definir(i, j, resta);
         }
     }
@@ -444,7 +440,6 @@ double Matriz::norma2Cuadrado() const{
         {
             aux = this->Obtener(1, i);
             norma = norma + (aux*aux);
-            //norma = sqrt(norma);
         }
     }
     else{ //vector columna
@@ -452,7 +447,6 @@ double Matriz::norma2Cuadrado() const{
         {
             aux = this->Obtener(i, 1);
             norma = norma + (aux*aux);
-            //norma = sqrt(norma);
         }
 
     }
@@ -498,7 +492,7 @@ double Matriz::multi(const Matriz& b, int i, int j )const{ //fila i (this) * col
 
 
 
-float Matriz::dameAutovalor(Matriz& x , int iter)const{
+double Matriz::dameAutovalor(Matriz& x , int iter)const{
     Matriz autovalor = Matriz(1, 1);
     double normaCuadrado;
     Matriz v = x.copiarMatriz();
@@ -517,11 +511,53 @@ float Matriz::dameAutovalor(Matriz& x , int iter)const{
     return autovalor.Obtener(1,1);
 }
 
-Matriz Matriz::deflacion(float a, const Matriz& v ){
+Matriz Matriz::deflacion(double a, const Matriz& v ){
     Matriz vt = v.copiarMatriz();
+    vt.Traspuesta();
     Matriz vvt = v.multiMatricial(vt);
     vvt = vvt.multiEscalar(-a);
+    vvt.mostrarMatriz(cout);
     Matriz resta = this->sumaMatricial(vvt);
    return resta;
 }
 
+Matriz Matriz::baseAutovectores(int iter, Matriz& autovalores)const {
+    int m = this->DameAlto();
+    int n = this->DameAncho();
+    assert(m==n);
+    Matriz copia = this->copiarMatriz();
+    Matriz resultante = Matriz(m,n);
+    for (int i = 1; i <= n; ++i)
+    {
+        Matriz autovector = Matriz(m, 1);
+         autovector.randomizar(m, 1);
+        double autovalor = copia.dameAutovalor(autovector, iter); //esto me deja en randi el autovector y devuelve el autovalor
+        autovalores.Definir(i, 1, autovalor);
+        resultante.insertarEnColumna(autovector, i);
+        copia = copia.deflacion(autovalor, autovector);
+    }
+    return resultante;
+}
+
+void Matriz::insertarEnColumna(Matriz a, int c){
+    int m = this->DameAlto();
+    assert(a.DameAlto() == m);
+    for (int i = 1; i <= m; ++i)
+    {
+        double aux = a.Obtener(i, 1);
+        this->Definir(i, c, aux);
+    }
+
+}
+
+void Matriz::randomizar(int m, int n){
+     srand (time(NULL));
+     for (int i = 1; i <= m; ++i)
+        {
+            for (int j = 1; j <= n; ++j)
+            {
+                double randi = rand();
+                this->Definir(i, j, randi);
+            }
+        }   
+}
