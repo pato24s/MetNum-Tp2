@@ -52,6 +52,11 @@ using namespace std;
          Matriz superCholeskyMismaA(const Matriz& b, const Matriz& lt) const;
          Matriz gauss( Matriz b, int n) ;
 
+
+
+         Matriz plsDa(Matriz, Matriz, int );
+
+
         
     private:
 
@@ -391,7 +396,7 @@ Matriz Matriz::sumaMatricial(const Matriz& b ) const{
 
 Matriz Matriz::restaMatricial(const Matriz& b ) const{
 Matriz c= b.multiEscalar(-1);
-Matriz res= this.sumaMatricial(c);
+Matriz res= this->sumaMatricial(c);
 
 return res;
 }
@@ -567,7 +572,7 @@ Matriz Matriz::plsDa(Matriz x, Matriz y, int gamma){
 		yt.Traspuesta();
 		
 		//3 definir Mi como cuenta magica
-		Matriz Mi=multiMatricial(multiMatricial(xt,y),multiMatricial(yt,x));
+		Matriz Mi=(xt.multiMatricial(y)).multiMatricial(yt.multiMatricial(x));
 		Matriz wi=Matriz(Mi.DameAlto(),1);
 		wi.randomizar(Mi.DameAlto(),1);
 		
@@ -580,7 +585,7 @@ Matriz Matriz::plsDa(Matriz x, Matriz y, int gamma){
 		wi.multiEscalar(unoSobreNorma);
 
 		//6 definir ti como Xwi
-		Matriz ti=multiMatricial(x,wi);
+		Matriz ti=x.multiMatricial(wi);
 
 		//7. normalizo ti
 		double normaTi=ti.norma2Vectorial();
@@ -590,12 +595,12 @@ Matriz Matriz::plsDa(Matriz x, Matriz y, int gamma){
 		//8 actualizar X
 		Matriz Tt=x.copiarMatriz();
 		Tt.Traspuesta();
-		Matriz TiTit=multiMatricial(ti,Tt);
-		Matriz TiTitX=multiMatricial(TiTit,x);
-		x = restaMatricial(x,TiTitX);
+		Matriz TiTit=ti.multiMatricial(Tt);
+		Matriz TiTitX=TiTit.multiMatricial(x);
+		x = x.restaMatricial(TiTitX);
 
 		//9 actualizar Y
-		y= restaMatricial(y,multiMatricial(TiTit,y));
+		y= y.restaMatricial(TiTit.multiMatricial(y));
 
 
 		//meto wi en el resultado
