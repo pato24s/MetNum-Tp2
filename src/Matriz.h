@@ -579,21 +579,7 @@ double Matriz::media(int k) const{ //media de la fila k de la matriz
     return media;
 }
 
-/*Matriz Matriz::matrizCovarianza(){
-    int n = this->DameAlto(); //n = cantidad de muestras
-    int m = this->DameAncho(); //m es el tamaño de cada muestra
-    double media;
-    double aux;
-    for (int i = 1; i <= n; ++i)
-       {
-           media = this->media(i);
-           for (int j = 1; j <=m; ++j)
-            {
-                aux = this->Obtener()
-            } 
 
-       }   
-}*/
 
 Matriz Matriz::centrarConMedia(){ //ojo que tambien me modifica this
         int n = this->DameAlto();

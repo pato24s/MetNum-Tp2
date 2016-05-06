@@ -1,5 +1,6 @@
 #include <cassert>
 #include <math.h>
+//#include "Matriz.h"
 
 struct tuplaDistanciaEtiq
 {	int etiqueta;

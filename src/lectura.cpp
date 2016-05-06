@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstring>
 #include <stdlib.h> 
+#include "Matriz.h"
 //#include <cassert>
 using namespace std;
 
@@ -99,4 +100,36 @@ void mostrarImagen(Imagen i){
 
 }
 
+ Matriz convertirAMatrizTrain(Imagenes img, Matriz& etiquetas ){
+ 	// etiquetas = 784x1
+ 	assert(etiquetas.DameAlto() == 42000);
+ 	assert (img.imags.size() == 42000 && img.imags[0].pixeles.size() == 784);
+ 	Matriz resultante = Matriz(42000, 784);
+ 	for (int i = 0; i < 42000; ++i)
+ 	{
+ 		for (int j = 0; j < 784; ++j)
+ 		{
+ 			resultante.Definir(i+1, j+1, img.imags[i].pixeles[j] );
+ 		}
+ 		etiquetas.Definir(i+1, 1, img.imags[i].etiqueta);
+ 	}
 
+ 	return resultante;
+ } 
+
+Matriz convertirAMatrizTest(Imagenes img, Matriz& etiquetas ){
+ 	// etiquetas = 784x1
+
+ 	assert(etiquetas.DameAlto() == 28000);
+ 	Matriz resultante = Matriz(28000, 784);
+ 	for (int i = 0; i < 28000; ++i)
+ 	{
+ 		for (int j = 0; j < 784; ++j)
+ 		{
+ 			resultante.Definir(i+1, j+1, img.imags[i].pixeles[j]);
+ 		}
+ 		etiquetas.Definir(i+1, 1, img.imags[i].etiqueta);
+ 	}
+
+ 	return resultante;
+ }
