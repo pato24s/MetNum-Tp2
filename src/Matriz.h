@@ -51,6 +51,9 @@ using namespace std;
          Matriz superCholeskyMismaA(const Matriz& b, const Matriz& lt) const;
          Matriz gauss( Matriz b, int n) ;
 
+         double media(int k) const;
+         Matriz centrarConMedia();
+         void restarFila(double media, int k);
         
     private:
 
@@ -145,20 +148,7 @@ void Matriz::Traspuesta(){
 				}
 		}
 	}
-        /*double aux;
-        double pepe;
-        int m = this->DameAlto();
-        int n = this->DameAncho();
-        for (int i = 1; i <= m; ++i)
-        {
-            for (int j = 1; j <= n; ++j)
-            {
-                aux = this->Obtener(i, j);
-                pepe = this->Obtener(j, i);
-                this->Definir(i,j, pepe);
-                this->Definir(j, i, aux);
-            }
-        }*/
+ 
     int aux2 = _alto;
     _alto = _ancho;
     _ancho = aux2;
@@ -561,3 +551,71 @@ void Matriz::randomizar(int m, int n){
             }
         }   
 }
+
+
+double Matriz::media(int k) const{ //media de la fila k de la matriz
+    double media = 0;
+    int n = this->DameAncho();
+    int m = this->DameAlto();
+
+    for (int i = 1; i <= n; ++i)
+    {
+        media = media + this->Obtener(k, i);
+    }
+    media = media/n;
+    return media;
+}
+
+/*Matriz Matriz::matrizCovarianza(){
+    int n = this->DameAlto(); //n = cantidad de muestras
+    int m = this->DameAncho(); //m es el tamaño de cada muestra
+    double media;
+    double aux;
+    for (int i = 1; i <= n; ++i)
+       {
+           media = this->media(i);
+           for (int j = 1; j <=m; ++j)
+            {
+                aux = this->Obtener()
+            } 
+
+       }   
+}*/
+
+Matriz Matriz::centrarConMedia(){ //ojo que tambien me modifica this
+        int n = this->DameAlto();
+        int m = this->DameAncho();
+        double media;
+        double raiz = sqrt(n-1);
+        raiz = pow(raiz, -1);
+
+        for (int i = 1; i <= n; ++i)
+        {
+            media = this->media(i);     //media de la fila i
+            this->restarFila(media, i);
+        }
+        return this->multiEscalar(raiz);
+}
+
+void Matriz::restarFila(double media, int k){
+    int m = this->DameAncho();
+    double aux;
+    for (int i = 1; i <=m; ++i)
+    {
+        aux = this->Obtener(k,i);
+        aux = aux - media;
+        this->Definir(k, i, aux);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
