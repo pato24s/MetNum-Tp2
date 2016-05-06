@@ -113,10 +113,3 @@ int knn(Imagen e, Imagenes t, int k){ //devuelve la etiqueta
 
 
 
-
-
-
-
-
-
-

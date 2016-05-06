@@ -29,6 +29,7 @@ using namespace std;
         Matriz multiMatricial( const Matriz&  b) const; // Result = this*B  this tambien es por referencia sin poder modificar?
         Matriz multiEscalar(double a) const;
         Matriz sumaMatricial(const Matriz& b ) const;
+        Matriz restaMatricial(const Matriz& b) const; 
         double multi(const Matriz& b, int i, int j )const;
         Matriz copiarMatriz() const;
         double norma2Vectorial() const;
@@ -54,6 +55,11 @@ using namespace std;
          double media(int k) const;
          Matriz centrarConMedia();
          void restarFila(double media, int k);
+
+
+         Matriz plsDa(Matriz, Matriz, int );
+
+
         
     private:
 
@@ -148,7 +154,7 @@ void Matriz::Traspuesta(){
 				}
 		}
 	}
- 
+
     int aux2 = _alto;
     _alto = _ancho;
     _ancho = aux2;
@@ -391,6 +397,13 @@ Matriz Matriz::sumaMatricial(const Matriz& b ) const{
     return resultante;
 }
 
+Matriz Matriz::restaMatricial(const Matriz& b ) const{
+Matriz c= b.multiEscalar(-1);
+Matriz res= this->sumaMatricial(c);
+
+return res;
+}
+
 double Matriz::norma2Vectorial() const{
     int m = _alto;
     int n = _ancho;
@@ -619,3 +632,50 @@ void Matriz::restarFila(double media, int k){
 
 
 
+Matriz Matriz::plsDa(Matriz x, Matriz y, int gamma){
+	Matriz result=Matriz(x.DameAncho(),x.DameAncho());
+	for (int i = 1; i <= gamma; i++){
+		Matriz xt=x.copiarMatriz();
+		xt.Traspuesta();
+		Matriz yt=y.copiarMatriz();
+		yt.Traspuesta();
+		
+		//3 definir Mi como cuenta magica
+		Matriz Mi=(xt.multiMatricial(y)).multiMatricial(yt.multiMatricial(x));
+		Matriz wi=Matriz(Mi.DameAlto(),1);
+		wi.randomizar(Mi.DameAlto(),1);
+		
+		//4 calcular wi como el autovector
+		double autoValorGdeMi=Mi.dameAutovalor(wi,30);
+		
+		//5 normalizar
+		double normaWi=wi.norma2Vectorial();
+		double unoSobreNorma=1/normaWi;
+		wi.multiEscalar(unoSobreNorma);
+
+		//6 definir ti como Xwi
+		Matriz ti=x.multiMatricial(wi);
+
+		//7. normalizo ti
+		double normaTi=ti.norma2Vectorial();
+		double unoSobreNormaTi=1/normaTi;
+		ti.multiEscalar(unoSobreNormaTi);
+
+		//8 actualizar X
+		Matriz Tt=x.copiarMatriz();
+		Tt.Traspuesta();
+		Matriz TiTit=ti.multiMatricial(Tt);
+		Matriz TiTitX=TiTit.multiMatricial(x);
+		x = x.restaMatricial(TiTitX);
+
+		//9 actualizar Y
+		y= y.restaMatricial(TiTit.multiMatricial(y));
+
+
+		//meto wi en el resultado
+		result.insertarEnColumna(wi,i);
+
+	}
+	return result;
+
+}
