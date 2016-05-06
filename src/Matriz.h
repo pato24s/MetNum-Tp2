@@ -29,6 +29,7 @@ using namespace std;
         Matriz multiMatricial( const Matriz&  b) const; // Result = this*B  this tambien es por referencia sin poder modificar?
         Matriz multiEscalar(double a) const;
         Matriz sumaMatricial(const Matriz& b ) const;
+        Matriz restaMatricial(const Matriz& b) const; 
         double multi(const Matriz& b, int i, int j )const;
         Matriz copiarMatriz() const;
         double norma2Vectorial() const;
@@ -145,20 +146,7 @@ void Matriz::Traspuesta(){
 				}
 		}
 	}
-        /*double aux;
-        double pepe;
-        int m = this->DameAlto();
-        int n = this->DameAncho();
-        for (int i = 1; i <= m; ++i)
-        {
-            for (int j = 1; j <= n; ++j)
-            {
-                aux = this->Obtener(i, j);
-                pepe = this->Obtener(j, i);
-                this->Definir(i,j, pepe);
-                this->Definir(j, i, aux);
-            }
-        }*/
+
     int aux2 = _alto;
     _alto = _ancho;
     _ancho = aux2;
@@ -399,6 +387,13 @@ Matriz Matriz::sumaMatricial(const Matriz& b ) const{
         }
     }
     return resultante;
+}
+
+Matriz Matriz::restaMatricial(const Matriz& b ) const{
+Matriz c= b.multiEscalar(-1);
+Matriz res= this.sumaMatricial(c);
+
+return res;
 }
 
 double Matriz::norma2Vectorial() const{
