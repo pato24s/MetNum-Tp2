@@ -561,3 +561,52 @@ void Matriz::randomizar(int m, int n){
             }
         }   
 }
+
+
+Matriz Matriz::plsDa(Matriz x, Matriz y, int gamma){
+	Matriz result=Matriz(x.DameAncho(),x.DameAncho());
+	for (int i = 1; i <= gamma; i++){
+		Matriz xt=x.copiarMatriz();
+		xt.Traspuesta();
+		Matriz yt=y.copiarMatriz();
+		yt.Traspuesta();
+		
+		//3 definir Mi como cuenta magica
+		Matriz Mi=multiMatricial(multiMatricial(xt,y),multiMatricial(yt,x));
+		Matriz wi=Matriz(Mi.DameAlto(),1);
+		wi.randomizar(Mi.DameAlto(),1);
+		
+		//4 calcular wi como el autovector
+		double autoValorGdeMi=Mi.dameAutovalor(wi,30);
+		
+		//5 normalizar
+		double normaWi=wi.norma2Vectorial();
+		double unoSobreNorma=1/normaWi;
+		wi.multiEscalar(unoSobreNorma);
+
+		//6 definir ti como Xwi
+		Matriz ti=multiMatricial(x,wi);
+
+		//7. normalizo ti
+		double normaTi=ti.norma2Vectorial();
+		double unoSobreNormaTi=1/normaTi;
+		ti.multiEscalar(unoSobreNormaTi);
+
+		//8 actualizar X
+		Matriz Tt=x.copiarMatriz();
+		Tt.Traspuesta();
+		Matriz TiTit=multiMatricial(ti,Tt);
+		Matriz TiTitX=multiMatricial(TiTit,x);
+		x = restaMatricial(x,TiTitX);
+
+		//9 actualizar Y
+		y= restaMatricial(y,multiMatricial(TiTit,y));
+
+
+		//meto wi en el resultado
+		result.insertarEnColumna(wi,i);
+
+	}
+	return result;
+
+}
