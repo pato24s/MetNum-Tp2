@@ -34,30 +34,35 @@ using namespace std;
         Matriz copiarMatriz() const;
         double norma2Vectorial() const;
         double norma2Cuadrado() const;
-         ostream& mostrarMatriz(ostream&) const;
-         void mostrar() const;
-         void randomizar(int m, int n);
+        ostream& mostrarMatriz(ostream&) const;
+        void mostrar() const;
+        void randomizar(int m, int n);
 
-         Matriz& operator=( const Matriz& a);
-         int DameAlto() const;
-         int DameAncho() const;
+        Matriz& operator=( const Matriz& a);
+        int DameAlto() const;
+        int DameAncho() const;
 
-         void Cholesky();
+        void Cholesky();
 
-         double sumatoria(const Matriz& a, int i , int j);
+        double sumatoria(const Matriz& a, int i , int j);
 
-         Matriz resolverTI(const Matriz& b) const ;
-          Matriz  resolverTS(const Matriz& b) const ;
-         Matriz superCholesky(const Matriz& b) ;
-         Matriz superCholeskyMismaA(const Matriz& b, const Matriz& lt) const;
-         Matriz gauss( Matriz b, int n) ;
+        Matriz resolverTI(const Matriz& b) const ;
+        Matriz  resolverTS(const Matriz& b) const ;
+        Matriz superCholesky(const Matriz& b) ;
+        Matriz superCholeskyMismaA(const Matriz& b, const Matriz& lt) const;
+        Matriz gauss( Matriz b, int n) ;
 
-         double media(int k) const;
-         Matriz centrarConMedia();
-         void restarFila(double media, int k);
+        double media(int k) const;
+        Matriz centrarConMedia();
+        void restarFila(double media, int k);
 
 
-         Matriz plsDa(Matriz, Matriz, int );
+        Matriz plsDa(Matriz, Matriz, int );
+
+        void cambiarBaseX();
+
+		int pca(imagen, int);
+
 
 
         
@@ -609,6 +614,26 @@ void Matriz::restarFila(double media, int k){
 }
 
 
+void Matriz::cambiarBaseX(){
+	int n=this->DameAlto();
+	xCentrada=this->centrarConMedia();
+	Matriz xt=xCentrada.copiarMatriz();
+	xt.Traspuesta(); 
+	Matriz m=xt.multiMatricial(xCentrada);
+	Matriz mb=m.baseAutovectores(30);
+	for (int i = 1; i <= n; ++i)
+	{
+		this->multiFila(mb,i);
+		
+	}
+}
+
+
+int Matriz::pca(Matriz imagen, int k){
+	this->cambiarBaseX();
+	imagen->cambiarBaseX();
+	return knn(imagen,*this,k);
+}
 
 
 
@@ -618,6 +643,72 @@ void Matriz::restarFila(double media, int k){
 
 
 
+/*
+
+Matriz Matriz::plsCompleto(Matriz x, int gamma){
+
+
+
+
+
+
+
+
+
+	return pls(x.centrarConMedia(), y,gamma);
+}
+
+
+
+
+
+Matriz Matriz::pls(Matriz x, Matriz y, int gamma){
+	Matriz result=Matriz(x.DameAncho(),x.DameAncho());
+	for (int i = 1; i <= gamma; i++){
+		Matriz xt=x.copiarMatriz();
+		xt.Traspuesta();
+		Matriz yt=y.copiarMatriz();
+		yt.Traspuesta();
+		
+		//3 definir Mi como cuenta magica
+		Matriz Mi=(xt.multiMatricial(y)).multiMatricial(yt.multiMatricial(x));
+		Matriz wi=Matriz(Mi.DameAlto(),1);
+		wi.randomizar(Mi.DameAlto(),1);
+		
+		//4 calcular wi como el autovector
+		double autoValorGdeMi=Mi.dameAutovalor(wi,30);
+		
+		//5 normalizar
+		double normaWi=wi.norma2Vectorial();
+		double unoSobreNorma=1/normaWi;
+		wi.multiEscalar(unoSobreNorma);
+
+		//6 definir ti como Xwi
+		Matriz ti=x.multiMatricial(wi);
+
+		//7. normalizo ti
+		double normaTi=ti.norma2Vectorial();
+		double unoSobreNormaTi=1/normaTi;
+		ti.multiEscalar(unoSobreNormaTi);
+
+		//8 actualizar X
+		Matriz Tt=x.copiarMatriz();
+		Tt.Traspuesta();
+		Matriz TiTit=ti.multiMatricial(Tt);
+		Matriz TiTitX=TiTit.multiMatricial(x);
+		x = x.restaMatricial(TiTitX);
+
+		//9 actualizar Y
+		y= y.restaMatricial(TiTit.multiMatricial(y));
+
+
+		//meto wi en el resultado
+		result.insertarEnColumna(wi,i);
+
+	}
+	return result;
+
+}
 
 Matriz Matriz::plsDa(Matriz x, Matriz y, int gamma){
 	Matriz result=Matriz(x.DameAncho(),x.DameAncho());
@@ -666,3 +757,4 @@ Matriz Matriz::plsDa(Matriz x, Matriz y, int gamma){
 	return result;
 
 }
+*/
