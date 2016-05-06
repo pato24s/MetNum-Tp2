@@ -553,6 +553,7 @@ void Matriz::insertarEnColumna(Matriz a, int c){
 
 }
 
+
 void Matriz::randomizar(int m, int n){
      srand (time(NULL));
      for (int i = 1; i <= m; ++i)

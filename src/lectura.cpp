@@ -12,12 +12,13 @@ using namespace std;
 struct Imagen
 {
 	int etiqueta;
-	vector<int> pixeles;
-	Imagen(int e, vector<int> v) : etiqueta(e), pixeles(v){}; //puede que no sea de ints
+	Matriz pixeles;
+	Imagen(int e, Matriz p) : etiqueta(e), pixeles(p){}; //puede que no sea de ints
 	Imagen(){};
 	
 };
 
+/*
 struct Imagenes
 {
 	vector<Imagen> imags;
@@ -25,43 +26,44 @@ struct Imagenes
 	Imagenes(){};
 	
 };
+*/
 
-
-Imagenes lecturaTrain(istream& is){
+Matriz lecturaTrain(istream& is, Matriz& etiquetas){
 	string etiq;
-	int pixel;
+	double pixel;
 	int etiqueta;
 	string delim;
-
-	vector<Imagen> result;
+	Matriz result;
 
 	for (int j = 1; j <= 42000; ++j)	
 	{
 		getline (is, etiq, '_');
-		etiqueta= atoi(etiq.c_str());
-		vector<int> vectorAux;
+		etiqueta= atof(etiq.c_str());
 		for (int i = 1; i <= 783; ++i)
 		{
 			getline(is, delim, ' ');
-			pixel =atoi(delim.c_str());
-			vectorAux.push_back(pixel);
+			pixel =atof(delim.c_str());
+			//vectorAux.push_back(pixel);
+			result.Definir(j,i,pixel);
 		}
 
 	getline(is, delim, '/' );
-	pixel = atoi(delim.c_str());
-	vectorAux.push_back(pixel);
-	Imagen imgAux = Imagen(etiqueta, vectorAux);
-	result.push_back(imgAux);		
+	pixel = atof(delim.c_str());
+	//vectorAux.push_back(pixel);
+	result.Definir(j, 784, pixel);
+	etiquetas.Definir(j,1,etiqueta);
+	//Imagen imgAux = Imagen(etiqueta, vectorAux);
+	//result.push_back(imgAux);		
 		
 	}
 
-	return Imagenes(result);
+	return result;
 }
 
 //28000 imagenes
 Imagenes lecturaTest(istream& is){
 	string etiq;
-	int pixel;
+	double pixel;
 	string delim;
 
 	vector<Imagen> result;
@@ -72,7 +74,7 @@ Imagenes lecturaTest(istream& is){
 		for (int i = 1; i <= 784; ++i)
 		{
 			getline(is, delim, ' ');
-			pixel =atoi(delim.c_str());
+			pixel =atof(delim.c_str());
 			vectorAux.push_back(pixel);
 		}
 	getline(is, delim , '/' );
