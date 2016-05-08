@@ -361,9 +361,10 @@ Matriz Matriz::multiMatricial( const Matriz&  b) const{
     Matriz resultante = Matriz(m,k);
     double aij;
     for (int i = 1; i <= m; ++i)
-    {
+    {  
         for (int j = 1; j <= k; ++j)
         {
+            cout<<" "<<i<<"    "<<j<<"   "<<endl;
             aij = this->multi(b, i, j);
             resultante.Definir(i, j, aij);
         }
@@ -621,14 +622,20 @@ void Matriz::restarFila(double media, int k){
 
 void Matriz::cambiarBaseX(){ //en this le paso los x(i) que son las imagenes
 	int n=this->DameAlto();
+    cout<<"vamo a centrarno "<<endl;
 	Matriz xCentrada=this->centrarConMedia();
+    cout<<"vamo a copiarno "<<endl;
 	Matriz xt=xCentrada.copiarMatriz();
+    cout<<"la traspuesta que te pario "<<endl;
 	xt.Traspuesta(); 
+    cout<<"vamo a multiplicarno "<<endl;
 	Matriz m=xt.multiMatricial(xCentrada);
     Matriz autovalores;
+    cout<<"vamo a basearno "<<endl;
 	Matriz mb=m.baseAutovectores(30, autovalores);
 	for (int i = 1; i <= n; ++i)
-	{
+	{  
+        cout<<"vamo la putas: "<<i<<endl;
 		this->cambiarIesima(mb,i).insertarEnFila(*this, i); //inserto la i-esima fila cambiada de base en this
 		
 	}

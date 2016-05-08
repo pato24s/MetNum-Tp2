@@ -54,7 +54,7 @@ Matriz lecturaTrain(istream& is, Matriz& etiquetas){
 	etiquetas.Definir(j,1,etiqueta);
 	//Imagen imgAux = Imagen(etiqueta, vectorAux);
 	//result.push_back(imgAux);		
-	cout <<j<<endl;
+	//cout <<j<<endl;
 	}
 
 	return result;

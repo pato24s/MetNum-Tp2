@@ -16,14 +16,14 @@ int main(int argc, char const *argv[])
 	Matriz imagenesTrainM = lecturaTrain(imagenesTrain, etiquetasTrain);
 	imagenesTrain.close();
 
-	/*Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
+	Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
 	for (int i = 1; i <= imagenesTrainM.DameAncho(); i++)
 	{
 		imagenTrainI.Definir(1,i,imagenesTrainM.Obtener(1,i));
-	}*/
+	}
 
 
-	//cout<<imagenesTrainM.pca(imagenTrainI,etiquetasTrain,20);
+	cout<<imagenesTrainM.pca(imagenTrainI,etiquetasTrain,20);
 	//Matriz etiquetas = Matriz(42000,1);
 	//Matriz imagenesTraining = convertirAMatrizTrain(train, etiquetas);
 
