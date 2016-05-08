@@ -4,6 +4,9 @@
 #include <iostream>
 #include <math.h> 
 #include <cassert>
+#include <stdlib.h> 
+//#include "lectura.cpp"
+//#include "metodos.cpp"
 using namespace std;
 
 
@@ -60,8 +63,9 @@ using namespace std;
         Matriz plsDa(Matriz, Matriz, int );
 
         void cambiarBaseX();
-
-		int pca(imagen, int);
+        Matriz cambiarIesima(Matriz mb,int j);
+        void insertarEnFila(Matriz a, int f); //inserta en la fila f de a el this
+		int pca(Matriz, int);
 
 
 
@@ -500,6 +504,7 @@ double Matriz::multi(const Matriz& b, int i, int j )const{ //fila i (this) * col
 
 
 
+
 double Matriz::dameAutovalor(Matriz& x , int iter)const{
     Matriz autovalor = Matriz(1, 1);
     double normaCuadrado;
@@ -614,24 +619,47 @@ void Matriz::restarFila(double media, int k){
 }
 
 
-void Matriz::cambiarBaseX(){
+void Matriz::cambiarBaseX(){ //en this le paso los x(i) que son las imagenes
 	int n=this->DameAlto();
-	xCentrada=this->centrarConMedia();
+	Matriz xCentrada=this->centrarConMedia();
 	Matriz xt=xCentrada.copiarMatriz();
 	xt.Traspuesta(); 
 	Matriz m=xt.multiMatricial(xCentrada);
-	Matriz mb=m.baseAutovectores(30);
+    Matriz autovalores;
+	Matriz mb=m.baseAutovectores(30, autovalores);
 	for (int i = 1; i <= n; ++i)
 	{
-		this->multiFila(mb,i);
+		this->cambiarIesima(mb,i).insertarEnFila(*this, i); //inserto la i-esima fila cambiada de base en this
 		
 	}
+}
+
+void Matriz::insertarEnFila(Matriz a, int f){
+    int n = this->DameAncho();
+    for (int i = 1; i <= n; ++i)
+    {
+       a.Definir(f, i, this->Obtener(1, i));
+    }
+
+}
+
+Matriz Matriz::cambiarIesima(Matriz mb,int j){ //tengo que multiplicar la fila j-esima de this por la matriz mb
+    //mas vale que mb tenga m filas
+    Matriz resultante =  Matriz(1, this->DameAncho());
+
+    int m = mb.DameAncho();
+    for (int i = 1; i <= m; ++i)
+    {
+        double rji= this->multi(mb, j, i);
+        resultante.Definir(1, i, rji);
+    }
+    return resultante; //la j-esima columna de this cambiada de base
 }
 
 
 int Matriz::pca(Matriz imagen, int k){
 	this->cambiarBaseX();
-	imagen->cambiarBaseX();
+	imagen.cambiarBaseX();
 	return knn(imagen,*this,k);
 }
 

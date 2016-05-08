@@ -1,16 +1,17 @@
-#include <cassert>
-#include <math.h>
-//#include "Matriz.h"
+//#include <cassert>
+//#include <math.h>
+#include "Matriz.h"
+//#include <vector>
 
 struct tuplaDistanciaEtiq
 {	int etiqueta;
-	float distancia;
-	tuplaDistanciaEtiq(int e, float d) : etiqueta(e), distancia(d){}; //puede que no sea de ints
+	double distancia;
+	tuplaDistanciaEtiq(int e, double d) : etiqueta(e), distancia(d){}; //puede que no sea de ints
 	tuplaDistanciaEtiq(){};
 	
 };
 
-void selectionSortVoid(vector<tuplaDistanciaEtiq>& v) {
+void selectionSortVoid(std::vector<tuplaDistanciaEtiq>& v) {
 	int actual=0;
 	while(actual<v.size()){
 	int minimo=actual;
@@ -30,7 +31,7 @@ void selectionSortVoid(vector<tuplaDistanciaEtiq>& v) {
 	 
 }
 
-int lugarMaximo(vector<int> v){
+int lugarMaximo(std::vector<int> v){
 	int max = 0;
 	for (int i = 0; i <= 9; ++i)
 	{
@@ -45,18 +46,20 @@ int lugarMaximo(vector<int> v){
 
 
 
-float normaResta(vector<int> &a, vector<int> &b){
-	assert(a.size() == b.size());
-	float res = 0;
-	for (int i = 0; i < a.size(); ++i)
+double normaResta(Matriz a, Matriz b, int f){
+	//assert(a.size() == b.size());
+	double aux;
+	double res = 0;
+	for (int i = 1; i <= a.DameAncho(); ++i)
 	{
-		res = res + (a[i] - b[i])*(a[i] - b[i]);
+		aux = a.Obtener(1,i) - b.Obtener(f, i);
+		res = res + aux*aux;
 	}
 	res = sqrt(res);
 	return res;
 }
 
-int moda(vector <tuplaDistanciaEtiq> v, int k ){ //k me dice cuantos ver para sacar la moda
+int moda(std::vector <tuplaDistanciaEtiq> v, int k ){ //k me dice cuantos ver para sacar la moda
 	
 	vector<int> contadores;
 	for (int i = 0; i <= 9; ++i)
@@ -77,15 +80,16 @@ int moda(vector <tuplaDistanciaEtiq> v, int k ){ //k me dice cuantos ver para sa
 
 
 
-int knn(Imagen e, Imagenes t, int k){ //devuelve la etiqueta
+int knn(Matriz e, Matriz etiquetasT, Matriz t, int k){ //devuelve la etiqueta de la imagen e, comparando con las imagenes de t
 	//e imagen para etiquetar
-	int n = t.imags.size(); //n es la cantidad de imagenes qe tengo en mi campo train
+	// etiquetasT tiene las etiquetas de las imagenes de t como un vector columna
+	int n = t.DameAlto(); //n es la cantidad de imagenes qe tengo en mi campo train
 	vector<tuplaDistanciaEtiq> distancias;
-	float aux;
-	for (int i = 0; i < n; ++i)
+	double aux;
+	for (int i = 1; i <= n; ++i)
 	{
-		 aux = normaResta(e.pixeles, t.imags[i].pixeles );
-		 distancias.push_back( tuplaDistanciaEtiq(t.imags[i].etiqueta, aux) );
+		 aux = normaResta(e, t, i); //la distancia entre la imagen e y la i-esima imagen de t
+		 distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
 	}
 
 	selectionSortVoid(distancias); //los ordeno de acuerdo a las distancias de menor a mayor

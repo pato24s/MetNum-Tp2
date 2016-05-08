@@ -1,22 +1,23 @@
-#include <iostream>
+/*#include <iostream>
 #include <fstream>
 #include <vector>
 #include <cstring>
 #include <stdlib.h> 
-#include "Matriz.h"
+include "Matriz.h"*/
 //#include <cassert>
+#include "Matriz.h"
 using namespace std;
 
 
 
-struct Imagen
+/*struct Imagen
 {
 	int etiqueta;
 	Matriz pixeles;
 	Imagen(int e, Matriz p) : etiqueta(e), pixeles(p){}; //puede que no sea de ints
 	Imagen(){};
 	
-};
+};*/
 
 /*
 struct Imagenes
@@ -61,39 +62,35 @@ Matriz lecturaTrain(istream& is, Matriz& etiquetas){
 }
 
 //28000 imagenes
-Imagenes lecturaTest(istream& is){
+Matriz lecturaTest(istream& is, Matriz& etiquetas){
+	Matriz resultante;
 	string etiq;
 	double pixel;
 	string delim;
 
-	vector<Imagen> result;
 
 	for (int j = 1; j <= 28000; ++j)	
 	{		
-		vector<int> vectorAux;
 		for (int i = 1; i <= 784; ++i)
 		{
 			getline(is, delim, ' ');
 			pixel =atof(delim.c_str());
-			vectorAux.push_back(pixel);
+			resultante.Definir(j, i, pixel);
 		}
 	getline(is, delim , '/' );
-
-	Imagen imgAux = Imagen(10, vectorAux); //le pongo la etiqueta 10 para indicar que todavia no tienen etiquetas
-	result.push_back(imgAux);		
-		
+	etiquetas.Definir(j, 1, 10);
 	}
-
-	return Imagenes(result);
+	return resultante;	
 }
 
-void mostrarImagen(Imagen i){
+void mostrarImagen(Matriz i){
 	
-	int aux;
-	cout << "Su etiqueta es: "<< i.etiqueta<< " y tiene " << i.pixeles.size()  << " pixeles" <<endl;
-	for (int j = 0; j<i.pixeles.size(); ++j)
+	double aux;
+	int m = i.DameAncho();
+	//cout << "Su etiqueta es: "<< i.etiqueta<< " y tiene " << i.pixeles.size()  << " pixeles" <<endl;
+	for (int j = 1; j<m; ++j)
 	{
-		aux = i.pixeles[j];
+		aux = i.Obtener(1, j);
 		cout<< aux << " "; 		
 		if( j % 28 == 0 && j != 0){cout<<endl;}
 	}
@@ -102,7 +99,7 @@ void mostrarImagen(Imagen i){
 
 }
 
- Matriz convertirAMatrizTrain(Imagenes img, Matriz& etiquetas ){
+/* Matriz convertirAMatrizTrain(Imagenes img, Matriz& etiquetas ){
  	// etiquetas = 784x1
  	assert(etiquetas.DameAlto() == 42000);
  	assert (img.imags.size() == 42000 && img.imags[0].pixeles.size() == 784);
@@ -118,8 +115,8 @@ void mostrarImagen(Imagen i){
 
  	return resultante;
  } 
-
-Matriz convertirAMatrizTest(Imagenes img, Matriz& etiquetas ){
+*/
+/*Matriz convertirAMatrizTest(Imagenes img, Matriz& etiquetas ){
  	// etiquetas = 784x1
 
  	assert(etiquetas.DameAlto() == 28000);
@@ -134,4 +131,4 @@ Matriz convertirAMatrizTest(Imagenes img, Matriz& etiquetas ){
  	}
 
  	return resultante;
- }
+ }*/

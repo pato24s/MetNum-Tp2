@@ -1,26 +1,28 @@
 
-#include "lectura.cpp"
-#include "metodos.cpp"
-//#include "Matriz.h"
-#include <math.h>       /* pow */
+//#include "lectura.cpp"
+//#include "metodos.cpp"
+#include "Matriz.h"
+//#include <math.h>       /* pow */
 int main(int argc, char const *argv[])
 {
 	
 	
 	ifstream imagenesTrain;
 	imagenesTrain.open("../data/train.dat");
-	Imagenes train = lecturaTrain(imagenesTrain);
+	Matriz etiquetasTrain;
+	Matriz imagenesTrain = lecturaTrain(imagenesTrain, etiquetasTrain);
 	imagenesTrain.close();
-	Matriz etiquetas = Matriz(42000,1);
-	Matriz imagenesTraining = convertirAMatrizTrain(train, etiquetas);
+	//Matriz etiquetas = Matriz(42000,1);
+	//Matriz imagenesTraining = convertirAMatrizTrain(train, etiquetas);
 
 
 	
 	ifstream imagenesTest;
 	imagenesTest.open("../data/test.dat");
-	Imagenes tests = lecturaTest(imagenesTest);
-	Matriz etiquetas2 = Matriz(28000,1);
-	Matriz imagenesTesting = convertirAMatrizTest(tests, etiquetas2);
+	Matriz etiquetasTest;
+	Matriz imagenesTests = lecturaTest(imagenesTest, etiquetasTest);
+	//Matriz etiquetas2 = Matriz(28000,1);
+	//Matriz imagenesTesting = convertirAMatrizTest(tests, etiquetas2);
 	imagenesTest.close();
 
 
