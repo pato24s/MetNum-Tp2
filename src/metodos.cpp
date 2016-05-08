@@ -1,4 +1,4 @@
-//#include <cassert>
+/*//#include <cassert>
 //#include <math.h>
 #include "Matriz.h"
 //#include <vector>
@@ -99,7 +99,7 @@ int knn(Matriz e, Matriz etiquetasT, Matriz t, int k){ //devuelve la etiqueta de
 
 
 
-
+*/
 
 
 

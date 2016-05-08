@@ -1,8 +1,11 @@
-
-//#include "lectura.cpp"
-//#include "metodos.cpp"
-#include "Matriz.h"
+/*
+	#include "lectura.cpp"
+#include "metodos.cpp"
+#include "Matriz.h"*/
 //#include <math.h>       /* pow */
+#include "Matriz.h"
+#include "lectura.cpp"
+
 int main(int argc, char const *argv[])
 {
 	
@@ -10,7 +13,7 @@ int main(int argc, char const *argv[])
 	ifstream imagenesTrain;
 	imagenesTrain.open("../data/train.dat");
 	Matriz etiquetasTrain;
-	Matriz imagenesTrain = lecturaTrain(imagenesTrain, etiquetasTrain);
+	Matriz imagenesTrainM = lecturaTrain(imagenesTrain, etiquetasTrain);
 	imagenesTrain.close();
 	//Matriz etiquetas = Matriz(42000,1);
 	//Matriz imagenesTraining = convertirAMatrizTrain(train, etiquetas);

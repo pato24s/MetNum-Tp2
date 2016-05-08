@@ -1,11 +1,10 @@
-/*#include <iostream>
+#include <iostream>
 #include <fstream>
 #include <vector>
 #include <cstring>
 #include <stdlib.h> 
-include "Matriz.h"*/
 //#include <cassert>
-#include "Matriz.h"
+//	#include "Matriz.h"
 using namespace std;
 
 
