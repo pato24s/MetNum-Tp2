@@ -33,7 +33,7 @@ Matriz lecturaTrain(istream& is, Matriz& etiquetas){
 	double pixel;
 	int etiqueta;
 	string delim;
-	Matriz result;
+	Matriz result = Matriz(42000, 784);
 
 	for (int j = 1; j <= 42000; ++j)	
 	{
@@ -54,7 +54,7 @@ Matriz lecturaTrain(istream& is, Matriz& etiquetas){
 	etiquetas.Definir(j,1,etiqueta);
 	//Imagen imgAux = Imagen(etiqueta, vectorAux);
 	//result.push_back(imgAux);		
-		
+	cout <<j<<endl;
 	}
 
 	return result;
@@ -62,7 +62,7 @@ Matriz lecturaTrain(istream& is, Matriz& etiquetas){
 
 //28000 imagenes
 Matriz lecturaTest(istream& is, Matriz& etiquetas){
-	Matriz resultante;
+	Matriz resultante = Matriz(28000, 784);
 	string etiq;
 	double pixel;
 	string delim;

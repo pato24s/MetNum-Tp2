@@ -12,7 +12,7 @@ int main(int argc, char const *argv[])
 	
 	ifstream imagenesTrain;
 	imagenesTrain.open("../data/train.dat");
-	Matriz etiquetasTrain;
+	Matriz etiquetasTrain = Matriz(42000, 1);
 	Matriz imagenesTrainM = lecturaTrain(imagenesTrain, etiquetasTrain);
 	imagenesTrain.close();
 
@@ -27,16 +27,16 @@ int main(int argc, char const *argv[])
 	//Matriz etiquetas = Matriz(42000,1);
 	//Matriz imagenesTraining = convertirAMatrizTrain(train, etiquetas);
 
-/*
+
 	
 	ifstream imagenesTest;
 	imagenesTest.open("../data/test.dat");
-	Matriz etiquetasTest;
+	Matriz etiquetasTest = Matriz(28000,1);
 	Matriz imagenesTests = lecturaTest(imagenesTest, etiquetasTest);
 	//Matriz etiquetas2 = Matriz(28000,1);
 	//Matriz imagenesTesting = convertirAMatrizTest(tests, etiquetas2);
 	imagenesTest.close();
-*/
+
 
 
 
