@@ -23,7 +23,7 @@ using namespace std;
 
         void Definir ( int i,  int j, double s);
         double dameAutovalor(Matriz& x , int iter)const;
-        Matriz deflacion(double autovalor, const Matriz& autovector);
+        void deflacion(double autovalor, const Matriz& autovector);
         Matriz baseAutovectores(int iter, Matriz& autovalores)const;
         //const vector<double>& operator[](int i) const;
         double Obtener ( int i,  int j) const ;
@@ -31,8 +31,8 @@ using namespace std;
         void Traspuesta();
         Matriz multiMatricial( const Matriz&  b) const; // Result = this*B  this tambien es por referencia sin poder modificar?
         Matriz multiEscalar(double a) const;
-        Matriz sumaMatricial(const Matriz& b ) const;
-        Matriz restaMatricial(const Matriz& b) const; 
+        void sumaMatricial(const Matriz& b );
+        Matriz restaMatricial(const Matriz& b); 
         double multi(const Matriz& b, int i, int j )const;
         Matriz copiarMatriz() const;
         double norma2Vectorial() const;
@@ -358,15 +358,15 @@ Matriz Matriz::multiMatricial( const Matriz&  b) const{
     int k = b.DameAncho();
     assert(n == b.DameAlto());
 
-    Matriz resultante = Matriz(m,k);
+ 	Matriz resultante(m,k);
     double aij;
     for (int i = 1; i <= m; ++i)
     {  
+    	cout<<"multiplicacion numero "<<i<<endl;
         for (int j = 1; j <= k; ++j)
         {
-            cout<<" "<<i<<"    "<<j<<"   "<<endl;
-            aij = this->multi(b, i, j);
-            resultante.Definir(i, j, aij);
+            //cout<<" "<<i<<"    "<<j<<"   "<<endl;
+            resultante.Definir(i, j, this->multi(b, i, j));
         }
     }
     return resultante;
@@ -390,7 +390,7 @@ Matriz Matriz::multiEscalar(double a) const{
 
 }
 
-Matriz Matriz::sumaMatricial(const Matriz& b ) const{
+void Matriz::sumaMatricial(const Matriz& b ){
     int m = this->DameAlto();
     int n = this->DameAncho();
     assert(b.DameAlto() == m && b.DameAncho() == n);
@@ -401,17 +401,14 @@ Matriz Matriz::sumaMatricial(const Matriz& b ) const{
         for (int j = 1; j <= n; ++j)
         {
             resta = this->Obtener(i, j) + b.Obtener(i, j);
-            resultante.Definir(i, j, resta);
+            this->Definir(i, j, resta);
         }
     }
-    return resultante;
 }
 
-Matriz Matriz::restaMatricial(const Matriz& b ) const{
-Matriz c= b.multiEscalar(-1);
-Matriz res= this->sumaMatricial(c);
-
-return res;
+Matriz Matriz::restaMatricial(const Matriz& b ){
+	Matriz c= b.multiEscalar(-1);
+	this->sumaMatricial(c);
 }
 
 double Matriz::norma2Vectorial() const{
@@ -495,6 +492,7 @@ double Matriz::multi(const Matriz& b, int i, int j )const{ //fila i (this) * col
     double bkj;
     for (int k = 1; k <= n; ++k)
     {
+
         aik = this->Obtener(i, k);
         bkj = b.Obtener(k,j);
         res = res + (aik*bkj);
@@ -525,30 +523,30 @@ double Matriz::dameAutovalor(Matriz& x , int iter)const{
     return autovalor.Obtener(1,1);
 }
 
-Matriz Matriz::deflacion(double a, const Matriz& v ){
+void Matriz::deflacion(double a, const Matriz& v ){
     Matriz vt = v.copiarMatriz();
     vt.Traspuesta();
     Matriz vvt = v.multiMatricial(vt);
     vvt = vvt.multiEscalar(-a);
     vvt.mostrarMatriz(cout);
-    Matriz resta = this->sumaMatricial(vvt);
-   return resta;
+    this->sumaMatricial(vvt);
 }
 
 Matriz Matriz::baseAutovectores(int iter, Matriz& autovalores)const {
     int m = this->DameAlto();
     int n = this->DameAncho();
     assert(m==n);
-    Matriz copia = this->copiarMatriz();
+    Matriz copia = *this;
     Matriz resultante = Matriz(m,n);
     for (int i = 1; i <= n; ++i)
     {
+    	cout<<"iteracion base numero "<<i<<endl;
         Matriz autovector = Matriz(m, 1);
-         autovector.randomizar(m, 1);
+        autovector.randomizar(m, 1);
         double autovalor = copia.dameAutovalor(autovector, iter); //esto me deja en randi el autovector y devuelve el autovalor
         autovalores.Definir(i, 1, autovalor);
         resultante.insertarEnColumna(autovector, i);
-        copia = copia.deflacion(autovalor, autovector);
+		copia.deflacion(autovalor, autovector);
     }
     return resultante;
 }
@@ -630,7 +628,7 @@ void Matriz::cambiarBaseX(){ //en this le paso los x(i) que son las imagenes
 	xt.Traspuesta(); 
     cout<<"vamo a multiplicarno "<<endl;
 	Matriz m=xt.multiMatricial(xCentrada);
-    Matriz autovalores;
+    Matriz autovalores(784,1);
     cout<<"vamo a basearno "<<endl;
 	Matriz mb=m.baseAutovectores(30, autovalores);
 	for (int i = 1; i <= n; ++i)
