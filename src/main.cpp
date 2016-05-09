@@ -39,7 +39,23 @@ int main(int argc, char const *argv[])
 
 
 
+/*
 
+	Matriz x(3,3);
+	x.Definir(1,1,1);
+	x.Definir(1,2,2);
+	x.Definir(1,3,3);
+	x.Definir(2,1,4);
+	x.Definir(2,2,5);
+	x.Definir(2,3,6);
+	
+	x.mostrarMatriz(cout);
+
+	///Matriz xt=x.Traspuesta();
+	//cout<<xt;
+	Matriz m=x.multiXtrans();
+	cout<<m;
+*/
 
 /*
 
