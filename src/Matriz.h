@@ -63,8 +63,8 @@ using namespace std;
         Matriz plsDa(Matriz, Matriz, int );
 
         void cambiarBaseX();
-        Matriz cambiarIesima(Matriz mb,int j);
-        void insertarEnFila(Matriz a, int f); //inserta en la fila f de a el this
+        Matriz cambiarIesima(const Matriz& mb,int j);
+        void insertarEnFila(Matriz& a, int f); //inserta en la fila f de a el this
 		int pca(Matriz,Matriz, int);
 
 		Matriz multiXtrans() const;
@@ -676,16 +676,16 @@ void Matriz::cambiarBaseX(){ //en this le paso los x(i) que son las imagenes
 	}
 }
 
-void Matriz::insertarEnFila(Matriz a, int f){
+void Matriz::insertarEnFila(Matriz& a, int f){
     int n = this->DameAncho();
     for (int i = 1; i <= n; ++i)
     {
-       //a.Definir(f, i, this->Obtener(1, i));
+       a.Definir(f, i, this->Obtener(1, i));
     }
 
 }
 
-Matriz Matriz::cambiarIesima(Matriz mb,int j){ //tengo que multiplicar la fila j-esima de this por la matriz mb
+Matriz Matriz::cambiarIesima(const Matriz& mb,int j){ //tengo que multiplicar la fila j-esima de this por la matriz mb
     //mas vale que mb tenga m filas
     Matriz resultante (1, this->DameAncho());
 
@@ -693,8 +693,8 @@ Matriz Matriz::cambiarIesima(Matriz mb,int j){ //tengo que multiplicar la fila j
     for (int i = 1; i <= m; ++i)
     {
     	cout<<"iteracion cambiar "<<i<<endl;
-        /*double rji= this->multi(mb, j, i);
-        resultante.Definir(1, i, rji);*/
+        double rji= this->multi(mb, j, i);
+        resultante.Definir(1, i, rji);
     }
     return resultante; //la j-esima columna de this cambiada de base
 }
