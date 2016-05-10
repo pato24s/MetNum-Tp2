@@ -15,8 +15,16 @@ int main(int argc, char const *argv[])
 	Matriz etiquetasTrain = Matriz(42000, 1);
 	Matriz imagenesTrainM = lecturaTrain(imagenesTrain, etiquetasTrain);
 	imagenesTrain.close();
-
-	Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
+	Matriz imagenesCopia(2000,784);
+	for (int i = 1; i <=2000 ; ++i)
+	{
+		for (int j = 1; j<=784 ; ++j)
+		{
+			imagenesCopia.Definir(i,j, imagenesTrainM.Obtener(i,j));
+		}
+	}
+	cout<<"listo, ya lo copie"<<endl;
+	Matriz imagenTrainI(1,imagenesTrainM.DameAncho());
 	for (int i = 1; i <= imagenesTrainM.DameAncho(); i++)
 	{
 		imagenTrainI.Definir(1,i,imagenesTrainM.Obtener(1,i));
@@ -26,9 +34,48 @@ int main(int argc, char const *argv[])
 	//cout<<"pca da: "<<imagenesTrainM.pca(imagenTrainI,etiquetasTrain,20,400)<<endl;
 	//Matriz etiquetas = Matriz(42000,1);
 	//Matriz imagenesTraining = convertirAMatrizTrain(train, etiquetas);
+	//int digito = imagenesTrainM.pca(imagenesCopia,etiquetasTrain, 10, 30);
+	//cout<< "La primera imagen corresponde al digito..."<< digito<<endl;
+
+	Matriz prueba(3,3);
+	prueba.Definir(1,1,1);
+	prueba.Definir(1,2,0);
+	prueba.Definir(1,3,0);
+	prueba.Definir(2,1,1);
+	prueba.Definir(2,2,2);
+	prueba.Definir(2,3,0);
+	prueba.Definir(3,1,0);
+	prueba.Definir(3,2,0);
+	prueba.Definir(3,3,3);
+	Matriz autovalores(3,1);
+	Matriz base = prueba.baseAutovectores(1000,autovalores, 3);
+	base.mostrarMatriz(cout);
+	cout<<autovalores;
+/*	Matriz autovalores(3,1);
+	Matriz autovalor1(3,1);
+	autovalor1.Definir(1,1,1);
+	autovalor1.Definir(2,1,1);
+	double av1 = prueba.dameAutovalor(autovalor1, 50);
+	cout<<"un autovalor es.."<< av1;
+	cout<<"el autovector asociado es..";
+	cout<<autovalor1;
 
 
+	prueba.deflacion(av1, autovalor1);
+	av1 = prueba.dameAutovalor(autovalor1, 50);
+	cout<<"el otro autovalor es.."<< av1;
+	cout<<"el autovector asociado es..";
+	 cout<<autovalor1;	
+	prueba.deflacion(av1, autovalor1);
+	cout<<"el ultimo autovalor es.."<< prueba.dameAutovalor(autovalor1, 50)<<endl;
+	cout<<"el autovector asociado es..";
+	 cout<<autovalor1;*/
 	
+	/*Matriz base = prueba.baseAutovectores(50, autovalores, 3);
+	cout<<"los autovalores son..";
+	autovalores.mostrarMatriz(cout);
+	cout<<"los autovectores son..";
+	base.mostrarMatriz(cout);*/
 	ifstream imagenesTest;
 	imagenesTest.open("../data/test.dat");
 	Matriz etiquetasTest = Matriz(28000,1);
@@ -37,13 +84,13 @@ int main(int argc, char const *argv[])
 	//imagenesTests.mostrarMatriz(cout);
 
 	//IMPRIME LAS IMAGENES A PROBAR EN ESE FORMATO LINDO ASQUEROSO PETON
-	Matriz imagen1 = Matriz(1,784);
+/*	Matriz imagen1 = Matriz(1,784);
 	int it =1;
 	while(it<11){
 	imagenesTests.insertarEnFila1(imagen1,1,it);
 	mostrarImagen(imagen1);
 	it++;	
-	}
+	}*/
 
 	//Matriz etiquetas2 = Matriz(28000,1);
 	//Matriz imagenesTesting = convertirAMatrizTest(tests, etiquetas2);
@@ -53,7 +100,7 @@ int main(int argc, char const *argv[])
 
 /*
 
-	Matriz x(3,3);
+	Matriz x(3,3);7
 	x.Definir(1,1,1);
 	x.Definir(1,2,2);
 	x.Definir(1,3,3);
