@@ -562,7 +562,7 @@ double Matriz::dameAutovalor(Matriz& x , int iter)const{
     Matriz v = x.copiarMatriz();
     for (int i = 1; i <= iter; ++i)
     {   
-    	cout<<"dame autovalor "<<i<<endl;
+    	//cout<<"dame autovalor "<<i<<endl;
         v = this->multiMatricial(v);
         double norma = v.norma2Vectorial(); //tiene que darme 1/norma
         norma = pow(norma, -1);
@@ -593,7 +593,7 @@ Matriz Matriz::baseAutovectores(int iter, Matriz& autovalores, int alfa)const {
     Matriz resultante = Matriz(m,n);
     for (int i = 1; i <= alfa; ++i)
     {
-    	cout<<"iteracion base numero "<<i<<endl;
+    	//cout<<"iteracion base numero "<<i<<endl;
         Matriz autovector = Matriz(m, 1);
         autovector.randomizar(m, 1);
         double autovalor = copia.dameAutovalor(autovector, iter); //esto me deja en randi el autovector y devuelve el autovalor
@@ -804,14 +804,14 @@ int knn(Matriz& e, Matriz& etiquetasT, Matriz& t, int k){ //devuelve la etiqueta
     int n = t.DameAlto(); //n es la cantidad de imagenes qe tengo en mi campo train
     vector<tuplaDistanciaEtiq> distancias;
     double aux;
-    cout<<"ciclo distancias"<<endl;
+    //cout<<"ciclo distancias"<<endl;
     for (int i = 1; i <= n; ++i)
     {
-        cout<<"norma resta "<<i<<endl;
+        //cout<<"norma resta "<<i<<endl;
          aux = normaResta(e, t, i); //la distancia entre la imagen e y la i-esima imagen de t
          distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
     }
-    cout<<"sorting time "<<endl;
+    //cout<<"sorting time "<<endl;
     selectionSortVoid(distancias); //los ordeno de acuerdo a las distancias de menor a mayor
     
     return moda(distancias, k); //la etiqueta del minimos
