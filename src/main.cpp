@@ -23,7 +23,7 @@ int main(int argc, char const *argv[])
 	}
 
 
-	cout<<"pca da: "<<imagenesTrainM.pca(imagenTrainI,etiquetasTrain,20,30)<<endl;
+	//cout<<"pca da: "<<imagenesTrainM.pca(imagenTrainI,etiquetasTrain,20,400)<<endl;
 	//Matriz etiquetas = Matriz(42000,1);
 	//Matriz imagenesTraining = convertirAMatrizTrain(train, etiquetas);
 
@@ -32,7 +32,19 @@ int main(int argc, char const *argv[])
 	ifstream imagenesTest;
 	imagenesTest.open("../data/test.dat");
 	Matriz etiquetasTest = Matriz(28000,1);
-	Matriz imagenesTests = lecturaTest(imagenesTest, etiquetasTest);
+	Matriz imagenesTests= Matriz(28000,784);
+	imagenesTests = lecturaTest(imagenesTest, etiquetasTest);
+	//imagenesTests.mostrarMatriz(cout);
+
+	//IMPRIME LAS IMAGENES A PROBAR EN ESE FORMATO LINDO ASQUEROSO PETON
+	Matriz imagen1 = Matriz(1,784);
+	int it =1;
+	while(it<11){
+	imagenesTests.insertarEnFila1(imagen1,1,it);
+	mostrarImagen(imagen1);
+	it++;	
+	}
+
 	//Matriz etiquetas2 = Matriz(28000,1);
 	//Matriz imagenesTesting = convertirAMatrizTest(tests, etiquetas2);
 	imagenesTest.close();

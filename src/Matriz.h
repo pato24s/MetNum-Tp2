@@ -71,6 +71,7 @@ using namespace std;
         void DefinirFila(int, vector<double>);
         vector<double> ObtenerFila(int f);
         void insertarEnFila2(Matriz& a, int f);
+        void insertarEnFila1(Matriz& a, int f,int source);
 
 
 		Matriz multiXtrans() const;
@@ -698,6 +699,16 @@ void Matriz::insertarEnFila2(Matriz& a, int f){
     a.DefinirFila(f,ObtenerFila(1));
 }
 
+
+void Matriz::insertarEnFila1(Matriz& a, int f, int source){
+    int n = this->DameAncho();
+    for (int i = 1; i <= n; ++i)
+    {
+       a.Definir(f, i, this->Obtener(source,i));
+    }
+
+}
+
 void Matriz::insertarEnFila(Matriz& a, int f){
     int n = this->DameAncho();
     for (int i = 1; i <= n; ++i)
@@ -732,18 +743,18 @@ struct tuplaDistanciaEtiq
 void selectionSortVoid(std::vector<tuplaDistanciaEtiq>& v) {
     int actual=0;
     while(actual<v.size()){
-    int minimo=actual;
-    int j=actual+1;
-        while(j<v.size()){
-            if(v[j].distancia<v[minimo].distancia){
-                minimo=j;
+        int minimo=actual;
+        int j=actual+1;
+            while(j<v.size()){
+                if(v[j].distancia<v[minimo].distancia){
+                    minimo=j;
+                }
+                j++;
             }
-            j++;
-        }
-    tuplaDistanciaEtiq aux = v[actual];
-    v[actual]=v[minimo];
-    v[minimo]=aux;
-    actual++;
+        tuplaDistanciaEtiq aux = v[actual];
+        v[actual]=v[minimo];
+        v[minimo]=aux;
+        actual++;
 
     }
      

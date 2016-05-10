@@ -7,6 +7,25 @@
 //	#include "Matriz.h"
 using namespace std;
 
+//the following are UBUNTU/LINUX ONLY terminal color codes.
+#define RESET   "\033[0m"
+#define BLACK   "\033[30m"      /* Black */
+#define RED     "\033[31m"      /* Red */
+#define GREEN   "\033[32m"      /* Green */
+#define YELLOW  "\033[33m"      /* Yellow */
+#define BLUE    "\033[34m"      /* Blue */
+#define MAGENTA "\033[35m"      /* Magenta */
+#define CYAN    "\033[36m"      /* Cyan */
+#define WHITE   "\033[37m"      /* White */
+#define BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
+#define BOLDRED     "\033[1m\033[31m"      /* Bold Red */
+#define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
+#define BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
+#define BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
+#define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
+#define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
+#define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
+//std::cout << RED << "hello world" << RESET << std::endl;
 
 
 /*struct Imagen
@@ -82,19 +101,33 @@ Matriz lecturaTest(istream& is, Matriz& etiquetas){
 	return resultante;	
 }
 
-void mostrarImagen(Matriz i){
+void mostrarImagen(const Matriz& i){
 	
 	double aux;
 	int m = i.DameAncho();
 	//cout << "Su etiqueta es: "<< i.etiqueta<< " y tiene " << i.pixeles.size()  << " pixeles" <<endl;
-	for (int j = 1; j<m; ++j)
-	{
+	for (int t = 0; t < 50; ++t){
+		cout<<"-";
+	}
+
+	cout<<endl;
+	
+	for (int j = 1; j<m; ++j){
 		aux = i.Obtener(1, j);
-		cout<< aux << " "; 		
+		if(aux != 0){
+			cout  <<RED<<"0"<<RESET;
+		}else{
+			cout<<GREEN<<"0"<<RESET;	
+		}
+		
 		if( j % 28 == 0 && j != 0){cout<<endl;}
 	}
 	cout<<endl;
-
+	for (int f = 0; f < 50; ++f){
+		cout<<"-";
+	}
+	cout<<endl;
+	
 
 }
 
