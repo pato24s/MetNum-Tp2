@@ -65,7 +65,13 @@ using namespace std;
         void cambiarBaseX(int alfa);
         Matriz cambiarIesima(const Matriz& mb,int j);
         void insertarEnFila(Matriz& a, int f); //inserta en la fila f de a el this
-		int pca(Matriz,Matriz, int, int alfa);
+
+        int pca(Matriz,Matriz, int, int alfa);
+
+        void DefinirFila(int, vector<double>);
+        vector<double> ObtenerFila(int f);
+        void insertarEnFila2(Matriz& a, int f);
+
 
 		Matriz multiXtrans() const;
 
@@ -140,6 +146,14 @@ using namespace std;
       
     }
 
+
+    void Matriz::DefinirFila(int f, vector<double> filaNueva){
+        _matriz[f-1]=filaNueva;
+    }
+
+    vector<double> Matriz::ObtenerFila(int f){
+        return _matriz[f-1];
+    }
     
     
     
@@ -361,7 +375,9 @@ Matriz Matriz::multiXtrans() const{
 	Matriz result(DameAlto(),DameAlto());
 	int fila1=1;
 	while(fila1<=DameAlto()){
-		cout<<"iteracion "<<fila1<<endl;
+        if(fila1 % 100==0){
+		  cout<<"iteracion "<<fila1<<endl;
+        }
 		int fila2=1;
 		while(fila2<=DameAlto()){
 			int i=1;
@@ -670,10 +686,16 @@ void Matriz::cambiarBaseX(int alfa){ //en this le paso los x(i) que son las imag
 	Matriz mb=m.baseAutovectores(30, autovalores,alfa);
 	for (int i = 1; i <= n; ++i)
 	{  
-        cout<<"vamo la putas: "<<i<<endl;
-		this->cambiarIesima(mb,i).insertarEnFila(*this, i); //inserto la i-esima fila cambiada de base en this
+        if(i%1000==0){
+            cout<<"vamo la putas: "<<i<<endl;
+        }
+		this->cambiarIesima(mb,i).insertarEnFila2(*this, i); //inserto la i-esima fila cambiada de base en this
 		
 	}
+}
+
+void Matriz::insertarEnFila2(Matriz& a, int f){
+    a.DefinirFila(f,ObtenerFila(1));
 }
 
 void Matriz::insertarEnFila(Matriz& a, int f){
@@ -685,6 +707,7 @@ void Matriz::insertarEnFila(Matriz& a, int f){
 
 }
 
+
 Matriz Matriz::cambiarIesima(const Matriz& mb,int j){ //tengo que multiplicar la fila j-esima de this por la matriz mb
     //mas vale que mb tenga m filas
     Matriz resultante (1, this->DameAncho());
@@ -692,7 +715,7 @@ Matriz Matriz::cambiarIesima(const Matriz& mb,int j){ //tengo que multiplicar la
     int m = mb.DameAncho();
     for (int i = 1; i <= m; ++i)
     {
-    	cout<<"iteracion cambiar "<<i<<endl;
+    	//cout<<"iteracion cambiar "<<i<<endl;
         double rji= this->multi(mb, j, i);
         resultante.Definir(1, i, rji);
     }
@@ -741,7 +764,7 @@ int lugarMaximo(std::vector<int> v){
 
 
 
-double normaResta(Matriz a, Matriz b, int f){
+double normaResta(Matriz& a, Matriz& b, int f){
     //assert(a.size() == b.size());
     double aux;
     double res = 0;
@@ -775,18 +798,20 @@ int moda(std::vector <tuplaDistanciaEtiq> v, int k ){ //k me dice cuantos ver pa
 
 
 
-int knn(Matriz e, Matriz etiquetasT, Matriz t, int k){ //devuelve la etiqueta de la imagen e, comparando con las imagenes de t
+int knn(Matriz& e, Matriz& etiquetasT, Matriz& t, int k){ //devuelve la etiqueta de la imagen e, comparando con las imagenes de t
     //e imagen para etiquetar
     // etiquetasT tiene las etiquetas de las imagenes de t como un vector columna
     int n = t.DameAlto(); //n es la cantidad de imagenes qe tengo en mi campo train
     vector<tuplaDistanciaEtiq> distancias;
     double aux;
+    cout<<"ciclo distancias"<<endl;
     for (int i = 1; i <= n; ++i)
     {
+        cout<<"norma resta "<<i<<endl;
          aux = normaResta(e, t, i); //la distancia entre la imagen e y la i-esima imagen de t
          distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
     }
-
+    cout<<"sorting time "<<endl;
     selectionSortVoid(distancias); //los ordeno de acuerdo a las distancias de menor a mayor
     
     return moda(distancias, k); //la etiqueta del minimos
@@ -798,6 +823,7 @@ int Matriz::pca(Matriz imagen,Matriz etiquetasT, int k, int alfa){
 	this->cambiarBaseX(alfa);
 	cout<<"PCA CAMBIAR DE BASE 2"<<endl;
 	imagen.cambiarBaseX(alfa);
+    cout<<"se larga knn"<<endl; 
 	return knn(imagen,etiquetasT,*this,k);
 }
 
