@@ -23,7 +23,7 @@ int main(int argc, char const *argv[])
 	}
 
 
-	cout<<imagenesTrainM.pca(imagenTrainI,etiquetasTrain,20);
+	cout<<imagenesTrainM.pca(imagenTrainI,etiquetasTrain,20,30);
 	//Matriz etiquetas = Matriz(42000,1);
 	//Matriz imagenesTraining = convertirAMatrizTrain(train, etiquetas);
 

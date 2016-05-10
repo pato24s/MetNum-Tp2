@@ -24,7 +24,7 @@ using namespace std;
         void Definir ( int i,  int j, double s);
         double dameAutovalor(Matriz& x , int iter)const;
         void deflacion(double autovalor,  Matriz& autovector);
-        Matriz baseAutovectores(int iter, Matriz& autovalores)const;
+        Matriz baseAutovectores(int iter, Matriz& autovalores,int alfa)const;
         //const vector<double>& operator[](int i) const;
         double Obtener ( int i,  int j) const ;
         void insertarEnColumna(Matriz a, int c);
@@ -62,10 +62,10 @@ using namespace std;
 
         Matriz plsDa(Matriz, Matriz, int );
 
-        void cambiarBaseX();
+        void cambiarBaseX(int alfa);
         Matriz cambiarIesima(const Matriz& mb,int j);
         void insertarEnFila(Matriz& a, int f); //inserta en la fila f de a el this
-		int pca(Matriz,Matriz, int);
+		int pca(Matriz,Matriz, int, int alfa);
 
 		Matriz multiXtrans() const;
 
@@ -569,13 +569,13 @@ void Matriz::deflacion(double a,  Matriz& v ){
     this->sumaMatricial(vvt);
 }
 
-Matriz Matriz::baseAutovectores(int iter, Matriz& autovalores)const {
+Matriz Matriz::baseAutovectores(int iter, Matriz& autovalores, int alfa)const {
     int m = this->DameAlto();
     int n = this->DameAncho();
     assert(m==n);
     Matriz copia = *this;
     Matriz resultante = Matriz(m,n);
-    for (int i = 1; i <= n; ++i)
+    for (int i = 1; i <= alfa; ++i)
     {
     	cout<<"iteracion base numero "<<i<<endl;
         Matriz autovector = Matriz(m, 1);
@@ -655,7 +655,7 @@ void Matriz::restarFila(double media, int k){
 }
 
 
-void Matriz::cambiarBaseX(){ //en this le paso los x(i) que son las imagenes
+void Matriz::cambiarBaseX(int alfa){ //en this le paso los x(i) que son las imagenes
 	int n=this->DameAlto();
     cout<<"vamo a centrarno "<<endl;
 	Matriz xCentrada=this->centrarConMedia();
@@ -667,7 +667,7 @@ void Matriz::cambiarBaseX(){ //en this le paso los x(i) que son las imagenes
 	Matriz m=xt.multiXtrans();
     Matriz autovalores(784,1);
     cout<<"vamo a basearno "<<endl;
-	Matriz mb=m.baseAutovectores(30, autovalores);
+	Matriz mb=m.baseAutovectores(30, autovalores,alfa);
 	for (int i = 1; i <= n; ++i)
 	{  
         cout<<"vamo la putas: "<<i<<endl;
@@ -793,11 +793,11 @@ int knn(Matriz e, Matriz etiquetasT, Matriz t, int k){ //devuelve la etiqueta de
 }
 
 
-int Matriz::pca(Matriz imagen,Matriz etiquetasT, int k){
+int Matriz::pca(Matriz imagen,Matriz etiquetasT, int k, int alfa){
 	cout<<"PCA CAMBIAR BASE 1"<<endl;
-	this->cambiarBaseX();
+	this->cambiarBaseX(alfa);
 	cout<<"PCA CAMBIAR DE BASE 2"<<endl;
-	imagen.cambiarBaseX();
+	imagen.cambiarBaseX(alfa);
 	return knn(imagen,etiquetasT,*this,k);
 }
 
