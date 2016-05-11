@@ -1,5 +1,5 @@
-/*#ifndef MATRIZ_H
-#define MATRIZ_H*/
+//#ifndef MATRIZ_H
+//#define MATRIZ_H
 #include <vector>
 #include <iostream>
 #include <math.h> 
@@ -32,7 +32,7 @@ using namespace std;
         Matriz multiMatricial( const Matriz&  b) const; // Result = this*B  this tambien es por referencia sin poder modificar?
         void multiEscalar(double a);
         void sumaMatricial(const Matriz& b );
-        Matriz restaMatricial(Matriz& b); 
+        void restaMatricial(Matriz& b); 
         double multi(const Matriz& b, int i, int j )const;
         Matriz copiarMatriz() const;
         double norma2Vectorial() const;
@@ -119,7 +119,7 @@ using namespace std;
 
         
     Matriz& Matriz::operator=( const Matriz& a) {
-        assert( _alto == a.DameAlto() && _ancho == a.DameAncho());
+        //assert( _alto == a.DameAlto() && _ancho == a.DameAncho());
     	_alto=a._alto;
     	_ancho=a._ancho;
     	_matriz = a._matriz;
@@ -458,7 +458,7 @@ void Matriz::sumaMatricial(const Matriz& b ){
     }
 }
 
-Matriz Matriz::restaMatricial(Matriz& b ){
+void Matriz::restaMatricial(Matriz& b ){
 	b.multiEscalar(-1);
     //Matriz copia = this*;
 
@@ -885,20 +885,41 @@ double promedio(vector<double> v){ //media de la fila k de la matriz
 }
 
 
-void crearY(){
+Matriz lecturaPLSDA(){
+    ifstream is;
+    is.open("../data/train.dat");
+
+    string etiq;
+    string delim;
+    Matriz result(42000,1);
+    int etiqueta;
+
+    for (int j = 1; j <= 42000; ++j)    
+    {
+        getline (is, etiq, '_');
+        etiqueta= atoi(etiq.c_str());
+        result.Definir(j,1,etiqueta);
+        getline(is, delim, '/' );
+    }
+
+    is.close();
+    return result;
+}
+
+
+Matriz crearY(int n){
 
 //void Matriz::insertarEnFila2(Matriz& a, int f){
 Matriz etiquetas= lecturaPLSDA();
-int n= 42000;
 int m= 10;
-Matriz res(42000,10);
+Matriz res(n,10);
 
-for(i=1; i<=n; i++){
-    for(j=1; j<=m; j++){
-        if(j== etiquetas[i]){
-            res.Definir(i,j,(1+0.8)/sqrt(n)));
+for(int i=1; i<=n; i++){
+    for(int j=1; j<=m; j++){
+        if(j== etiquetas.Obtener(i,1)){
+            res.Definir(i,j,(1+0.8)/sqrt(n));
         }else{
-            res.Definir(i,j,(-1+0.8)/sqrt(n)));
+            res.Definir(i,j,(-1+0.8)/sqrt(n));
         }
     }
 }
@@ -908,10 +929,90 @@ return res;
 }
 
 
+Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN DE GAMMA FILAS X WI COLUMNAS
+    //REVISAR  CACA RAVIOL RAVIOL
+  
+
+    Matriz result= Matriz(gamma,x.DameAncho());
+    double normaWi;
+    double unoSobreNorma;
+    int n=x.DameAlto();
+    x.centrarConMedia();
+    //Matriz xt =x.copiarMatriz();
+    Matriz xt=x.Traspuesta();
+
+      cout<< "#filas y " << y.DameAlto() << "#columnas y " << y.DameAncho()<<endl;
+    cout<< "#filas x " << xt.DameAlto() << "#columnas x " << xt.DameAncho()<<endl;
+
+    
+ 
+    for (int i = 0; i < gamma; ++i){
+       
+            //VAMOS A PREPARAR Y
+            Matriz yt= y.Traspuesta();
+           
+            //VAMOS A CALCULAR xT*Y LUEGO yT*x POR ULTIMO xT*y*yTx
+           
+            Matriz xty=xt.multiMatricial(y);
+            cout<< "PRIMER MULTIPLICACION"<<endl;
+
+            Matriz ytx=yt.multiMatricial(x);
+            ytx.DameAncho();
+            cout<< "SEGUNDA MULTIPLICACION"<<endl;
+            //cout<< "#filas mi " << mi.DameAlto() << "#columnas y " << mi.DameAncho()<<endl;
+            //cout<< "#filas xnicogato " << ytx.DameAlto() << "#columnas x " << ytx.DameAncho()<<endl;
+
+            Matriz mi = xty.multiMatricial(ytx);
+            cout<< "TERCER MULTIPLICACION"<<endl;
+            mi.Obtener(1,1);
+            cout<< "ancho mi " << mi.DameAncho();
+            cout<< "NO VIOLES"<<endl;
+            
+            mi.DameAncho();
+            cout << "NO VIOLA";
+            int fila = mi.DameAncho();
+            cout<< "fila es " << fila;
+
+            Matriz autovector(fila, 1);
+
+            autovector.randomizar(fila,1);
+            Matriz copiaMI = mi;
+            double autovalor = copiaMI.dameAutovalor(autovector, 30); //esto me deja en randi el autovector y devuelve el autovalor RAVIOLI RAVIOLI DAME LA FORMUOLI
+                        cout<< "SANTI GATO 1";
+
+            //En autovector tengo el autovector del autovalor mas grande de mi es deci mi wi
+ 
+            //normalizo mi wi y lo multiplico por x
+            normaWi=autovector.norma2Vectorial();
+            unoSobreNorma=1/normaWi;
+            autovector.multiEscalar(unoSobreNorma);
+            autovector.insertarEnFila2(result,i);                      
+            Matriz ti = x.multiMatricial(autovector);
+            //Actualizo mi x
+            normaWi=ti.norma2Vectorial();
+            unoSobreNorma=1/normaWi;
+            ti.multiEscalar(unoSobreNorma);
+            Matriz tiT=ti.Traspuesta();
+            Matriz titiT = ti.multiMatricial(tiT);//ME PARECE QUE ESTA VERGA NO VA A FUNCIONAR
+            //En ti Tengo mi titiT
+            Matriz pepe= titiT.multiMatricial(x);
+            x.restaMatricial(pepe);
+            
+            Matriz carlos= titiT.multiMatricial(y);
+            //Actualizo mi y
+            y.restaMatricial(carlos);
+        }      
+    return result;    
+ 
+ }
 
 
-
-
+int plsDApiola( Matriz& x, Matriz& etiquetasT, int gamma, int k,  Matriz& imagen, int n){
+    Matriz y= crearY(n);
+    Matriz autovectores= plsDa(x,y,gamma);
+    Matriz imagenFinal= plsDa(imagen,y,gamma);
+    return knn(imagenFinal, etiquetasT, x, k );
+}
 
 /*
 

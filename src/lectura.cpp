@@ -4,7 +4,7 @@
 #include <cstring>
 #include <stdlib.h> 
 //#include <cassert>
-//	#include "Matriz.h"
+#include "Matriz.h"
 using namespace std;
 
 //the following are UBUNTU/LINUX ONLY terminal color codes.
@@ -47,26 +47,7 @@ struct Imagenes
 };
 */
 
-Matriz lecturaPLSDA(){
-	ifstream is;
-	is.open("../data/train.dat");
 
-	string etiq;
-	string delim;
-	Matriz result(42000,1);
-	int etiqueta;
-
-	for (int j = 1; j <= 42000; ++j)	
-	{
-		getline (is, etiq, '_');
-		etiqueta= atoi(etiq.c_str());
-		result.Definir(j,1,etiqueta);
-		getline(is, delim, '/' );
-	}
-
-	is.close();
-	return result;
-}
 
 Matriz lecturaTrain(istream& is, Matriz& etiquetas){
 	string etiq;
