@@ -661,7 +661,6 @@ void Matriz::randomizar(int m, int n){
 double Matriz::media(int k) const{ //media de la fila k de la matriz
     double media = 0;
     int n = this->DameAncho();
-    int m = this->DameAlto();
 
     for (int i = 1; i <= n; ++i)
     {
@@ -873,7 +872,40 @@ int Matriz::pca(Matriz imagen,Matriz etiquetasT, int k, int alfa){
 	return knn(imagen,etiquetasT,*this,k);
 }
 
+double promedio(vector<double> v){ //media de la fila k de la matriz
+    double media = 0;
+    int n= v.size();
 
+    for (int i = 0; i < n; ++i)
+    {
+        media = media + v[i];
+    }
+    media = media/n;
+    return media;
+}
+
+
+void crearY(){
+
+//void Matriz::insertarEnFila2(Matriz& a, int f){
+Matriz etiquetas= lecturaPLSDA();
+int n= 42000;
+int m= 10;
+Matriz res(42000,10);
+
+for(i=1; i<=n; i++){
+    for(j=1; j<=m; j++){
+        if(j== etiquetas[i]){
+            res.Definir(i,j,(1+0.8)/sqrt(n)));
+        }else{
+            res.Definir(i,j,(-1+0.8)/sqrt(n)));
+        }
+    }
+}
+
+return res;
+
+}
 
 
 
@@ -895,12 +927,13 @@ Matriz Matriz::plsCompleto(Matriz x, int gamma){
 
 	return pls(x.centrarConMedia(), y,gamma);
 }
+*/
 
 
 
 
 
-Matriz Matriz::pls(Matriz x, Matriz y, int gamma){
+/*Matriz Matriz::pls(Matriz& x, Matriz& y, int gamma){
 	Matriz result=Matriz(x.DameAncho(),x.DameAncho());
 	for (int i = 1; i <= gamma; i++){
 		Matriz xt=x.copiarMatriz();
@@ -946,8 +979,10 @@ Matriz Matriz::pls(Matriz x, Matriz y, int gamma){
 	}
 	return result;
 
-}
+}*/
 
+
+/*
 Matriz Matriz::plsDa(Matriz x, Matriz y, int gamma){
 	Matriz result=Matriz(x.DameAncho(),x.DameAncho());
 	for (int i = 1; i <= gamma; i++){
