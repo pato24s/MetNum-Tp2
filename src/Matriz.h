@@ -74,7 +74,7 @@ using namespace std;
         void insertarEnFila1(Matriz& a, int f,int source);
         void cambiarBaseX2(int alfa, Matriz cambioBase);
         Matriz pcaRapido(Matriz etiquetasTrain, Matriz imagenes, int alfa, int k);
-
+        double productoEscalar(Matriz& a, Matriz& b);
 
 		Matriz multiXtrans() const;
 
@@ -1004,6 +1004,21 @@ Matriz lecturaPLSDA(){
 }
 
 
+
+double productoEscalar(Matriz& a, Matriz& b){ //alto de a == ancho b ancho de a y b == 1 
+    double res = 0;
+    double aux;
+    int  f = a.DameAlto();
+    //assert(a.DameAlto() == b.DameAncho() || b.DameAlto == 1 || a.DameAncho==1)
+    for (int i = 0; i < f; ++i){
+        aux = a.Obtener(i,1) * b.Obtener(1,i);
+        res = res+aux; 
+    }
+    return res;
+}
+
+
+
 Matriz crearY(int n){
 
 //void Matriz::insertarEnFila2(Matriz& a, int f){
@@ -1040,11 +1055,11 @@ Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ
 
     //   cout<< "#filas y " << y.DameAlto() << "#columnas y " << y.DameAncho()<<endl;
     // cout<< "#filas x " << xt.DameAlto() << "#columnas x " << xt.DameAncho()<<endl;
-
+    cout <<"gamma: "<<gamma<<endl;
     
  
     for (int i = 1; i <= gamma; ++i){
-       
+            cout<< "iteracion numero: " << i<<endl;
             //VAMOS A PREPARAR Y
             Matriz yt= y.Traspuesta();
            
@@ -1079,32 +1094,38 @@ Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ
  
             //normalizo mi wi y lo multiplico por x
             normaWi=autovector.norma2Vectorial();
-            //cout<< "SANTI GATO 2"<<endl;
             unoSobreNorma=1/normaWi;
-            cout<< "SANTI GATO 3"<<endl;
             autovector.multiEscalar(unoSobreNorma);
-            
-            autovector = autovector.Traspuesta();
             cout<< "cols autovector: "<< autovector.DameAncho() << "filas auto: " << autovector.DameAlto()<<endl;
-            cout<< "cols result: "<< result.DameAncho() << "filas result: " << result.DameAlto()<<endl;
-            autovector.insertarEnFila2(result,i);   
-            cout<< "SANTI GATO 5"<<endl;     
-            autovector = autovector.Traspuesta();             
+            //lo tengoq que poner como filas a mi autovector -> trasnpongo lo guardo y vuelvo a transponer
+            autovector = autovector.Traspuesta();
+            autovector.insertarEnFila2(result,i);
+            autovector = autovector.Traspuesta();   
+            cout<< "SANTI GATO 5"<<endl;
+
+            //Definino mi wi como x*wi en este caso x*autovector            
             Matriz ti = x.multiMatricial(autovector);
-            cout<<  "santi gato 6 "<<endl;
             //Actualizo mi x
             normaWi=ti.norma2Vectorial();
-            unoSobreNorma=1/normaWi;
             ti.multiEscalar(unoSobreNorma);
+            //hasta aca no crashea
             Matriz tiT=ti.Traspuesta();
-            Matriz titiT = ti.multiMatricial(tiT);//ME PARECE QUE ESTA VERGA NO VA A FUNCIONAR
-            //En ti Tengo mi titiT
-            Matriz pepe= titiT.multiMatricial(x);
+            //me queda una matriz de 42000x1 * 1x420000
+            cout<< "#filas ti " << ti.DameAlto() << "#columnas ti " << ti.DameAncho()<<endl;
+            cout<< "#tiT xnicogato " << tiT.DameAlto() << "#columnas tiT " << tiT.DameAncho()<<endl;
+
+            double titiT = productoEscalar(ti,tiT);//ME PARECE QUE ESTA VERGA NO VA A FUNCIONAR
+            //En ti Tengo mi titiT PEROOO ES UN ESCALAR DE 1X1 Y NO VA A FUNCIONAR MULTIMATRICIAL CON X ENTONCES TENGO QUE PASAR ESE VALOR A UN AUXILIAR Y MULTIESCALAR CON X
+            
+            Matriz pepe= x;
+            pepe.multiEscalar(titiT);
             x.restaMatricial(pepe);
             
-            Matriz carlos= titiT.multiMatricial(y);
+            Matriz carlos= y;
+            carlos.multiEscalar(titiT);
             //Actualizo mi y
             y.restaMatricial(carlos);
+            
         }      
     return result;    
  
@@ -1114,8 +1135,10 @@ Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ
 int plsDApiola( Matriz& x, Matriz& etiquetasT, int gamma, int k,  Matriz& imagen, int n){
     Matriz y= crearY(n);
     Matriz autovectores= plsDa(x,y,gamma);
-    Matriz imagenFinal= plsDa(imagen,y,gamma);
-    return knn(imagenFinal, etiquetasT, x, k );
+    //COMENTE ESTO PORQUE NOSE QUE CARAJO HACER CON ESTA MATRIZ PONELE QUE LE TIRAS GAMA == 20 -> LA MATRIZ QUE TE QUEDA ES 20X784 y ahora? si le mando plsDa a la imagen nose se rompe todo
+    cout <<"autovectores fila: " << autovectores.DameAlto() << "autovectores columna: " << autovectores.DameAncho()<<endl; 
+   // Matriz imagenFinal= plsDa(imagen,y,gamma);
+    return 0;//knn(imagenFinal, etiquetasT, x, k );
 }
 
 
