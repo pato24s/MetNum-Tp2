@@ -9,7 +9,7 @@
 int main(int argc, char const *argv[])
 {
 	
-	
+		
 	ifstream imagenesTrain;
 	imagenesTrain.open("../data/train.dat");
 	Matriz etiquetasTrain = Matriz(42000,1); 
@@ -39,56 +39,62 @@ int main(int argc, char const *argv[])
 
 
 
+
 	vector<double> medias= imagenesTrainM.dameVectorMedias();
 	int n= imagenesTrainM.DameAlto();
 	imagenesTrainM.centrarConMediaNuevo(medias,n);
 	imagenTrainI.centrarConMediaNuevo(medias,n);
 	cout<<"pls da: "<<plsDApiola(imagenesTrainM,etiquetasTrain,5,5, imagenTrainI,imagenesTrainM.DameAlto())<<endl;
 	Matriz etiquetas = Matriz(42000,1);
+	 mostrarImagen(imagenTrainI);
 
 
 
+/*
 
 
 // COSAS PARA AMBOS MAINS VIEJOS
 
 
 	
-	/*ifstream imagenesTrain;
-	imagenesTrain.open("../data/train.dat");
-	Matriz etiquetasTrain = Matriz(42000, 1);
-	Matriz imagenesTrainM = lecturaTrain(imagenesTrain, etiquetasTrain);
+	ifstream imagenesTrain;
+	imagenesTrain.open("../data/train2.dat");
+	Matriz etiquetasTrain = Matriz(1000, 1);
+	 Matriz imagenesTrainM = lecturaTrain(imagenesTrain, etiquetasTrain);
 	Matriz imagenesTrainMCopia=imagenesTrainM;
 	imagenesTrain.close();
 	Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
 	
-*/
+
 
 
 
 
 // 1. MAIN PARA LEVANTAR 1 SOLA IMAGEN Y PROBARLA
-	 /*//Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
-	for (int i = 1; i <= imagenesTrainM.DameAncho(); i++)
+	 //Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
+/*	for (int i = 1; i <= imagenesTrainM.DameAncho(); i++)
 	{
-		imagenTrainI.Definir(1,i,imagenesTrainM.Obtener(41,i));
+		imagenTrainI.Definir(1,i,imagenesTrainM.Obtener(,i));
 	}
 
 
-	cout<<"pca da: "<<imagenesTrainM.pcaNuevo(imagenTrainI,etiquetasTrain,20,30)<<endl;
 	cout<<"la imagen era"<<endl;
 	mostrarImagen(imagenTrainI);
-
-
-
+	cout<<"pca da: "<<imagenesTrainM.pcaNuevo(imagenTrainI,etiquetasTrain,20,30)<<endl;
 */
 
 
+
+
+
 // 2. MAIN PARA PROBAR N IMAGENES
+/*	cout<<" a centrar"<<endl;
+	int n=imagenesTrainM.DameAlto();
+	vector<double> medias=imagenesTrainM.dameVectorMedias();
+    imagenesTrainMCopia.centrarConMediaNuevo(medias,n);
 
-
-/*	cout<<"voy a transponer"<<endl;
-	Matriz thisT=imagenesTrainM.Traspuesta();
+	cout<<"voy a transponer"<<endl;
+	Matriz thisT=imagenesTrainMCopia.Traspuesta();
 	cout<<"voy a hacer xt x"<<endl;
 	Matriz xtx=thisT.multiXtrans();
 	Matriz autovalores(30,1);
@@ -99,11 +105,12 @@ int main(int argc, char const *argv[])
 	cout<<"arranco ciclo"<<endl;
 	imagenesTrainMCopia.cambiarBaseNuevo(mb1);
 
-	for(int i=1;i<=100;++i){
+	for(int i=1;i<=999;++i){
 		for(int j=1;j<=imagenesTrainM.DameAncho();++j){
 			imagenTrainI.Definir(1,j,imagenesTrainM.Obtener(i,j));
 		}
 		//mostrarImagen(imagenTrainI);
+		imagenTrainI.centrarConMediaNuevo(medias,n);
 		imagenCambiada=imagenTrainI.multiMatricial(mb1);
 		res= knn(imagenCambiada,etiquetasTrain,imagenesTrainMCopia,1);
 		//cout<<"imagen "<<i<<"nos dio: "<<res<<" y su etiqueta era "<<etiquetasTrain.Obtener(i,1)<<endl;
@@ -113,7 +120,10 @@ int main(int argc, char const *argv[])
 		}else{
 			cout<<"NOOOOOOO NOOOO"<<endl;
 		}
-	}*/
+	}
+*/
+
+
 
 
 

@@ -1214,6 +1214,7 @@ vector<double> Matriz::dameVectorMedias(){
 }
 
 void Matriz::centrarConMediaNuevo(vector<double> medias, int n){
+    assert(DameAncho()==medias.size());
     int alto=DameAlto();
     int ancho=DameAncho();
     double raiz=sqrt(n-1);
@@ -1249,7 +1250,19 @@ void Matriz::cambiarBaseNuevo(Matriz& mBase){
 
 int Matriz::pcaNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int alfa){
     
-    
+    //centrar con media
+    vector<double> medias=dameVectorMedias();
+    int n=DameAlto();
+   
+
+
+    centrarConMediaNuevo(medias,n);
+
+
+
+    cout<<"primera fila post"<<endl;
+
+
     //obtengo base
     cout<<"voy a transponer"<<endl;
     Matriz thisT=Traspuesta();
@@ -1262,17 +1275,18 @@ int Matriz::pcaNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int alfa){
     this->cambiarBaseNuevo(mb1);
 
     cout<<"a cambiar imagen"<<endl;
-    //imagen.centrarConMediaNuevo(medias,n);
+    
+    imagen.centrarConMediaNuevo(medias,n);
+  
+
+
     Matriz imagenCambiada=imagen.multiMatricial(mb1);
-    //imagen.cambiarBaseNuevo(medias,mb2,n);
 
     cout<<"arranca knn"<<endl;
     return knn(imagenCambiada,etiquetasT,*this,1);
 
 //  return 1;
 }
-
-
 
 
 
