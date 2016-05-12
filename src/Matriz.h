@@ -77,6 +77,19 @@ using namespace std;
 		Matriz multiXtrans() const;
 
 
+        vector<double> dameVectorMedias();
+
+        void centrarConMediaNuevo(vector<double>, int);
+
+        void cambiarBaseNuevo( Matriz&);
+        
+
+        int pcaNuevo(Matriz&,Matriz&, int, int);
+
+        int pcaRapido(Matriz&,Matriz&,Matriz& , int , int);
+
+
+
         
     private:
 
@@ -1020,6 +1033,124 @@ int plsDApiola( Matriz& x, Matriz& etiquetasT, int gamma, int k,  Matriz& imagen
     Matriz imagenFinal= plsDa(imagen,y,gamma);
     return knn(imagenFinal, etiquetasT, x, k );
 }
+
+
+
+
+vector<double> Matriz::dameVectorMedias(){
+    int topeColumnas=DameAncho();
+    int topeFilas=DameAlto();
+    vector<double> result(topeColumnas-1);
+    int iterCols=1;
+    int iterFilas;
+    while(iterCols<=topeColumnas){
+        iterFilas=1;
+        double media=0;
+        while(iterFilas<=topeFilas){
+            media=media+Obtener(iterFilas,iterCols);
+            iterFilas++;
+        }
+        media=media/topeColumnas;
+        result.push_back(media);
+        iterCols++;
+    }
+    return result;
+}
+
+void Matriz::centrarConMediaNuevo(vector<double> medias, int n){
+    int alto=DameAlto();
+    int ancho=DameAncho();
+    double raiz=sqrt(n-1);
+    raiz =pow(raiz,-1);
+    for (int i = 1; i <= ancho; ++i)
+    {
+        for (int j = 1; j <=alto; ++j)
+        {
+            double aux=Obtener(j,i) - medias[i-1];
+            aux=aux*raiz;
+            Definir(j,i,aux);
+        }
+    }
+
+}
+
+void Matriz::cambiarBaseNuevo(Matriz& mBase){
+    /*cout<<"centro con media"<<endl;
+    this->centrarConMediaNuevo(medias,n);
+    cout<<"transp"<<endl;
+    Matriz xt=this->Traspuesta();
+    cout<<"xtx"<<endl;
+    Matriz xtx=xt.multiXtrans();*/
+    int n=DameAlto();
+    cout<<"cambio filas"<<endl;
+    for (int i = 1; i <= n; ++i)
+    {  
+        Matriz filaCambiada=cambiarIesima(mBase,i);
+        filaCambiada.insertarEnFila2(*this,i);
+    }
+
+}
+
+int Matriz::pcaNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int alfa){
+    
+    
+    //obtengo base
+    cout<<"voy a transponer"<<endl;
+    Matriz thisT=Traspuesta();
+    cout<<"voy a hacer xt x"<<endl;
+    Matriz xtx=thisT.multiXtrans();
+    Matriz autovalores(alfa,1);
+    cout<<"armo baseAutovectores"<<endl;
+    Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
+    cout<<"se vienen las mierdas"<<endl;
+    this->cambiarBaseNuevo(mb1);
+
+    cout<<"a cambiar imagen"<<endl;
+    //imagen.centrarConMediaNuevo(medias,n);
+    Matriz imagenCambiada=imagen.multiMatricial(mb1);
+    //imagen.cambiarBaseNuevo(medias,mb2,n);
+
+    cout<<"arranca knn"<<endl;
+    return knn(imagenCambiada,etiquetasT,*this,1);
+
+//  return 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 
