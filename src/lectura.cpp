@@ -54,9 +54,9 @@ Matriz lecturaTrain(istream& is, Matriz& etiquetas){
 	double pixel;
 	int etiqueta;
 	string delim;
-	Matriz result = Matriz(1000, 784);
+	Matriz result = Matriz(37000, 784);
 
-	for (int j = 1; j <= 1000; ++j)	
+	for (int j = 1; j <= 37000; ++j)	
 	{
 		getline (is, etiq, '_');
 		etiqueta= atof(etiq.c_str());
@@ -135,7 +135,7 @@ void mostrarImagen(const Matriz& i){
 
 /* Matriz convertirAMatrizTrain(Imagenes img, Matriz& etiquetas ){
  	// etiquetas = 784x1
- 	assert(etiquetas.DameAlto() == 1000);
+ 	assert(etiquetas.DameAlto() == 37000);
  	assert (img.imags.size() == 42000 && img.imags[0].pixeles.size() == 784);
  	Matriz resultante = Matriz(42000, 784);
  	for (int i = 0; i < 42000; ++i)

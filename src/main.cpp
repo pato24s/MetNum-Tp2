@@ -5,7 +5,8 @@
 //#include <math.h>       /* pow */
 //#include "Matriz.h"
 #include "lectura.cpp"
-
+#include <algorithm>    // std::random_shuffle
+#include <vector>
 int main(int argc, char const *argv[])
 {
 	
@@ -50,15 +51,15 @@ int main(int argc, char const *argv[])
 // COSAS PARA AMBOS MAINS VIEJOS
 
 
-	
+	/*
 	ifstream imagenesTrain;
 	imagenesTrain.open("../data/train2.dat");
-	Matriz etiquetasTrain = Matriz(1000, 1);
+	Matriz etiquetasTrain = Matriz(37000, 1);
 	 Matriz imagenesTrainM = lecturaTrain(imagenesTrain, etiquetasTrain);
 	Matriz imagenesTrainMCopia=imagenesTrainM;
 	imagenesTrain.close();
 	Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
-	
+	*/
 
 
 
@@ -82,7 +83,7 @@ int main(int argc, char const *argv[])
 
 
 // 2. MAIN PARA PROBAR N IMAGENES
-	cout<<" a centrar"<<endl;
+	/*cout<<" a centrar"<<endl;
 	int n=imagenesTrainM.DameAlto();
 	vector<double> medias=imagenesTrainM.dameVectorMedias();
     imagenesTrainMCopia.centrarConMediaNuevo(medias,n);
@@ -115,6 +116,48 @@ int main(int argc, char const *argv[])
 			cout<<"NOOOOOOO NOOOO"<<endl;
 		}
 	}
+
+
+*/
+
+
+
+
+
+Matriz prueba(4,4);
+prueba.Definir(1,1,61);
+prueba.Definir(1,2,18);
+prueba.Definir(1,3,32);
+prueba.Definir(1,4,21);
+
+prueba.Definir(2,1,10);
+prueba.Definir(2,2,11);
+prueba.Definir(2,3,17);
+prueba.Definir(2,4,22);
+
+prueba.Definir(3,1,24);
+prueba.Definir(3,2,42);
+prueba.Definir(3,3,90);
+prueba.Definir(3,4,31);
+
+prueba.Definir(4,1,10);
+prueba.Definir(4,2,22);
+prueba.Definir(4,3,39);
+prueba.Definir(4,4,43);
+
+cout<<prueba;
+
+prueba.mezclarMatriz();
+cout<<" "<<endl;
+cout<<prueba;
+
+
+
+
+
+
+
+
 
 
 

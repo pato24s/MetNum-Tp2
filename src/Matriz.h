@@ -5,6 +5,7 @@
 #include <math.h> 
 #include <cassert>
 #include <stdlib.h> 
+#include <algorithm>    // std::random_shuffle
 //#include "lectura.cpp"
 //#include "metodos.cpp"
 using namespace std;
@@ -90,7 +91,7 @@ using namespace std;
 
         int pcaRapido(Matriz&,Matriz&,Matriz& , int , int);
 
-
+        void mezclarMatriz();
 
         
     private:
@@ -1234,23 +1235,76 @@ int Matriz::pcaNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int alfa){
     Matriz imagenCambiada=imagen.multiMatricial(mb1);
 
     cout<<"arranca knn"<<endl;
-    return knn(imagenCambiada,etiquetasT,*this,1);
+    return knn(imagenCambiada,etiquetasT,*this,k);
 
 //  return 1;
 }
 
+void Matriz::mezclarMatriz(){
+    random_shuffle ( _matriz.begin(), _matriz.end() );
+}
 
 
 
+Matriz Matriz::train(int alfa){
+    vector<double> medias=dameVectorMedias();
+    int n=DameAlto();
+    centrarConMediaNuevo(medias,n);
+    Matriz thisT=Traspuesta();
+    Matriz xtx=thisT.multiXtrans();
+    Matriz autovalores(alfa,1);
+    Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
+    return mb1;
+}
+
+(Matriz imagen,Matriz mb,etiquetasT,int k, int n, vector<double> medias){
+    imagen.centrarConMediaNuevo(medias,n);
+    Matriz imagenCambiada=imagen.multiMatricial(mb);
+    return knn(imagenCambiada,etiquetasT,)
+
+}
 
 
 
+/*double kFoldCrossVal(Matriz todas, int k, int alfa){
+    todas.mezclarMatriz();
+    double promedioTotal = 0;
+    double kesimoPromedio = 0;
+    int n=todas.DameAlto();
+    int tamaño = n / k;
+    vector<double> medias=todas.dameVectorMedias();
+    todas.centrarConMediaNuevo(medias,n);
+    Matriz thisT=todas.Traspuesta();
+    Matriz xtx=thisT.multiXtrans();
+    Matriz autovalores(alfa,1);
+    Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
+    todas.cambiarBaseNuevo(mb1);
+    //todas estan cambiadas de base
+
+    for (int i = 1; i <= k; i+=tamaño)
+    {
+        for (int j = i; j <= tamaño; ++j)
+        {
+            Matriz imagenesAEtiquetar(1,784);
+                    for (int k = 1; k <=784 ; ++k)
+                        {
+                            imagenesAEtiquetar.Definir(1, k, todas.Obtener(j, k));
+                            //esta imagen la tengo que etiquetar
+                        }
+            int etiqueta = todas.pcaNuevoNuevo(imagenesAEtiquetar); //me las tiene que validar con todas menos consigo mismo
+            if(etiqueta == todasEtiquetas.Obtener(j,1)){kesimoPromedio++;}//si le peguè, sumo 1
+        kesimoPromedio = kesimoPromedio / tamaño; //los que les peguè, dividido todos los que calculè en el kesimo fold
+        }
+        promedioTotal += kesimoPromedio; 
+    }
+    promedioTotal = promedioTotal / k; //el promedio de todos los promedios
+
+    return promedioTotal;
+
+}
 
 
-
-
-
-
+*/
 
 
 
