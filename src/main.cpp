@@ -19,15 +19,17 @@ int main(int argc, char const *argv[])
 
 
 
-	Matriz imagenesCopia(42000,784);
+
+/*	Matriz imagenesCopia(42000,784);
 	for (int i = 1; i <=42000 ; ++i)
 	{
 		for (int j = 1; j<=784 ; ++j)
 		{
 			imagenesCopia.Definir(i,j, imagenesTrainM.Obtener(i,j));
 		}
-	}
+	}*/
 	cout<<"listo, ya lo copie"<<endl;
+	
 	Matriz imagenTrainI(1,imagenesTrainM.DameAncho());
 	for (int i = 1; i <= imagenesTrainM.DameAncho(); i++)
 	{
@@ -44,9 +46,10 @@ int main(int argc, char const *argv[])
 	int n= imagenesTrainM.DameAlto();
 	imagenesTrainM.centrarConMediaNuevo(medias,n);
 	imagenTrainI.centrarConMediaNuevo(medias,n);
+	//cout<<imagenesTrainM;
+
 	cout<<"pls da: "<<plsDApiola(imagenesTrainM,etiquetasTrain,5,5, imagenTrainI,imagenesTrainM.DameAlto())<<endl;
 	Matriz etiquetas = Matriz(42000,1);
-	 mostrarImagen(imagenTrainI);
 
 
 
@@ -88,7 +91,7 @@ int main(int argc, char const *argv[])
 
 
 // 2. MAIN PARA PROBAR N IMAGENES
-/*	cout<<" a centrar"<<endl;
+/*		cout<<" a centrar"<<endl;
 	int n=imagenesTrainM.DameAlto();
 	vector<double> medias=imagenesTrainM.dameVectorMedias();
     imagenesTrainMCopia.centrarConMediaNuevo(medias,n);
