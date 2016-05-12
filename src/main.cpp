@@ -37,7 +37,7 @@ int main(int argc, char const *argv[])
 
 
 
-	cout<<"pls da: "<<plsDApiola(imagenesTrainM,etiquetasTrain,20,30, imagenTrainI,imagenesTrainM.DameAlto())<<endl;
+	cout<<"pls da: "<<plsDApiola(imagenesTrainM,etiquetasTrain,20,20, imagenTrainI,imagenesTrainM.DameAlto())<<endl;
 	Matriz etiquetas = Matriz(42000,1);
 
 	 mostrarImagen(imagenTrainI);
