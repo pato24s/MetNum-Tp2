@@ -1025,12 +1025,12 @@ Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ
     //Matriz xt =x.copiarMatriz();
     Matriz xt=x.Traspuesta();
 
-      cout<< "#filas y " << y.DameAlto() << "#columnas y " << y.DameAncho()<<endl;
-    cout<< "#filas x " << xt.DameAlto() << "#columnas x " << xt.DameAncho()<<endl;
+    //   cout<< "#filas y " << y.DameAlto() << "#columnas y " << y.DameAncho()<<endl;
+    // cout<< "#filas x " << xt.DameAlto() << "#columnas x " << xt.DameAncho()<<endl;
 
     
  
-    for (int i = 0; i < gamma; ++i){
+    for (int i = 1; i <= gamma; ++i){
        
             //VAMOS A PREPARAR Y
             Matriz yt= y.Traspuesta();
@@ -1038,40 +1038,47 @@ Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ
             //VAMOS A CALCULAR xT*Y LUEGO yT*x POR ULTIMO xT*y*yTx
            
             Matriz xty=xt.multiMatricial(y);
-            cout<< "PRIMER MULTIPLICACION"<<endl;
+            //cout<< "PRIMER MULTIPLICACION"<<endl;
 
             Matriz ytx=yt.multiMatricial(x);
             ytx.DameAncho();
-            cout<< "SEGUNDA MULTIPLICACION"<<endl;
-            //cout<< "#filas mi " << mi.DameAlto() << "#columnas y " << mi.DameAncho()<<endl;
-            //cout<< "#filas xnicogato " << ytx.DameAlto() << "#columnas x " << ytx.DameAncho()<<endl;
+            //cout<< "SEGUNDA MULTIPLICACION"<<endl;
+            ////cout<< "#filas mi " << mi.DameAlto() << "#columnas y " << mi.DameAncho()<<endl;
+            ////cout<< "#filas xnicogato " << ytx.DameAlto() << "#columnas x " << ytx.DameAncho()<<endl;
 
             Matriz mi = xty.multiMatricial(ytx);
-            cout<< "TERCER MULTIPLICACION"<<endl;
-            mi.Obtener(1,1);
-            cout<< "ancho mi " << mi.DameAncho();
-            cout<< "NO VIOLES"<<endl;
-            
-            mi.DameAncho();
-            cout << "NO VIOLA";
+            //cout<< "TERCER MULTIPLICACION"<<endl;
+            xty.DameAlto();
+            //cout<< "ALTO FUNCINONA?"<<endl;
+            xty.DameAncho();
+            //cout << "NO VIOLA"<<endl;
             int fila = mi.DameAncho();
-            cout<< "fila es " << fila;
+            //cout<< "fila es " << fila<<endl;
 
             Matriz autovector(fila, 1);
 
             autovector.randomizar(fila,1);
             Matriz copiaMI = mi;
             double autovalor = copiaMI.dameAutovalor(autovector, 30); //esto me deja en randi el autovector y devuelve el autovalor RAVIOLI RAVIOLI DAME LA FORMUOLI
-                        cout<< "SANTI GATO 1";
+            //cout<< "SANTI GATO 1"<<endl;
 
             //En autovector tengo el autovector del autovalor mas grande de mi es deci mi wi
  
             //normalizo mi wi y lo multiplico por x
             normaWi=autovector.norma2Vectorial();
+            //cout<< "SANTI GATO 2"<<endl;
             unoSobreNorma=1/normaWi;
+            cout<< "SANTI GATO 3"<<endl;
             autovector.multiEscalar(unoSobreNorma);
-            autovector.insertarEnFila2(result,i);                      
+            
+            autovector = autovector.Traspuesta();
+            cout<< "cols autovector: "<< autovector.DameAncho() << "filas auto: " << autovector.DameAlto()<<endl;
+            cout<< "cols result: "<< result.DameAncho() << "filas result: " << result.DameAlto()<<endl;
+            autovector.insertarEnFila2(result,i);   
+            cout<< "SANTI GATO 5"<<endl;     
+            autovector = autovector.Traspuesta();             
             Matriz ti = x.multiMatricial(autovector);
+            cout<<  "santi gato 6 "<<endl;
             //Actualizo mi x
             normaWi=ti.norma2Vectorial();
             unoSobreNorma=1/normaWi;
