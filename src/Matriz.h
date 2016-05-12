@@ -72,6 +72,8 @@ using namespace std;
         vector<double> ObtenerFila(int f);
         void insertarEnFila2(Matriz& a, int f);
         void insertarEnFila1(Matriz& a, int f,int source);
+        void cambiarBaseX2(int alfa, Matriz cambioBase);
+        Matriz pcaRapido(Matriz etiquetasTrain, Matriz imagenes, int alfa, int k);
 
 
 		Matriz multiXtrans() const;
@@ -864,13 +866,65 @@ int knn(Matriz& e, Matriz& etiquetasT, Matriz& t, int k){ //devuelve la etiqueta
 
 
 int Matriz::pca(Matriz imagen,Matriz etiquetasT, int k, int alfa){
-	cout<<"PCA CAMBIAR BASE los datos"<<endl;
-	this->cambiarBaseX(alfa);
-	cout<<"PCA CAMBIAR DE BASE la IMAGEN"<<endl;
-	imagen.cambiarBaseX(alfa);
+    cout<<"PCA CAMBIAR BASE los datos"<<endl;
+    this->cambiarBaseX(alfa);
+    cout<<"PCA CAMBIAR DE BASE la IMAGEN"<<endl;
+    imagen.cambiarBaseX(alfa);
     cout<<"se larga knn"<<endl; 
-	return knn(imagen,etiquetasT,*this,k);
+    return knn(imagen,etiquetasT,*this,k);
 }
+
+
+
+int knniesimo(Matriz& imagenes, Matriz& etiquetasT, Matriz& t, int k, int l){ //devuelve la etiqueta de la imagen e, comparando con las imagenes de t
+    int n = t.DameAlto(); //n es la cantidad de imagenes qe tengo en mi campo train
+    vector<tuplaDistanciaEtiq> distancias;
+    double aux;
+    //cout<<"ciclo distancias"<<endl;
+    for (int i = 1; i <= n; ++i)
+    {
+        for (int k = 1; k <= imagenes.DameAncho(); ++k)
+        {
+            aux = imagenes.Obtener(l, k) - t.Obtener(i, k);
+            aux = aux*aux;
+        }
+        distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
+
+        //Matriz e(1, imagenes.DameAncho());
+        //aux = normaResta(e, t, i); //la distancia entre la imagen e y la i-esima imagen de t
+        //distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
+    }
+    //cout<<"sorting time "<<endl;
+    selectionSortVoid(distancias); //los ordeno de acuerdo a las distancias de menor a mayor
+    
+    return moda(distancias, k); //la etiqueta del minimos
+}
+
+Matriz Matriz::pcaRapido(Matriz etiquetasTrain, Matriz imagenes, int alfa, int k){ //esta matriz tiene que calcular solo 1 vez la matriz de cambio de base y clasificar muchas imagenes
+//en this voy a pasarle las imagenes etiquetadas, en imagenes las imagenes que quiero etiquetar
+//etiquetasTrain = etiquetas del campo train
+//alfa = cantidad de dimensiones con las que me quedo
+//k = k-vecinos
+    Matriz resultado(imagenes.DameAlto(), 1);
+    int n=this->DameAlto();
+    this->centrarConMedia(); //x[i] = (x[i]- media)*(raiz n-1)
+    Matriz xt = this->Traspuesta();
+    Matriz covarianza = xt.multiXtrans();
+    Matriz autovalores(alfa,1);
+    Matriz cambioBase = covarianza.baseAutovectores(30, autovalores, alfa); //30 parece un buen numero de iteraciones
+    //cambioBase es de m x alfa
+    this->cambiarBaseX2(alfa, cambioBase);
+    //this es de tamaño n x alfa
+    imagenes.cambiarBaseX2(alfa, cambioBase);
+    //imagenes es del mismo alto que antes pero de ancho tambien alfa
+    //ya pasé todas a la nueva dimensión
+    for (int i = 1; i <= imagenes.DameAlto(); ++i)
+    {
+        int etiquetaI =  knniesimo(imagenes, etiquetasTrain, *this, k, i);
+        resultado.Definir(i, 1, etiquetaI);
+    }
+    return resultado;
+ }
 
 double promedio(vector<double> v){ //media de la fila k de la matriz
     double media = 0;
@@ -884,6 +938,36 @@ double promedio(vector<double> v){ //media de la fila k de la matriz
     return media;
 }
 
+
+
+
+void Matriz::cambiarBaseX2(int alfa, Matriz cambioBase){ //en this le paso los x(i) que son las imagenes
+    int n=this->DameAlto();
+    for (int i = 1; i <= n; ++i)
+    {  
+         this->cambiarIesima(cambioBase,i).insertarEnFila2(*this, i);
+        //&this->_matriz[i-1] =  this->cambiarIesima(cambioBase,i)._matriz[0]; //deberia cambiar en o de 1
+    }
+        this->_ancho = alfa;
+        //alto no cambia
+}
+
+
+
+
+
+/*double promedio(vector<double> v){ //media de la fila k de la matriz
+    double media = 0;
+    int n= v.size();
+
+    for (int i = 0; i < n; ++i)
+    {
+        media = media + v[i];
+    }
+    media = media/n;
+    return media;
+}
+*/
 
 Matriz lecturaPLSDA(){
     ifstream is;
