@@ -54,9 +54,12 @@ Matriz lecturaTrain(istream& is, Matriz& etiquetas){
 	double pixel;
 	int etiqueta;
 	string delim;
-	Matriz result = Matriz(37000, 784);
 
-	for (int j = 1; j <= 37000; ++j)	
+
+	Matriz result = Matriz(42000, 784);
+
+	for (int j = 1; j <= 42000; ++j)	
+
 	{
 		getline (is, etiq, '_');
 		etiqueta= atof(etiq.c_str());

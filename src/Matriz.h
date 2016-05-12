@@ -1027,15 +1027,37 @@ Matriz etiquetas= lecturaPLSDA();
 int m= 10;
 Matriz res(n,10);
 
+
 for(int i=1; i<=n; i++){
     for(int j=1; j<=m; j++){
         if(j== etiquetas.Obtener(i,1)){
-            res.Definir(i,j,(1+0.8)/sqrt(n));
+            res.Definir(i,j,1);
         }else{
-            res.Definir(i,j,(-1+0.8)/sqrt(n));
+            res.Definir(i,j,(-1));
         }
     }
 }
+
+//cout<< res<<endl;
+
+vector<double> v = res.dameVectorMedias(); //RAVIOL
+
+
+for(int i=0;i<10;i++){
+cout<< "vector" << v[i]<<endl;
+}
+double temp;
+for(int i=1; i<=n; i++){
+    for(int j=1; j<=m; j++){
+        temp= v[j-1];
+        if(j== etiquetas.Obtener(i,1)){
+            res.Definir(i,j,(1-temp)/sqrt(n-1));
+        }else{
+            res.Definir(i,j,((-1)-temp)/sqrt(n-1));
+        }
+    }
+}
+
 
 return res;
 
@@ -1046,100 +1068,112 @@ Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ
     //REVISAR  CACA RAVIOL RAVIOL
   
 
-    Matriz result= Matriz(gamma,x.DameAncho());
+    //Matriz result= Matriz(gamma,x.DameAncho());
+    Matriz result = Matriz(x.DameAncho(), gamma);
     double normaWi;
     double unoSobreNorma;
     int n=x.DameAlto();
-    x.centrarConMedia();
-    //Matriz xt =x.copiarMatriz();
+    //x.centrarConMedia();
     Matriz xt=x.Traspuesta();
 
-    //   cout<< "#filas y " << y.DameAlto() << "#columnas y " << y.DameAncho()<<endl;
-    // cout<< "#filas x " << xt.DameAlto() << "#columnas x " << xt.DameAncho()<<endl;
+    
     cout <<"gamma: "<<gamma<<endl;
     
  
-    for (int i = 1; i <= gamma; ++i){
+    for (int i = 1; i <= 1; ++i){
             cout<< "iteracion numero: " << i<<endl;
-            //VAMOS A PREPARAR Y
             Matriz yt= y.Traspuesta();
            
-            //VAMOS A CALCULAR xT*Y LUEGO yT*x POR ULTIMO xT*y*yTx
            
             Matriz xty=xt.multiMatricial(y);
-            //cout<< "PRIMER MULTIPLICACION"<<endl;
 
             Matriz ytx=yt.multiMatricial(x);
-            ytx.DameAncho();
-            //cout<< "SEGUNDA MULTIPLICACION"<<endl;
-            ////cout<< "#filas mi " << mi.DameAlto() << "#columnas y " << mi.DameAncho()<<endl;
-            ////cout<< "#filas xnicogato " << ytx.DameAlto() << "#columnas x " << ytx.DameAncho()<<endl;
-
+        
             Matriz mi = xty.multiMatricial(ytx);
-            //cout<< "TERCER MULTIPLICACION"<<endl;
-            xty.DameAlto();
-            //cout<< "ALTO FUNCINONA?"<<endl;
-            xty.DameAncho();
-            //cout << "NO VIOLA"<<endl;
-            int fila = mi.DameAncho();
-            //cout<< "fila es " << fila<<endl;
+            
+            int fila = mi.DameAlto();
+
+            //cout<< "MI" << mi<< endl;
 
             Matriz autovector(fila, 1);
 
             autovector.randomizar(fila,1);
             Matriz copiaMI = mi;
             double autovalor = copiaMI.dameAutovalor(autovector, 30); //esto me deja en randi el autovector y devuelve el autovalor RAVIOLI RAVIOLI DAME LA FORMUOLI
-            //cout<< "SANTI GATO 1"<<endl;
-
+            //cout << "autovalor  " << autovalor <<endl;
+            //cout<<autovector;
             //En autovector tengo el autovector del autovalor mas grande de mi es deci mi wi
  
             //normalizo mi wi y lo multiplico por x
+
             normaWi=autovector.norma2Vectorial();
-            unoSobreNorma=1/normaWi;
-            autovector.multiEscalar(unoSobreNorma);
-            cout<< "cols autovector: "<< autovector.DameAncho() << "filas auto: " << autovector.DameAlto()<<endl;
-            //lo tengoq que poner como filas a mi autovector -> trasnpongo lo guardo y vuelvo a transponer
-            autovector = autovector.Traspuesta();
-            autovector.insertarEnFila2(result,i);
-            autovector = autovector.Traspuesta();   
-            cout<< "SANTI GATO 5"<<endl;
+            //cout<<"normaWI: "<<normaWi<<endl;
+            normaWi = pow(normaWi, -1);
+            //cout<<"normawi invertida "<<normaWi<<endl;
+            autovector.multiEscalar(normaWi);
+            //cout<<autovector;
+            result.insertarEnColumna(autovector,i); //en la i-esima columna tengo el wi (wi esta normalizado)
+
 
             //Definino mi wi como x*wi en este caso x*autovector            
             Matriz ti = x.multiMatricial(autovector);
             //Actualizo mi x
             normaWi=ti.norma2Vectorial();
-            ti.multiEscalar(unoSobreNorma);
-            //hasta aca no crashea
+            normaWi= pow(normaWi, -1);
+             //cout<< "normaWi"<< normaWi<<endl;
+            ti.multiEscalar(normaWi);
             Matriz tiT=ti.Traspuesta();
-            //me queda una matriz de 42000x1 * 1x420000
-            cout<< "#filas ti " << ti.DameAlto() << "#columnas ti " << ti.DameAncho()<<endl;
-            cout<< "#tiT xnicogato " << tiT.DameAlto() << "#columnas tiT " << tiT.DameAncho()<<endl;
 
-            double titiT = productoEscalar(ti,tiT);//ME PARECE QUE ESTA VERGA NO VA A FUNCIONAR
-            //En ti Tengo mi titiT PEROOO ES UN ESCALAR DE 1X1 Y NO VA A FUNCIONAR MULTIMATRICIAL CON X ENTONCES TENGO QUE PASAR ESE VALOR A UN AUXILIAR Y MULTIESCALAR CON X
+
+           
+
+            Matriz tiTX = tiT.multiMatricial(x);
+            Matriz titiTx= ti.multiMatricial(tiTX);
+
+            x.restaMatricial(titiTx);
+
+
+            Matriz tiTY = tiT.multiMatricial(y);
+            Matriz titiTY= ti.multiMatricial(tiTY);
+
+
+            y.restaMatricial(titiTY); 
             
-            Matriz pepe= x;
-            pepe.multiEscalar(titiT);
-            x.restaMatricial(pepe);
-            
-            Matriz carlos= y;
-            carlos.multiEscalar(titiT);
-            //Actualizo mi y
-            y.restaMatricial(carlos);
             
         }      
+        cout<<result;
     return result;    
  
  }
 
+/* int Matriz::pca(Matriz imagen,Matriz etiquetasT, int k, int alfa){
+    cout<<"PCA CAMBIAR BASE los datos"<<endl;
+    this->cambiarBaseX(alfa);
+    cout<<"PCA CAMBIAR DE BASE la IMAGEN"<<endl;
+    imagen.cambiarBaseX(alfa);
+    cout<<"se larga knn"<<endl; 
+    return knn(imagen,etiquetasT,*this,k);
+}
+*/
+
+
 
 int plsDApiola( Matriz& x, Matriz& etiquetasT, int gamma, int k,  Matriz& imagen, int n){
     Matriz y= crearY(n);
-    Matriz autovectores= plsDa(x,y,gamma);
+    //cout<<y;
+    Matriz cambioDeBase= plsDa(x,y,gamma);
+
+    
+    //cout<<cambioDeBase;
+
     //COMENTE ESTO PORQUE NOSE QUE CARAJO HACER CON ESTA MATRIZ PONELE QUE LE TIRAS GAMA == 20 -> LA MATRIZ QUE TE QUEDA ES 20X784 y ahora? si le mando plsDa a la imagen nose se rompe todo
-    cout <<"autovectores fila: " << autovectores.DameAlto() << "autovectores columna: " << autovectores.DameAncho()<<endl; 
-   // Matriz imagenFinal= plsDa(imagen,y,gamma);
-    return 0;//knn(imagenFinal, etiquetasT, x, k );
+    //cout <<"autovectores fila: " << autovectores.DameAlto() << "autovectores columna: " << autovectores.DameAncho()<<endl; 
+    //cout<<"filas cambioBase"<< cambioDeBase.DameAlto() << "COLS CAMbioBase: "<< cambioDeBase.DameAncho()<<endl;
+    x.cambiarBaseNuevo(cambioDeBase);
+    cout<<"llego"<<endl;
+    imagen.multiMatricial(cambioDeBase);
+    cout<< "KAAAAAAAA ENEEEEEEEEE ENEEEEEEEEEEEE"<<endl;
+    return knn(imagen, etiquetasT, x, k );
 }
 
 
