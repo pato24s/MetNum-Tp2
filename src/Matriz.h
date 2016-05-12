@@ -1026,15 +1026,30 @@ Matriz etiquetas= lecturaPLSDA();
 int m= 10;
 Matriz res(n,10);
 
+
 for(int i=1; i<=n; i++){
     for(int j=1; j<=m; j++){
         if(j== etiquetas.Obtener(i,1)){
-            res.Definir(i,j,(1+0.8)/sqrt(n));
+            res.Definir(i,j,1);
         }else{
-            res.Definir(i,j,(-1+0.8)/sqrt(n));
+            res.Definir(i,j,(-1));
         }
     }
 }
+
+vector<double> v = res.dameVectorMedias(); //RAVIOL
+double temp;
+for(int i=1; i<=n; i++){
+    for(int j=1; j<=m; j++){
+        temp= v[j-1];
+        if(j== etiquetas.Obtener(i,1)){
+            res.Definir(i,j,(1-temp)/sqrt(n-1));
+        }else{
+            res.Definir(i,j,(-1-temp)/sqrt(n-1));
+        }
+    }
+}
+
 
 return res;
 
@@ -1045,7 +1060,8 @@ Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ
     //REVISAR  CACA RAVIOL RAVIOL
   
 
-    Matriz result= Matriz(gamma,x.DameAncho());
+    //Matriz result= Matriz(gamma,x.DameAncho());
+    Matriz result = Matriz(x.DameAncho(), gamma);
     double normaWi;
     double unoSobreNorma;
     int n=x.DameAlto();
@@ -1094,51 +1110,84 @@ Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ
  
             //normalizo mi wi y lo multiplico por x
             normaWi=autovector.norma2Vectorial();
-            unoSobreNorma=1/normaWi;
+            normaWi = pow(normaWi, -1);
             autovector.multiEscalar(unoSobreNorma);
-            cout<< "cols autovector: "<< autovector.DameAncho() << "filas auto: " << autovector.DameAlto()<<endl;
+            result.insertarEnColumna(autovector,i); //en la i-esima columna tengo el wi (wi esta normalizado)
+
+            //cout<<"autovector i"<<autovector<<endl;
+            //cout<< "cols autovector: "<< autovector.DameAncho() << "filas auto: " << autovector.DameAlto()<<endl;
             //lo tengoq que poner como filas a mi autovector -> trasnpongo lo guardo y vuelvo a transponer
-            autovector = autovector.Traspuesta();
-            autovector.insertarEnFila2(result,i);
-            autovector = autovector.Traspuesta();   
-            cout<< "SANTI GATO 5"<<endl;
+            //autovector = autovector.Traspuesta();
+            //autovector = autovector.Traspuesta();   
+            //cout<< "SANTI GATO 5"<<endl;
 
             //Definino mi wi como x*wi en este caso x*autovector            
             Matriz ti = x.multiMatricial(autovector);
             //Actualizo mi x
             normaWi=ti.norma2Vectorial();
-            ti.multiEscalar(unoSobreNorma);
+            normaWi= pow(normaWi, -1);
+            ti.multiEscalar(normaWi);
             //hasta aca no crashea
             Matriz tiT=ti.Traspuesta();
-            //me queda una matriz de 42000x1 * 1x420000
-            cout<< "#filas ti " << ti.DameAlto() << "#columnas ti " << ti.DameAncho()<<endl;
-            cout<< "#tiT xnicogato " << tiT.DameAlto() << "#columnas tiT " << tiT.DameAncho()<<endl;
 
-            double titiT = productoEscalar(ti,tiT);//ME PARECE QUE ESTA VERGA NO VA A FUNCIONAR
+
+            //me queda una matriz de 42000x1 * 1x420000
+            // cout<< "#filas ti " << ti.DameAlto() << "#columnas ti " << ti.DameAncho()<<endl;
+            // cout<< "#tiT filas:  " << tiT.DameAlto() << "#columnas tiT " << tiT.DameAncho()<<endl;
+
+            Matriz tiTX = tiT.multiMatricial(x);//ME PARECE QUE ESTA VERGA NO VA A FUNCIONAR
             //En ti Tengo mi titiT PEROOO ES UN ESCALAR DE 1X1 Y NO VA A FUNCIONAR MULTIMATRICIAL CON X ENTONCES TENGO QUE PASAR ESE VALOR A UN AUXILIAR Y MULTIESCALAR CON X
-            
-            Matriz pepe= x;
-            pepe.multiEscalar(titiT);
-            x.restaMatricial(pepe);
+            Matriz titiTx= ti.multiMatricial(tiTX);
+
+            x.restaMatricial(titiTx);
+
+            Matriz tiTY = tiT.multiMatricial(y);//ME PARECE QUE ESTA VERGA NO VA A FUNCIONAR
+            Matriz titiTY= ti.multiMatricial(tiTY);
+
+            y.restaMatricial(titiTY);
+
+
+
+            /*Matriz pepe= x;
+            Matriz juan= pepe.multiMatricial(titiT);
+            x.restaMatricial(juan);
             
             Matriz carlos= y;
-            carlos.multiEscalar(titiT);
+            Matriz pato= carlos.multiMatricial(titiT);
             //Actualizo mi y
-            y.restaMatricial(carlos);
+            y.restaMatricial(pato);*/
             
         }      
     return result;    
  
  }
 
+/* int Matriz::pca(Matriz imagen,Matriz etiquetasT, int k, int alfa){
+    cout<<"PCA CAMBIAR BASE los datos"<<endl;
+    this->cambiarBaseX(alfa);
+    cout<<"PCA CAMBIAR DE BASE la IMAGEN"<<endl;
+    imagen.cambiarBaseX(alfa);
+    cout<<"se larga knn"<<endl; 
+    return knn(imagen,etiquetasT,*this,k);
+}
+*/
+
+
 
 int plsDApiola( Matriz& x, Matriz& etiquetasT, int gamma, int k,  Matriz& imagen, int n){
     Matriz y= crearY(n);
-    Matriz autovectores= plsDa(x,y,gamma);
+    Matriz cambioDeBase= plsDa(x,y,gamma).Traspuesta();
+
+    cout<<cambioDeBase;
+
     //COMENTE ESTO PORQUE NOSE QUE CARAJO HACER CON ESTA MATRIZ PONELE QUE LE TIRAS GAMA == 20 -> LA MATRIZ QUE TE QUEDA ES 20X784 y ahora? si le mando plsDa a la imagen nose se rompe todo
-    cout <<"autovectores fila: " << autovectores.DameAlto() << "autovectores columna: " << autovectores.DameAncho()<<endl; 
-   // Matriz imagenFinal= plsDa(imagen,y,gamma);
-    return 0;//knn(imagenFinal, etiquetasT, x, k );
+    //cout <<"autovectores fila: " << autovectores.DameAlto() << "autovectores columna: " << autovectores.DameAncho()<<endl; 
+    //cout<<"filas cambioBase"<< cambioDeBase.DameAlto() << "COLS CAMbioBase: "<< cambioDeBase.DameAncho()<<endl;
+    x.cambiarBaseNuevo(cambioDeBase);
+    cout<<"llego"<<endl;
+    imagen.multiMatricial(cambioDeBase);
+    cout<< "KAAAAAAAA ENEEEEEEEEE ENEEEEEEEEEEEE"<<endl;
+    return knn(imagen, etiquetasT, x, k );
 }
 
 
@@ -1147,7 +1196,7 @@ int plsDApiola( Matriz& x, Matriz& etiquetasT, int gamma, int k,  Matriz& imagen
 vector<double> Matriz::dameVectorMedias(){
     int topeColumnas=DameAncho();
     int topeFilas=DameAlto();
-    vector<double> result(topeColumnas-1);
+    vector<double> result(topeColumnas);
     int iterCols=1;
     int iterFilas;
     while(iterCols<=topeColumnas){
@@ -1158,7 +1207,7 @@ vector<double> Matriz::dameVectorMedias(){
             iterFilas++;
         }
         media=media/topeColumnas;
-        result.push_back(media);
+        result[iterCols-1]=media;
         iterCols++;
     }
     return result;

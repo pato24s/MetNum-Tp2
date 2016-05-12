@@ -19,8 +19,8 @@ int main(int argc, char const *argv[])
 
 
 
-	Matriz imagenesCopia(2000,784);
-	for (int i = 1; i <=2000 ; ++i)
+	Matriz imagenesCopia(42000,784);
+	for (int i = 1; i <=42000 ; ++i)
 	{
 		for (int j = 1; j<=784 ; ++j)
 		{
@@ -32,15 +32,19 @@ int main(int argc, char const *argv[])
 	for (int i = 1; i <= imagenesTrainM.DameAncho(); i++)
 	{
 		Matriz etiquetasT;
-		imagenTrainI.Definir(1,i,imagenesTrainM.Obtener(1,i));
+		imagenTrainI.Definir(1,i,imagenesTrainM.Obtener(2000,i));
 	}
 
-
-
-	cout<<"pls da: "<<plsDApiola(imagenesTrainM,etiquetasTrain,20,20, imagenTrainI,imagenesTrainM.DameAlto())<<endl;
-	Matriz etiquetas = Matriz(42000,1);
-
 	 mostrarImagen(imagenTrainI);
+
+
+
+	vector<double> medias= imagenesTrainM.dameVectorMedias();
+	int n= imagenesTrainM.DameAlto();
+	imagenesTrainM.centrarConMediaNuevo(medias,n);
+	imagenTrainI.centrarConMediaNuevo(medias,n);
+	cout<<"pls da: "<<plsDApiola(imagenesTrainM,etiquetasTrain,5,5, imagenTrainI,imagenesTrainM.DameAlto())<<endl;
+	Matriz etiquetas = Matriz(42000,1);
 
 
 
