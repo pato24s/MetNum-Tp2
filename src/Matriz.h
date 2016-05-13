@@ -796,9 +796,9 @@ struct tuplaDistanciaEtiq
     
 };
 
-void selectionSortVoid(std::vector<tuplaDistanciaEtiq>& v) {
+void selectionSortVoid(std::vector<tuplaDistanciaEtiq>& v, int k ) {
     int actual=0;
-    while(actual<v.size()){
+    while(actual<k){
         int minimo=actual;
         int j=actual+1;
             while(j<v.size()){
@@ -830,7 +830,7 @@ int lugarMaximo(std::vector<int> v){
 }
 
 
-
+//return knn(imagenCambiada,todasCambiadas,i);
 double normaResta(Matriz& a, Matriz& b, int f){
     //assert(a.size() == b.size());
     double aux;
@@ -864,7 +864,7 @@ int moda(std::vector <tuplaDistanciaEtiq> v, int k ){ //k me dice cuantos ver pa
 
 
 
-
+//    return knn(imagenCambiada,etiquetasT,todascambiadas,k);
 int knn(Matriz& e, Matriz& etiquetasT, Matriz& t, int k){ //devuelve la etiqueta de la imagen e, comparando con las imagenes de t
     //e imagen para etiquetar
     // etiquetasT tiene las etiquetas de las imagenes de t como un vector columna
@@ -875,14 +875,21 @@ int knn(Matriz& e, Matriz& etiquetasT, Matriz& t, int k){ //devuelve la etiqueta
     for (int i = 1; i <= n; ++i)
     {
         //cout<<"norma resta "<<i<<endl;
+        //return knn(imagenCambiada,etiquetasT,i);
+
          aux = normaResta(e, t, i); //la distancia entre la imagen e y la i-esima imagen de t
          distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
     }
-    //cout<<"sorting time "<<endl;
-    selectionSortVoid(distancias); //los ordeno de acuerdo a las distancias de menor a mayor
+    selectionSortVoid(distancias,k); //los ordeno de acuerdo a las distancias de menor a mayor
+    //cout<<"post sorting "<<endl;
     if(distancias[0].distancia==0){
     	return distancias[0].etiqueta;
     }else{
+    for (int i = 0; i < k; ++i)
+    {
+        //cout<<"("<<distancias[i].etiqueta<<" "<<distancias[i].distancia<<") ";
+    }
+    //cout<<" "<<endl;
     	return moda(distancias, k); //la etiqueta del minimos
     }	
 }
@@ -918,10 +925,13 @@ int knniesimo(Matriz& imagenes, Matriz& etiquetasT, Matriz& t, int k, int l){ //
         //distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
     }
     //cout<<"sorting time "<<endl;
-    selectionSortVoid(distancias); //los ordeno de acuerdo a las distancias de menor a mayor
+    selectionSortVoid(distancias,k); //los ordeno de acuerdo a las distancias de menor a mayor
     
     return moda(distancias, k); //la etiqueta del minimos
 }
+//5 5 5 7 6 7 5 1 7 5 1 2 5 6 2 5 2 6 4 5
+//5 5 5 7 6 7 5 1 7 5 1 2 5 6 2 5 2 6 4 5  
+
 
 Matriz Matriz::pcaRapido(Matriz etiquetasTrain, Matriz imagenes, int alfa, int k){ //esta matriz tiene que calcular solo 1 vez la matriz de cambio de base y clasificar muchas imagenes
 //en this voy a pasarle las imagenes etiquetadas, en imagenes las imagenes que quiero etiquetar
@@ -1085,21 +1095,24 @@ Matriz Matriz::plsDa(Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN
     //centrarConMedia();
     
     
-    cout <<"gamma: "<<gamma<<endl;
+    //cout <<"gamma: "<<gamma<<endl;
     
  
     for (int i = 1; i <= gamma; ++i){
-            cout<< "iteracion numero: " << i<<endl;
+           // cout<< "iteracion numero: " << i<<endl;
             Matriz xt=Traspuesta();
 
-            Matriz yt= y.Traspuesta();	
-           
+            //Matriz yt= y.Traspuesta();	
+               //Matriz xtx=xt.multiXtrans();
+
            
             Matriz xty=xt.multiMatricial(y);
 
-            Matriz ytx=yt.multiMatricial(*this);
+
+
+            //Matriz ytx=yt.multiMatricial(*this);
         	
-            Matriz mi = xty.multiMatricial(ytx);
+            Matriz mi = xty.multiXtrans();
             
             int fila = mi.DameAlto();
 
@@ -1116,7 +1129,7 @@ Matriz Matriz::plsDa(Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN
  
             //normalizo mi wi y lo multiplico por x
 
-          //  normaWi=autovector.norma2Vectorial();
+             //  normaWi=autovector.norma2Vectorial();
             //cout<<"normaWI: "<<normaWi<<endl;
             //normaWi = pow(normaWi, -1);
             //cout<<"normawi invertida "<<normaWi<<endl;
@@ -1130,7 +1143,7 @@ Matriz Matriz::plsDa(Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN
             //Actualizo mi x
             normaWi=ti.norma2Vectorial();
             normaWi= pow(normaWi, -1);
-            cout<< "normaWi"<< normaWi<<endl;
+            //cout<< "normaWi"<< normaWi<<endl;
             ti.multiEscalar(normaWi);
             Matriz tiT=ti.Traspuesta();
 
@@ -1235,7 +1248,7 @@ void Matriz::cambiarBaseNuevo(Matriz& mBase){
     cout<<"xtx"<<endl;
     Matriz xtx=xt.multiXtrans();*/
     int n=DameAlto();
-    cout<<"cambio filas"<<endl;
+    //cout<<"cambio filas"<<endl;
     for (int i = 1; i <= n; ++i)
     {  
         Matriz filaCambiada=cambiarIesima(mBase,i);
@@ -1256,21 +1269,21 @@ int Matriz::pcaNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int alfa){
 
 
 
-    cout<<"primera fila post"<<endl;
+   // cout<<"primera fila post"<<endl;
 
 
     //obtengo base
-    cout<<"voy a transponer"<<endl;
+  //  cout<<"voy a transponer"<<endl;
     Matriz thisT=Traspuesta();
-    cout<<"voy a hacer xt x"<<endl;
+  //  cout<<"voy a hacer xt x"<<endl;
     Matriz xtx=thisT.multiXtrans();
     Matriz autovalores(alfa,1);
-    cout<<"armo baseAutovectores"<<endl;
+   // cout<<"armo baseAutovectores"<<endl;
     Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
-    cout<<"se vienen las mierdas"<<endl;
+   // cout<<"se vienen las mierdas"<<endl;
     this->cambiarBaseNuevo(mb1);
 
-    cout<<"a cambiar imagen"<<endl;
+   // cout<<"a cambiar imagen"<<endl;
     
     imagen.centrarConMediaNuevo(medias,n);
   
@@ -1278,7 +1291,7 @@ int Matriz::pcaNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int alfa){
 
     Matriz imagenCambiada=imagen.multiMatricial(mb1);
 
-    cout<<"arranca knn"<<endl;
+    //cout<<"arranca knn"<<endl;
     return knn(imagenCambiada,etiquetasT,*this,k);
 
 //  return 1;
@@ -1294,15 +1307,16 @@ int Matriz::plsNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int gamma){
     Matriz cambiada=otroX.multiMatricial(mb1);
     imagen.centrarConMediaNuevo(medias,n);
 	Matriz imagenCambiada=imagen.multiMatricial(mb1);
+
     return knn(imagenCambiada,etiquetasT,cambiada,k);
 
 }
 
 void Matriz::mezclarMatriz(){
+    
     random_shuffle ( _matriz.begin(), _matriz.end() );
+
 }
-
-
 
 // Matriz Matriz::train(int alfa){
 //     vector<double> medias=dameVectorMedias();
