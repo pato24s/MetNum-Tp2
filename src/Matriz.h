@@ -10,7 +10,8 @@
 //#include "metodos.cpp"
 using namespace std;
 
-
+    // class Matriz;
+    // Matriz plsDa(Matriz& x, Matriz& y, int gamma);
 
     class Matriz{
 
@@ -61,7 +62,7 @@ using namespace std;
         void restarFila(double media, int k);
 
 
-        Matriz plsDa(Matriz, Matriz, int );
+        Matriz plsDa(Matriz&, int );
 
         void cambiarBaseX(int alfa);
         Matriz cambiarIesima(const Matriz& mb,int j);
@@ -92,6 +93,11 @@ using namespace std;
         int pcaRapido(Matriz&,Matriz&,Matriz& , int , int);
 
         void mezclarMatriz();
+
+
+
+
+        int plsNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int gamma);
 
         
     private:
@@ -874,8 +880,11 @@ int knn(Matriz& e, Matriz& etiquetasT, Matriz& t, int k){ //devuelve la etiqueta
     }
     //cout<<"sorting time "<<endl;
     selectionSortVoid(distancias); //los ordeno de acuerdo a las distancias de menor a mayor
-    
-    return moda(distancias, k); //la etiqueta del minimos
+    if(distancias[0].distancia==0){
+    	return distancias[0].etiqueta;
+    }else{
+    	return moda(distancias, k); //la etiqueta del minimos
+    }	
 }
 
 
@@ -1044,7 +1053,7 @@ vector<double> v = res.dameVectorMedias(); //RAVIOL
 
 
 for(int i=0;i<10;i++){
-cout<< "vector" << v[i]<<endl;
+//cout<< "vector" << v[i]<<endl;
 }
 double temp;
 for(int i=1; i<=n; i++){
@@ -1064,31 +1073,32 @@ return res;
 }
 
 
-Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN DE GAMMA FILAS X WI COLUMNAS
+Matriz Matriz::plsDa(Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN DE GAMMA FILAS X WI COLUMNAS
     //REVISAR  CACA RAVIOL RAVIOL
   
 
     //Matriz result= Matriz(gamma,x.DameAncho());
-    Matriz result = Matriz(x.DameAncho(), gamma);
+    Matriz result = Matriz(DameAncho(), gamma);
     double normaWi;
     double unoSobreNorma;
-    int n=x.DameAlto();
-    //x.centrarConMedia();
-    Matriz xt=x.Traspuesta();
-
+    int n=DameAlto();
+    //centrarConMedia();
+    
     
     cout <<"gamma: "<<gamma<<endl;
     
  
-    for (int i = 1; i <= 1; ++i){
+    for (int i = 1; i <= gamma; ++i){
             cout<< "iteracion numero: " << i<<endl;
-            Matriz yt= y.Traspuesta();
+            Matriz xt=Traspuesta();
+
+            Matriz yt= y.Traspuesta();	
            
            
             Matriz xty=xt.multiMatricial(y);
 
-            Matriz ytx=yt.multiMatricial(x);
-        
+            Matriz ytx=yt.multiMatricial(*this);
+        	
             Matriz mi = xty.multiMatricial(ytx);
             
             int fila = mi.DameAlto();
@@ -1099,38 +1109,38 @@ Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ
 
             autovector.randomizar(fila,1);
             Matriz copiaMI = mi;
-            double autovalor = copiaMI.dameAutovalor(autovector, 30); //esto me deja en randi el autovector y devuelve el autovalor RAVIOLI RAVIOLI DAME LA FORMUOLI
+            double autovalor = mi.dameAutovalor(autovector, 30); //esto me deja en randi el autovector y devuelve el autovalor RAVIOLI RAVIOLI DAME LA FORMUOLI
             //cout << "autovalor  " << autovalor <<endl;
             //cout<<autovector;
             //En autovector tengo el autovector del autovalor mas grande de mi es deci mi wi
  
             //normalizo mi wi y lo multiplico por x
 
-            normaWi=autovector.norma2Vectorial();
+          //  normaWi=autovector.norma2Vectorial();
             //cout<<"normaWI: "<<normaWi<<endl;
-            normaWi = pow(normaWi, -1);
+            //normaWi = pow(normaWi, -1);
             //cout<<"normawi invertida "<<normaWi<<endl;
-            autovector.multiEscalar(normaWi);
+            //autovector.multiEscalar(normaWi);
             //cout<<autovector;
             result.insertarEnColumna(autovector,i); //en la i-esima columna tengo el wi (wi esta normalizado)
 
 
             //Definino mi wi como x*wi en este caso x*autovector            
-            Matriz ti = x.multiMatricial(autovector);
+            Matriz ti = multiMatricial(autovector);
             //Actualizo mi x
             normaWi=ti.norma2Vectorial();
             normaWi= pow(normaWi, -1);
-             //cout<< "normaWi"<< normaWi<<endl;
+            cout<< "normaWi"<< normaWi<<endl;
             ti.multiEscalar(normaWi);
             Matriz tiT=ti.Traspuesta();
 
 
            
 
-            Matriz tiTX = tiT.multiMatricial(x);
+            Matriz tiTX = tiT.multiMatricial(*this);
             Matriz titiTx= ti.multiMatricial(tiTX);
 
-            x.restaMatricial(titiTx);
+            restaMatricial(titiTx);
 
 
             Matriz tiTY = tiT.multiMatricial(y);
@@ -1141,7 +1151,7 @@ Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ
             
             
         }      
-        cout<<result;
+        //cout<<result;
     return result;    
  
  }
@@ -1159,7 +1169,7 @@ Matriz plsDa(Matriz& x, Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ
 
 
 int plsDApiola( Matriz& x, Matriz& etiquetasT, int gamma, int k,  Matriz& imagen, int n){
-    Matriz y= crearY(n);
+   /* Matriz y= crearY(n);
     //cout<<y;
     Matriz cambioDeBase= plsDa(x,y,gamma);
 
@@ -1173,7 +1183,7 @@ int plsDApiola( Matriz& x, Matriz& etiquetasT, int gamma, int k,  Matriz& imagen
     cout<<"llego"<<endl;
     imagen.multiMatricial(cambioDeBase);
     cout<< "KAAAAAAAA ENEEEEEEEEE ENEEEEEEEEEEEE"<<endl;
-    return knn(imagen, etiquetasT, x, k );
+    return knn(imagen, etiquetasT, x, k );*/
 }
 
 
@@ -1274,29 +1284,43 @@ int Matriz::pcaNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int alfa){
 //  return 1;
 }
 
+int Matriz::plsNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int gamma){
+    vector<double> medias=dameVectorMedias();
+    int n=DameAlto();
+    centrarConMediaNuevo(medias,n);
+    Matriz otroX=*this;
+    Matriz y=crearY(n);
+    Matriz mb1=plsDa(y,gamma);	
+    Matriz cambiada=otroX.multiMatricial(mb1);
+    imagen.centrarConMediaNuevo(medias,n);
+	Matriz imagenCambiada=imagen.multiMatricial(mb1);
+    return knn(imagenCambiada,etiquetasT,cambiada,k);
+
+}
+
 void Matriz::mezclarMatriz(){
     random_shuffle ( _matriz.begin(), _matriz.end() );
 }
 
 
 
-Matriz Matriz::train(int alfa){
-    vector<double> medias=dameVectorMedias();
-    int n=DameAlto();
-    centrarConMediaNuevo(medias,n);
-    Matriz thisT=Traspuesta();
-    Matriz xtx=thisT.multiXtrans();
-    Matriz autovalores(alfa,1);
-    Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
-    return mb1;
-}
+// Matriz Matriz::train(int alfa){
+//     vector<double> medias=dameVectorMedias();
+//     int n=DameAlto();
+//     centrarConMediaNuevo(medias,n);
+//     Matriz thisT=Traspuesta();
+//     Matriz xtx=thisT.multiXtrans();
+//     Matriz autovalores(alfa,1);
+//     Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
+//     return mb1;
+// }
 
-(Matriz imagen,Matriz mb,etiquetasT,int k, int n, vector<double> medias){
-    imagen.centrarConMediaNuevo(medias,n);
-    Matriz imagenCambiada=imagen.multiMatricial(mb);
-    return knn(imagenCambiada,etiquetasT,)
+// (Matriz imagen,Matriz mb,etiquetasT,int k, int n, vector<double> medias){
+//     imagen.centrarConMediaNuevo(medias,n);
+//     Matriz imagenCambiada=imagen.multiMatricial(mb);
+//     return knn(imagenCambiada,etiquetasT,)
 
-}
+// }
 
 
 
