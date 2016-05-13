@@ -136,6 +136,116 @@ void mostrarImagen(const Matriz& i){
 
 }
 
+int promedioAltoArriba(Matriz& source){
+
+	int sumaPromedio=0;
+	int fila = source.DameAlto();
+
+	for (int i = 0; i < fila; ++i){ //calculo todas mis imagenes 
+		bool noEmpeze = true;
+		int columna = 0;
+		filaDondeEmpieza = 0;
+		while(noEmpeze && columna < 784){
+			noEmpeze = Obtener(i,columna)) == 0 && empeze;
+			if(columna % 28 == 0){
+				filaDondeEmpieza++;
+			}
+			columna++;
+		}
+		sumaPromedio = sumaPromedio + filaDondeEmpieza;
+	}
+	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
+	return sumaPromedio;
+}
+
+int promedioAltoAbajo(Matriz& source){
+
+	int sumaPromedio=0;
+	int fila = source.DameAlto();
+
+	for (int i = 0; i < fila; ++i){ //calculo todas mis imagenes 
+		bool noEmpeze = true;
+		int columna = 0;
+		filaDondeEmpieza = 0;
+		while(noEmpeze && columna > 0){
+			noEmpeze = Obtener(i,columna)) == 0 && empeze;
+			if(columna % 28 == 0){
+				filaDondeEmpieza++;
+			}
+			columna--;
+		}
+		sumaPromedio = sumaPromedio + filaDondeEmpieza;
+	}
+	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
+	return sumaPromedio;
+}
+
+int promedioAnchoIzquierda(Matriz& source){
+
+	int sumaPromedio=0;
+	int fila = source.DameAlto();
+
+	for (int i = 0; i < fila; ++i){ //calculo todas mis imagenes 
+		bool noEmpeze = true;
+		int fila = 0;
+		filaDondeEmpieza = 0;
+		while(noEmpeze){
+			noEmpeze = Obtener(i,fila)) == 0 && empeze;
+			if(fila % 784 == 0){
+				columnaDondeEmpieza++;
+			}
+			fila = fila+28;
+		}
+		sumaPromedio = sumaPromedio + columnaDondeEmpieza;
+	}
+	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
+	return sumaPromedio;
+}
+
+int promedioAnchoIzquierda(Matriz& source){
+
+	int sumaPromedio=0;
+	int fila = source.DameAlto();
+
+	for (int i = 0; i < fila; ++i){ //calculo todas mis imagenes 
+		bool noEmpeze = true;
+		int fila = 0;
+		filaDondeEmpieza = 0;
+		while(noEmpeze){
+			noEmpeze = Obtener(i,fila)) == 0 && empeze;
+			if(fila % 784 == 0){
+				columnaDondeEmpieza++;
+			}
+			fila = fila+28;
+		}
+		sumaPromedio = sumaPromedio + columnaDondeEmpieza;
+	}
+	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
+	return sumaPromedio;
+}
+
+int promedioAnchoDerecha(Matriz& source){// revisar esta verga que 
+
+	int sumaPromedio=0;
+	int fila = source.DameAlto();
+
+	for (int i = 0; i < fila; ++i){ //calculo todas mis imagenes 
+		bool noEmpeze = true;
+		int fila = 0;
+		filaDondeEmpieza = 784;
+		while(noEmpeze){
+			noEmpeze = Obtener(i,fila)) == 0 && empeze;
+			if(fila % 784 == 0){
+				columnaDondeEmpieza++;
+			}
+			fila = fila-28;
+		}
+		sumaPromedio = sumaPromedio + columnaDondeEmpieza;
+	}
+	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
+	return sumaPromedio;
+}
+
 /* Matriz convertirAMatrizTrain(Imagenes img, Matriz& etiquetas ){
  	// etiquetas = 784x1
  	assert(etiquetas.DameAlto() == 37000);
