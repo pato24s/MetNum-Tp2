@@ -56,9 +56,9 @@ Matriz lecturaTrain(istream& is, Matriz& etiquetas){
 	string delim;
 
 
-	Matriz result = Matriz(5000, 784);
+	Matriz result = Matriz(42000, 784);
 
-	for (int j = 1; j <= 5000; ++j)	
+	for (int j = 1; j <= 42000; ++j)	
 
 	{
 		getline (is, etiq, '_');
@@ -104,6 +104,20 @@ Matriz lecturaTest(istream& is, Matriz& etiquetas){
 	etiquetas.Definir(j, 1, 10);
 	}
 	return resultante;	
+}
+Matriz lecturaFold(istream& is, int k){
+	Matriz resultante(42000,k);
+	string aux;
+	for (int i = 1; i <=k; ++i)
+	{
+		for (int j = 1; j <= 42000; ++j)
+		{
+			getline(is, aux, ' ');
+			resultante.Definir(j, i, atoi(aux.c_str()));			
+		}
+	}
+	return resultante;
+
 }
 
 void mostrarImagen(const Matriz& i){

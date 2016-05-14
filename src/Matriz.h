@@ -932,6 +932,37 @@ int knniesimo(Matriz& imagenes, Matriz& etiquetasT, Matriz& t, int k, int l){ //
 //5 5 5 7 6 7 5 1 7 5 1 2 5 6 2 5 2 6 4 5
 //5 5 5 7 6 7 5 1 7 5 1 2 5 6 2 5 2 6 4 5  
 
+int knniesimo2(Matriz& imagenes, Matriz& etiquetasT, Matriz& train, int k, int l, int inicio, int fin, int rango){ //hace knn de la l-esima fila de imagenes contra las imagenes de train desde incio hasta fin
+    int n = train.DameAlto(); //n es la cantidad de imagenes qe tengo en mi campo train
+    int m = imagenes.DameAncho();
+    assert(inicio>=1 && fin <=n);
+    
+    vector<tuplaDistanciaEtiq> distancias;
+    double aux;
+    //cout<<"ciclo distancias"<<endl;
+    for (int i = inicio; i <= fin; ++i)
+    {
+    int rangoInicio = l-rango;
+    int rangoFin = l+rango;
+if(i<=rangoInicio || i>= rangoInicio){ //si no estoy en el k-esimo fold
+
+        for (int j = 1; j <= m; ++j)
+        {
+            aux = imagenes.Obtener(l, j) - train.Obtener(i, j);
+            aux = aux*aux;
+        }
+
+
+        distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
+	
+}
+}
+
+}
+
+
+
+
 
 Matriz Matriz::pcaRapido(Matriz etiquetasTrain, Matriz imagenes, int alfa, int k){ //esta matriz tiene que calcular solo 1 vez la matriz de cambio de base y clasificar muchas imagenes
 //en this voy a pasarle las imagenes etiquetadas, en imagenes las imagenes que quiero etiquetar
@@ -1338,34 +1369,41 @@ void Matriz::mezclarMatriz(){
 
 
 
-/*double kFoldCrossVal(Matriz todas, int k, int alfa){
+
+double kFoldCrossVal(Matriz todas, int k, int alfa, Matriz etiquetasTodas, Matriz mb1){
     todas.mezclarMatriz();
+    //a partir de acá voy a asumir que todas me la dan centrada con la media ya y que en mb1 tengo la matriz de cambio de base
+    int n=todas.DameAlto();
+    
     double promedioTotal = 0;
     double kesimoPromedio = 0;
-    int n=todas.DameAlto();
-    int tamaño = n / k;
-    vector<double> medias=todas.dameVectorMedias();
-    todas.centrarConMediaNuevo(medias,n);
-    Matriz thisT=todas.Traspuesta();
-    Matriz xtx=thisT.multiXtrans();
-    Matriz autovalores(alfa,1);
-    Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
-    todas.cambiarBaseNuevo(mb1);
-    //todas estan cambiadas de base
+    int tamanio = n / k;
+    
 
-    for (int i = 1; i <= k; i+=tamaño)
+    //vector<double> medias=todas.dameVectorMedias();
+    //todas.centrarConMediaNuevo(medias,n);
+    //Matriz thisT=todas.Traspuesta();
+    //Matriz xtx=thisT.multiXtrans();
+    //Matriz autovalores(alfa,1);
+    //Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
+    //todas.cambiarBaseNuevo(mb1);
+    //todas estan cambiadas de base
+    int rango = tamanio/2;
+    for (int i = 1; i <= k; i+=tamanio)
     {
-        for (int j = i; j <= tamaño; ++j)
+        for (int j = i; j <= tamanio; ++j)
         {
+
             Matriz imagenesAEtiquetar(1,784);
                     for (int k = 1; k <=784 ; ++k)
                         {
                             imagenesAEtiquetar.Definir(1, k, todas.Obtener(j, k));
                             //esta imagen la tengo que etiquetar
                         }
-            int etiqueta = todas.pcaNuevoNuevo(imagenesAEtiquetar); //me las tiene que validar con todas menos consigo mismo
-            if(etiqueta == todasEtiquetas.Obtener(j,1)){kesimoPromedio++;}//si le peguè, sumo 1
-        kesimoPromedio = kesimoPromedio / tamaño; //los que les peguè, dividido todos los que calculè en el kesimo fold
+            //int etiqueta = todas.pcaNuevoNuevo(imagenesAEtiquetar); //me las tiene que validar con todas menos consigo mismo
+            int etiqueta  = knniesimo2(imagenesAEtiquetar, etiquetasTodas,todas, 30, 1,1, n, rango);
+            if(etiqueta == etiquetasTodas.Obtener(j,1)){kesimoPromedio++;}//si le peguè, sumo 1
+        kesimoPromedio = kesimoPromedio / tamanio; //los que les peguè, dividido todos los que calculè en el kesimo fold
         }
         promedioTotal += kesimoPromedio; 
     }
@@ -1374,10 +1412,6 @@ void Matriz::mezclarMatriz(){
     return promedioTotal;
 
 }
-
-
-*/
-
 
 
 
