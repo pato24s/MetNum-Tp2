@@ -932,7 +932,10 @@ int knniesimo(Matriz& imagenes, Matriz& etiquetasT, Matriz& t, int k, int l){ //
 //5 5 5 7 6 7 5 1 7 5 1 2 5 6 2 5 2 6 4 5
 //5 5 5 7 6 7 5 1 7 5 1 2 5 6 2 5 2 6 4 5  
 
-int knniesimo2(Matriz& imagenes, Matriz& etiquetasT, Matriz& train, int k, int l, int inicio, int fin, int rango){ //hace knn de la l-esima fila de imagenes contra las imagenes de train desde incio hasta fin
+
+// knniesimo2(imagenesAEtiquetar, etiquetasTodas,todas, 30, 1,1, n, rango)
+
+/*int knniesimo2(Matriz& imagenes, Matriz& etiquetasT, Matriz& train, int k, int l, int inicio, int fin, int rango){ //hace knn de la l-esima fila de imagenes contra las imagenes de train desde incio hasta fin
     int n = train.DameAlto(); //n es la cantidad de imagenes qe tengo en mi campo train
     int m = imagenes.DameAncho();
     assert(inicio>=1 && fin <=n);
@@ -943,8 +946,9 @@ int knniesimo2(Matriz& imagenes, Matriz& etiquetasT, Matriz& train, int k, int l
     for (int i = inicio; i <= fin; ++i)
     {
     int rangoInicio = l-rango;
-    int rangoFin = l+rango;
-if(i<=rangoInicio || i>= rangoInicio){ //si no estoy en el k-esimo fold
+    int rangoFin = l + rango;
+
+	if(i<=rangoInicio || i>= rangoFin){ //si no estoy en el k-esimo fold
 
         for (int j = 1; j <= m; ++j)
         {
@@ -952,13 +956,23 @@ if(i<=rangoInicio || i>= rangoInicio){ //si no estoy en el k-esimo fold
             aux = aux*aux;
         }
 
-
         distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
 	
-}
-}
+	}
+
+	}
+	distancias.selectionSortVoid();
+	return moda(distancias);
 
 }
+*/
+
+
+
+
+
+
+
 
 
 
@@ -1368,9 +1382,33 @@ void Matriz::mezclarMatriz(){
 // }
 
 
+/*
+int knniesimo2(int img, Matriz& etiquetasT, Matriz& todas, int indice){
+	int n = todas.DameAlto();
+	int 
+	for (int i = 1; i <= n; ++i)
+	{
+		if(i==(indice-1)*n/k+1){i+=n/k;}
+			int aux = 0;
+			for (int j = 1; j <= 784; ++j)
+        	{
+            	aux = todas.Obtener(img, j) - todas.Obtener(i, j);
+            	aux += aux*aux;
+        	}
+
+ 	       distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
+
+		}
+	}
+	distancias.selectionSortVoid();
+	return moda(distancias);
+}
+*/
 
 
-double kFoldCrossVal(Matriz todas, int k, int alfa, Matriz etiquetasTodas, Matriz mb1){
+
+/*
+double kFoldCrossVal(Matriz& todas, int k, int alfa, int gamma, Matriz& etiquetasTodas, int metodo){
     todas.mezclarMatriz();
     //a partir de acá voy a asumir que todas me la dan centrada con la media ya y que en mb1 tengo la matriz de cambio de base
     int n=todas.DameAlto();
@@ -1381,39 +1419,242 @@ double kFoldCrossVal(Matriz todas, int k, int alfa, Matriz etiquetasTodas, Matri
     
 
     //vector<double> medias=todas.dameVectorMedias();
-    //todas.centrarConMediaNuevo(medias,n);
-    //Matriz thisT=todas.Traspuesta();
-    //Matriz xtx=thisT.multiXtrans();
-    //Matriz autovalores(alfa,1);
-    //Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
-    //todas.cambiarBaseNuevo(mb1);
-    //todas estan cambiadas de base
-    int rango = tamanio/2;
-    for (int i = 1; i <= k; i+=tamanio)
-    {
-        for (int j = i; j <= tamanio; ++j)
-        {
+    	vector<double> medias = dameVectorMediasSinFold(i);
+    	todas.centrarConMediaNuevo(medias,n);
 
-            Matriz imagenesAEtiquetar(1,784);
-                    for (int k = 1; k <=784 ; ++k)
-                        {
-                            imagenesAEtiquetar.Definir(1, k, todas.Obtener(j, k));
-                            //esta imagen la tengo que etiquetar
-                        }
-            //int etiqueta = todas.pcaNuevoNuevo(imagenesAEtiquetar); //me las tiene que validar con todas menos consigo mismo
-            int etiqueta  = knniesimo2(imagenesAEtiquetar, etiquetasTodas,todas, 30, 1,1, n, rango);
-            if(etiqueta == etiquetasTodas.Obtener(j,1)){kesimoPromedio++;}//si le peguè, sumo 1
-        kesimoPromedio = kesimoPromedio / tamanio; //los que les peguè, dividido todos los que calculè en el kesimo fold
-        }
+
+if(metodo == 1) //1 = pca
+{
+    for (int i = 1; i <= k; i++){
+    	Matriz nuevoTrain = filtrarTrain(todas, i);
+    	Matriz thisT=nuevoTrain.Traspuesta();
+    	Matriz xtx=thisT.multiXtrans();
+    	Matriz autovalores(alfa,1);
+    	Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
+    	todas.cambiarBaseNuevo(mb1);
+    	//todas estan cambiadas de base
+
+	        for (int j = ((i-1)*n/k)+1; j <= i*n/k; ++j)
+	        {
+	            int etiqueta  = knniesimo2(i, j, etiquetasTodas,todas, indice);
+	            if(etiqueta == etiquetasTodas.Obtener(j,1)){kesimoPromedio++;}//si le peguè, sumo 1
+	        }
+	    kesimoPromedio = kesimoPromedio / tamanio; //los que les peguè, dividido todos los que calculè en el kesimo fold
         promedioTotal += kesimoPromedio; 
-    }
-    promedioTotal = promedioTotal / k; //el promedio de todos los promedios
+    	
+    	promedioTotal = promedioTotal / k; //el promedio de todos los promedios
+    	}
 
-    return promedioTotal;
+else{ //2= pls
+	Matriz nuevoTrain = filtrarTrain(todas, i, ); 
+	//Matriz cambioBase = nuevoTrain.plsDa(y,gamma);
+	todas = todas.multiMatricial(cambioBase).nuevoTrain.plsDa(y, gamma);
+
+	for (int i = 1; i <= k; i++){
+    	Matriz nuevoTrain = filtrarTrain(todas, i);
+    	Matriz thisT=nuevoTrain.Traspuesta();
+    	Matriz xtx=thisT.multiXtrans();
+    	Matriz autovalores(alfa,1);
+    	Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
+    	todas.cambiarBaseNuevo(mb1);
+    	//todas estan cambiadas de base
+
+	        for (int j = ((i-1)*n/k)+1; j <= i*n/k; ++j)
+	        {
+	            int etiqueta  = knniesimo2(i, j, etiquetasTodas,todas, indice);
+	            if(etiqueta == etiquetasTodas.Obtener(j,1)){kesimoPromedio++;}//si le peguè, sumo 1
+	        }
+	    kesimoPromedio = kesimoPromedio / tamanio; //los que les peguè, dividido todos los que calculè en el kesimo fold
+        promedioTotal += kesimoPromedio; 
+    	
+    	promedioTotal = promedioTotal / k; //el promedio de todos los promedios
+    	}
+
+	}
+
 
 }
 
 
+    return promedioTotal;
+
+}
+*/
+
+
+
+Matriz filtrarTrain(Matriz& viejoTrain, Matriz& etiquetasTodas, Matriz& etiquetasNuevoTrain, Matriz& foldM, Matriz& nuevoTest, int indiceFold){ //me devuelve el train
+	int tamanio= 0;
+	for (int i = 1; i <= 42; ++i)
+	{
+		tamanio+= foldM.Obtener(i,indiceFold);
+	}
+	
+	Matriz nuevoTrain(tamanio,784);
+	Matriz nuevoTest2(42000-tamanio, 784); 
+
+//separa en train y test segun me lo indica foldM (foldM es una matriz y en indiceFold me dice cual de las columnas, cual de los folds es el que uso)
+	int j=1;
+	int l = 1;
+		for (int i = 1; i<=42000; ++i)
+		{
+			if (foldM.Obtener(i,indiceFold) == 1 )//si es 1, va al train
+			{
+						for (int x = 1; x <= 784; ++x)
+						{
+							nuevoTrain.Definir(j, x, viejoTrain.Obtener(i, x));
+							
+						}
+						etiquetasNuevoTrain.Definir(j, 1, etiquetasTodas.Obtener(i,1));
+						j++;
+			}else{
+							for (int x = 1; x <= 784; ++x)
+							{
+								nuevoTest2.Definir(l, x, viejoTrain.Obtener(i, x));
+								
+							}
+							l++;
+			}
+
+
+
+		}
+nuevoTest = nuevoTest2;
+return nuevoTrain;
+
+}
+
+double kFoldCrossVal(Matriz& todas, int k, int alfa, int gamma, Matriz& etiquetasTodas, int metodo, Matriz& foldM){
+    //todas.mezclarMatriz();
+    //a partir de acá voy a asumir que todas me la dan centrada con la media ya y que en mb1 tengo la matriz de cambio de base
+    int n=todas.DameAlto();
+    
+    double promedioTotal = 0;
+    double kesimoPromedio = 0;
+    int tamanio = n / k;
+    
+    //vector<double> medias=todas.dameVectorMedias();
+    	//vector<double> medias = dameVectorMediasSinFold(i);
+
+
+    for (int i = 1; i <= k; i++){
+    	Matriz nuevoTest;
+    	Matriz etiquetasNuevoTrain;
+    	Matriz nuevoTrain = filtrarTrain(todas, etiquetasTodas, etiquetasNuevoTrain, foldM, nuevoTest, i);
+    	n = nuevoTrain.DameAlto();
+    	vector<double> medias = nuevoTrain.dameVectorMedias();
+    	nuevoTrain.centrarConMediaNuevo(medias, n);
+    	//nuevoTest.centrarConMediaNuevo(medias, n);
+    	//Matriz filtrarTrain(Matriz& viejoTrain, Matriz& foldM, Matriz& nuevoTest, int indiceFold)
+
+if(metodo == 1) //1 = pca
+{
+    	Matriz thisT=nuevoTrain.Traspuesta();
+    	Matriz xtx=thisT.multiXtrans();
+    	Matriz autovalores(alfa,1);
+    	Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
+    	nuevoTrain.cambiarBaseNuevo(mb1);
+    	//todas estan cambiadas de base
+
+	/*        for (int j = ((i-1)*n/k)+1; j <= i*n/k; ++j)
+	        {
+	            int etiqueta  = knniesimo2(i, j, etiquetasTodas,todas, indice);
+	            if(etiqueta == etiquetasTodas.Obtener(j,1)){kesimoPromedio++;}//si le peguè, sumo 1
+	        }
+	    kesimoPromedio = kesimoPromedio / tamanio; //los que les peguè, dividido todos los que calculè en el kesimo fold
+        promedioTotal += kesimoPromedio; 
+    	
+    	promedioTotal = promedioTotal / k; //el promedio de todos los promedios*/
+    Matriz imagenIesima(1,784);
+   	for (int z = 1; z <= nuevoTest.DameAlto(); ++z)
+   	{
+   		
+        for (int x = 1; x <= nuevoTest.DameAncho(); ++x)
+        {
+        	imagenIesima.Definir(1, x, nuevoTest.Obtener(z,x));
+        }
+        imagenIesima.centrarConMediaNuevo(medias, n);
+        Matriz imagenCambiada = imagenIesima.multiMatricial(mb1);
+    	int etiquetaIesima = knn(imagenCambiada, etiquetasNuevoTrain, nuevoTrain,30);
+    	if (etiquetaIesima == etiquetasNuevoTrain.Obtener(z,1))
+    	{
+    		kesimoPromedio+= 1;
+   		}
+   	
+   	}
+   	promedioTotal+=kesimoPromedio;
+
+}
+
+else{ //2= pls
+	int n=nuevoTrain.DameAlto();
+	vector<double> medias=nuevoTrain.dameVectorMedias();
+    nuevoTrain.centrarConMediaNuevo(medias,n);
+    Matriz otroX=nuevoTrain;
+    Matriz y=crearY(n);
+    Matriz mb1=nuevoTrain.plsDa(y,gamma);//RAVIOL
+    Matriz cambiada=otroX.multiMatricial(mb1);
+
+   Matriz imagenIesima(1,784);
+	for(int j=1;j<=nuevoTest.DameAlto();++j){
+		for (int x = 1; x <= nuevoTest.DameAncho(); x++)
+		{
+		imagenIesima.Definir(1,i,nuevoTest.Obtener(j,i));
+		}
+		imagenIesima.centrarConMediaNuevo(medias,n);
+		Matriz imagenCambiada=imagenIesima.multiMatricial(mb1);
+		int etiquetaIesima = knn(imagenCambiada,etiquetasNuevoTrain,cambiada,15);
+		if(etiquetaIesima == etiquetasNuevoTrain.Obtener(j,1)){
+			kesimoPromedio+=1;
+		}
+	}
+	promedioTotal+=kesimoPromedio;
+
+
+
+
+
+
+
+
+/*
+
+	Matriz nuevoTrain = filtrarTrain(todas, i, ); 
+	//Matriz cambioBase = nuevoTrain.plsDa(y,gamma);
+	todas = todas.multiMatricial(cambioBase).nuevoTrain.plsDa(y, gamma);
+
+	for (int i = 1; i <= k; i++){
+    	Matriz nuevoTrain = filtrarTrain(todas, i);
+    	Matriz thisT=nuevoTrain.Traspuesta();
+    	Matriz xtx=thisT.multiXtrans();
+    	Matriz autovalores(alfa,1);
+    	Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
+    	todas.cambiarBaseNuevo(mb1);
+    	//todas estan cambiadas de base
+
+	        for (int j = ((i-1)*n/k)+1; j <= i*n/k; ++j)
+	        {
+	            int etiqueta  = knniesimo2(i, j, etiquetasTodas,todas, indice);
+	            if(etiqueta == etiquetasTodas.Obtener(j,1)){kesimoPromedio++;}//si le peguè, sumo 1
+	        }
+	    kesimoPromedio = kesimoPromedio / tamanio; //los que les peguè, dividido todos los que calculè en el kesimo fold
+        promedioTotal += kesimoPromedio; 
+    	
+    	promedioTotal = promedioTotal / k; //el promedio de todos los promedios
+    	}
+
+	}
+*/
+
+
+}
+
+
+
+}
+    return promedioTotal/k;
+
+}
 
 
 
