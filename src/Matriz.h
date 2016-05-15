@@ -1429,7 +1429,7 @@ double kFoldCrossVal(Matriz& todas, int k, int alfa, int gamma, Matriz& etiqueta
     	nuevoTrain.centrarConMediaNuevo(medias, n);
     	//nuevoTest.centrarConMediaNuevo(medias, n);
     	//Matriz filtrarTrain(Matriz& viejoTrain, Matriz& foldM, Matriz& nuevoTest, int indiceFold)
-
+	Matriz etiquetasMatriz(10,10);
 if(metodo == 1) //1 = pca
 {
 		//promedioTotal=0;
@@ -1475,9 +1475,13 @@ if(metodo == 1) //1 = pca
     	{
     		kesimoPromedio+= 1;
    		}
+	int aux = etiquetasMatriz.Obtener(etiquetaIesima+1, etiquetasNuevoTest.Obtener(z,1)+1);
+	etiquetasMatriz.Definir(etiquetaIesima+1, etiquetasNuevoTest.Obtener(z,1)+1, aux+1);
    		
 
    	}
+	cout<< "asi etiqueto con PCA"<<endl;
+	cout<<etiquetasMatriz;
    	kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
    	cout<<"promedio iter "<<i<<" :"<<kesimoPromedio<<endl;
    	promedioTotal+=kesimoPromedio;
@@ -1514,8 +1518,12 @@ else{ //2= pls
 		if(etiquetaIesima == etiquetasNuevoTest.Obtener(j,1)){
 			kesimoPromedio+=1;
 		}
+		int aux = etiquetasMatriz.Obtener(etiquetaIesima+1, etiquetasNuevoTest.Obtener(j,1)+1);
+        	etiquetasMatriz.Definir(etiquetaIesima+1, etiquetasNuevoTest.Obtener(j,1)+1, aux+1);
 		//cout<<"era un:"<<etiquetasNuevoTest.Obtener(j,1)<<" diste un: "<<etiquetaIesima<<endl;
 	}
+	cout<<"asi etiqueto PLS"<<endl;
+	cout<<etiquetasMatriz;
 	kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
 	cout<<"promedio iter "<<i<<" :"<<kesimoPromedio<<endl;
 		promedioTotal+=kesimoPromedio;
