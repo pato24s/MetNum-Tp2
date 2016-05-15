@@ -46,7 +46,18 @@ struct Imagenes
 	
 };
 */
+struct tuplaDatos
+{
+	string path;
+	int k;
+	int alfa;
+	int gamma;
+	int cantFolds;
+	Matriz kfold;
+	tuplaDatos(string p, int kn, int a, int g, int cant, Matriz kf) : path(p), k(kn), alfa(a), gamma(g),cantFolds(cant), kfold(kf) {};
 
+	tuplaDatos(){};
+};
 
 
 Matriz lecturaTrain(istream& is, Matriz& etiquetas){
@@ -117,6 +128,41 @@ Matriz lecturaFold(istream& is, int k){
 		}
 	}
 	return resultante;
+
+}
+
+
+
+tuplaDatos lecturaFoldTest(istream& is){
+
+	
+	int kvec;
+	int alfa;
+	int gamma;
+	int cantFolds;
+	string path;
+	string aux;
+	getline(is,path,' ');
+	getline(is,aux,' ');
+	kvec=atoi(aux.c_str());
+	getline(is,aux,' ');
+	alfa=atoi(aux.c_str());
+	getline(is,aux,' ');
+	gamma=atoi(aux.c_str());
+	getline(is,aux,' ');
+	cantFolds=atoi(aux.c_str());
+	Matriz resultante(42000,cantFolds);
+
+	for (int i = 1; i <=cantFolds; ++i)
+	{
+		for (int j = 1; j <= 42000; ++j)
+		{
+			getline(is, aux, ' ');
+			resultante.Definir(j, i, atoi(aux.c_str()));			
+		}
+	}
+	tuplaDatos res(path,kvec,alfa,gamma,cantFolds,resultante);
+	return res;
 
 }
 
