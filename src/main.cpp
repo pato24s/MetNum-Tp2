@@ -33,9 +33,12 @@ int main(int argc, char const *argv[])
 	Matriz foldsM=lecturaFold(pepe,5);
 	pepe.close();
 
+	int metodo=1;
+	int alfa=30;
+	int gamma=15;
 
 
-cout<<kFoldCrossVal(imagenesTrainM,5,30,15,etiquetasTrain,2,foldsM)<<endl;
+cout<<kFoldCrossVal(imagenesTrainM,5,alfa,gamma,etiquetasTrain,metodo,foldsM)<<endl;
 
 
 // // 1. MAIN PARA LEVANTAR 1 SOLA IMAGEN Y PROBARLA
@@ -111,6 +114,7 @@ cout<<kFoldCrossVal(imagenesTrainM,5,30,15,etiquetasTrain,2,foldsM)<<endl;
 // 		imagenTrainI.centrarConMediaNuevo(medias,n);
 // 		imagenCambiada=imagenTrainI.multiMatricial(mb1);
 // 		res= knn(imagenCambiada,etiquetasTrain,imagenesTrainMCopia,1);
+
 // 		//cout<<"imagen "<<i<<"nos dio: "<<res<<" y su etiqueta era "<<etiquetasTrain.Obtener(i,1)<<endl;
 // 		//int res=imagenesTrainM.pcaRapido(mb1,imagenTrainI,etiquetasTrain,20,30);
 // 		if(res==etiquetasTrain.Obtener(i,1)){
@@ -147,6 +151,7 @@ cout<<kFoldCrossVal(imagenesTrainM,5,30,15,etiquetasTrain,2,foldsM)<<endl;
 // prueba.Definir(4,2,22);
 // prueba.Definir(4,3,39);
 // prueba.Definir(4,4,43);
+
 
 // cout<<prueba;
 

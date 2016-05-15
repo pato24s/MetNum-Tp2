@@ -830,7 +830,7 @@ int lugarMaximo(std::vector<int> v){
 }
 
 
-//return knn(imagenCambiada,todasCambiadas,i);
+    // normaresta(imagencambiada,cambiada,i)
 double normaResta(Matriz& a, Matriz& b, int f){
     //assert(a.size() == b.size());
     double aux;
@@ -865,6 +865,7 @@ int moda(std::vector <tuplaDistanciaEtiq> v, int k ){ //k me dice cuantos ver pa
 
 
 //    return knn(imagenCambiada,etiquetasT,todascambiadas,k);
+//  knn(imagenCambiada,etiquetasNuevoTrain,cambiada,15)
 int knn(Matriz& e, Matriz& etiquetasT, Matriz& t, int k){ //devuelve la etiqueta de la imagen e, comparando con las imagenes de t
     //e imagen para etiquetar
     // etiquetasT tiene las etiquetas de las imagenes de t como un vector columna
@@ -880,6 +881,11 @@ int knn(Matriz& e, Matriz& etiquetasT, Matriz& t, int k){ //devuelve la etiqueta
         //cout<<"norma resta "<<i<<endl;
         //return knn(imagenCambiada,etiquetasT,i);
     	//cout<<"norma resta : "<<i<<endl;
+    	//normaresta(imagencambiada,cambiada,i)
+         // cout<<"eeeeeeeeeeeeeeeeeeee"<<endl;
+         // cout<<e;
+         // cout<<"tttttttttttttttttttttttttttttt"<<endl;
+         // cout<<t;
          aux = normaResta(e, t, i); //la distancia entre la imagen e y la i-esima imagen de t
          distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
     }
@@ -1146,10 +1152,9 @@ Matriz Matriz::plsDa(Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN
     //cout <<"gamma: "<<gamma<<endl;
     
  
-    for (int i = 1; i <= gamma; ++i){
+    for (int i = 1; i <= gamma; ++i){ //PAPAUEPA
            // cout<< "iteracion numero: " << i<<endl;
             Matriz xt=Traspuesta();
-
             //Matriz yt= y.Traspuesta();	
                //Matriz xtx=xt.multiXtrans();
 
@@ -1159,8 +1164,11 @@ Matriz Matriz::plsDa(Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN
 
 
             //Matriz ytx=yt.multiMatricial(*this);
-        	
+        	// cout<<"xty iter: "<<i<<endl;
+        	// cout<<xty; //parece estar piola
             Matriz mi = xty.multiXtrans();
+            // Matriz xtyTrans=xty.Traspuesta();
+            // Matriz mi=xty.multiMatricial(xtyTrans);
             
             int fila = mi.DameAlto();
 
@@ -1170,9 +1178,11 @@ Matriz Matriz::plsDa(Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN
 
             autovector.randomizar(fila,1);
             Matriz copiaMI = mi;
+ 	
             double autovalor = mi.dameAutovalor(autovector, 30); //esto me deja en randi el autovector y devuelve el autovalor RAVIOLI RAVIOLI DAME LA FORMUOLI
             //cout << "autovalor  " << autovalor <<endl;
-            //cout<<autovector;
+            // cout<<"AUTOVECTOR iter: "<<i<<endl;
+            // cout<<autovector;
             //En autovector tengo el autovector del autovalor mas grande de mi es deci mi wi
  
             //normalizo mi wi y lo multiplico por x
@@ -1217,34 +1227,10 @@ Matriz Matriz::plsDa(Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN
  
  }
 
-/* int Matriz::pca(Matriz imagen,Matriz etiquetasT, int k, int alfa){
-    cout<<"PCA CAMBIAR BASE los datos"<<endl;
-    this->cambiarBaseX(alfa);
-    cout<<"PCA CAMBIAR DE BASE la IMAGEN"<<endl;
-    imagen.cambiarBaseX(alfa);
-    cout<<"se larga knn"<<endl; 
-    return knn(imagen,etiquetasT,*this,k);
-}
-*/
-
 
 
 int plsDApiola( Matriz& x, Matriz& etiquetasT, int gamma, int k,  Matriz& imagen, int n){
-   /* Matriz y= crearY(n);
-    //cout<<y;
-    Matriz cambioDeBase= plsDa(x,y,gamma);
 
-    
-    //cout<<cambioDeBase;
-
-    //COMENTE ESTO PORQUE NOSE QUE CARAJO HACER CON ESTA MATRIZ PONELE QUE LE TIRAS GAMA == 20 -> LA MATRIZ QUE TE QUEDA ES 20X784 y ahora? si le mando plsDa a la imagen nose se rompe todo
-    //cout <<"autovectores fila: " << autovectores.DameAlto() << "autovectores columna: " << autovectores.DameAncho()<<endl; 
-    //cout<<"filas cambioBase"<< cambioDeBase.DameAlto() << "COLS CAMbioBase: "<< cambioDeBase.DameAncho()<<endl;
-    x.cambiarBaseNuevo(cambioDeBase);
-    cout<<"llego"<<endl;
-    imagen.multiMatricial(cambioDeBase);
-    cout<< "KAAAAAAAA ENEEEEEEEEE ENEEEEEEEEEEEE"<<endl;
-    return knn(imagen, etiquetasT, x, k );*/
 }
 
 
@@ -1366,127 +1352,11 @@ void Matriz::mezclarMatriz(){
 
 }
 
-// Matriz Matriz::train(int alfa){
-//     vector<double> medias=dameVectorMedias();
-//     int n=DameAlto();
-//     centrarConMediaNuevo(medias,n);
-//     Matriz thisT=Traspuesta();
-//     Matriz xtx=thisT.multiXtrans();
-//     Matriz autovalores(alfa,1);
-//     Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
-//     return mb1;
-// }
-
-// (Matriz imagen,Matriz mb,etiquetasT,int k, int n, vector<double> medias){
-//     imagen.centrarConMediaNuevo(medias,n);
-//     Matriz imagenCambiada=imagen.multiMatricial(mb);
-//     return knn(imagenCambiada,etiquetasT,)
-
-// }
-
-
-/*
-int knniesimo2(int img, Matriz& etiquetasT, Matriz& todas, int indice){
-	int n = todas.DameAlto();
-	int 
-	for (int i = 1; i <= n; ++i)
-	{
-		if(i==(indice-1)*n/k+1){i+=n/k;}
-			int aux = 0;
-			for (int j = 1; j <= 784; ++j)
-        	{
-            	aux = todas.Obtener(img, j) - todas.Obtener(i, j);
-            	aux += aux*aux;
-        	}
-
- 	       distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
-
-		}
-	}
-	distancias.selectionSortVoid();
-	return moda(distancias);
-}
-*/
 
 
 
-/*
-double kFoldCrossVal(Matriz& todas, int k, int alfa, int gamma, Matriz& etiquetasTodas, int metodo){
-    todas.mezclarMatriz();
-    //a partir de acá voy a asumir que todas me la dan centrada con la media ya y que en mb1 tengo la matriz de cambio de base
-    int n=todas.DameAlto();
-    
-    double promedioTotal = 0;
-    double kesimoPromedio = 0;
-    int tamanio = n / k;
-    
 
-    //vector<double> medias=todas.dameVectorMedias();
-    	vector<double> medias = dameVectorMediasSinFold(i);
-    	todas.centrarConMediaNuevo(medias,n);
-
-
-if(metodo == 1) //1 = pca
-{
-    for (int i = 1; i <= k; i++){
-    	Matriz nuevoTrain = filtrarTrain(todas, i);
-    	Matriz thisT=nuevoTrain.Traspuesta();
-    	Matriz xtx=thisT.multiXtrans();
-    	Matriz autovalores(alfa,1);
-    	Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
-    	todas.cambiarBaseNuevo(mb1);
-    	//todas estan cambiadas de base
-
-	        for (int j = ((i-1)*n/k)+1; j <= i*n/k; ++j)
-	        {
-	            int etiqueta  = knniesimo2(i, j, etiquetasTodas,todas, indice);
-	            if(etiqueta == etiquetasTodas.Obtener(j,1)){kesimoPromedio++;}//si le peguè, sumo 1
-	        }
-	    kesimoPromedio = kesimoPromedio / tamanio; //los que les peguè, dividido todos los que calculè en el kesimo fold
-        promedioTotal += kesimoPromedio; 
-    	
-    	promedioTotal = promedioTotal / k; //el promedio de todos los promedios
-    	}
-
-else{ //2= pls
-	Matriz nuevoTrain = filtrarTrain(todas, i, ); 
-	//Matriz cambioBase = nuevoTrain.plsDa(y,gamma);
-	todas = todas.multiMatricial(cambioBase).nuevoTrain.plsDa(y, gamma);
-
-	for (int i = 1; i <= k; i++){
-    	Matriz nuevoTrain = filtrarTrain(todas, i);
-    	Matriz thisT=nuevoTrain.Traspuesta();
-    	Matriz xtx=thisT.multiXtrans();
-    	Matriz autovalores(alfa,1);
-    	Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
-    	todas.cambiarBaseNuevo(mb1);
-    	//todas estan cambiadas de base
-
-	        for (int j = ((i-1)*n/k)+1; j <= i*n/k; ++j)
-	        {
-	            int etiqueta  = knniesimo2(i, j, etiquetasTodas,todas, indice);
-	            if(etiqueta == etiquetasTodas.Obtener(j,1)){kesimoPromedio++;}//si le peguè, sumo 1
-	        }
-	    kesimoPromedio = kesimoPromedio / tamanio; //los que les peguè, dividido todos los que calculè en el kesimo fold
-        promedioTotal += kesimoPromedio; 
-    	
-    	promedioTotal = promedioTotal / k; //el promedio de todos los promedios
-    	}
-
-	}
-
-
-}
-
-
-    return promedioTotal;
-
-}
-*/
-
-
-
-Matriz filtrarTrain(Matriz& viejoTrain, Matriz& etiquetasTodas, Matriz& etiquetasNuevoTrain, Matriz& foldM, Matriz& nuevoTest, int indiceFold){ //me devuelve el train
+Matriz filtrarTrain(Matriz& viejoTrain, Matriz& etiquetasTodas, Matriz& etiquetasNuevoTrain, Matriz& foldM, Matriz& nuevoTest, Matriz& etiquetasNuevoTest, int indiceFold){ //me devuelve el train
 	int tamanio= 0;
 	for (int i = 1; i <= 42000; ++i)
 	{
@@ -1496,6 +1366,7 @@ Matriz filtrarTrain(Matriz& viejoTrain, Matriz& etiquetasTodas, Matriz& etiqueta
 	Matriz nuevoTrain(tamanio,784);
 	Matriz nuevoTest2(42000-tamanio, 784);
 	Matriz etiquetasNuevoTrainNuevo(tamanio,1);
+	Matriz etiquetasNuevoTestNuevo(42000-tamanio,1);
 
 //separa en train y test segun me lo indica foldM (foldM es una matriz y en indiceFold me dice cual de las columnas, cual de los folds es el que uso)
 	int j=1;
@@ -1520,6 +1391,7 @@ Matriz filtrarTrain(Matriz& viejoTrain, Matriz& etiquetasTodas, Matriz& etiqueta
 								nuevoTest2.Definir(l, x, viejoTrain.Obtener(i, x));
 								
 							}
+							etiquetasNuevoTestNuevo.Definir(l,1,etiquetasTodas.Obtener(i,1));
 							l++;
 			}
 
@@ -1527,6 +1399,7 @@ Matriz filtrarTrain(Matriz& viejoTrain, Matriz& etiquetasTodas, Matriz& etiqueta
 
 		}
 etiquetasNuevoTrain=etiquetasNuevoTrainNuevo;
+etiquetasNuevoTest=etiquetasNuevoTestNuevo;
 nuevoTest = nuevoTest2;
 return nuevoTrain;
 
@@ -1545,10 +1418,11 @@ double kFoldCrossVal(Matriz& todas, int k, int alfa, int gamma, Matriz& etiqueta
     	//vector<double> medias = dameVectorMediasSinFold(i);
 
 
-    for (int i = 1; i <= k; i++){
+    for (int i = 1; i <= k; i++){ //CAMBIAR ESTO CUANDO ANDE RAVIOL RAVIOL 
     	Matriz nuevoTest;
     	Matriz etiquetasNuevoTrain;
-    	Matriz nuevoTrain = filtrarTrain(todas, etiquetasTodas, etiquetasNuevoTrain, foldM, nuevoTest, i);
+    	Matriz etiquetasNuevoTest;
+    	Matriz nuevoTrain = filtrarTrain(todas, etiquetasTodas, etiquetasNuevoTrain, foldM, nuevoTest, etiquetasNuevoTest, i);
     	//cout<<"ALTOOOOOOOOOO "<<etiquetasNuevoTrain.DameAlto()<<endl;
     	n = nuevoTrain.DameAlto();
     	vector<double> medias = nuevoTrain.dameVectorMedias();
@@ -1590,32 +1464,37 @@ if(metodo == 1) //1 = pca
         	//cout<<"copio imagen en kfold: "<<x<<endl;
         	imagenIesima.Definir(1, x, nuevoTest.Obtener(z,x));
         }
-        cout<<"sali del for "<<endl;
+        //cout<<"sali del for "<<endl;
         imagenIesima.centrarConMediaNuevo(medias, n);
-        cout<<"ya centre"<<endl;
+        //cout<<"ya centre"<<endl;
         Matriz imagenCambiada = imagenIesima.multiMatricial(mb1);
-        cout<<"ya cambie"<<endl;
+        //cout<<"ya cambie"<<endl;
     	int etiquetaIesima = knn(imagenCambiada, etiquetasNuevoTrain, nuevoTrain,30);
-    	cout<<"ya hice knn"<<endl;
-    	if (etiquetaIesima == etiquetasNuevoTrain.Obtener(z,1))
+    	//cout<<"ya hice knn"<<endl;
+    	if (etiquetaIesima == etiquetasNuevoTest.Obtener(z,1))
     	{
     		kesimoPromedio+= 1;
    		}
-   		kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
-   	
+   		
+
    	}
+   	kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
+   	cout<<"promedio iter "<<i<<" :"<<kesimoPromedio<<endl;
    	promedioTotal+=kesimoPromedio;
 
 }
 
 else{ //2= pls
 	cout<<"entre metodo 2 con i:"<<i<<endl;
-	int n=nuevoTrain.DameAlto();
-	vector<double> medias=nuevoTrain.dameVectorMedias();
-    nuevoTrain.centrarConMediaNuevo(medias,n);
+	// int n=nuevoTrain.DameAlto();
+	// vector<double> medias=nuevoTrain.dameVectorMedias();
+ //    nuevoTrain.centrarConMediaNuevo(medias,n);
     Matriz otroX=nuevoTrain;
     Matriz y=crearY(n);
+    //cout<<y<<endl;
     Matriz mb1=nuevoTrain.plsDa(y,gamma);//RAVIOL
+      //cout<<"MB MB MB MB MB MB"<<endl;
+      //cout<<mb1;
     cout<<"listo plsda "<<endl;
     Matriz cambiada=otroX.multiMatricial(mb1);
 
@@ -1626,20 +1505,20 @@ else{ //2= pls
 		for (int x = 1; x <= nuevoTest.DameAncho(); x++)
 		{
 			        	
-		imagenIesima.Definir(1,i,nuevoTest.Obtener(j,i));
+		imagenIesima.Definir(1,x,nuevoTest.Obtener(j,x));
 		}
 		imagenIesima.centrarConMediaNuevo(medias,n);
+
 		Matriz imagenCambiada=imagenIesima.multiMatricial(mb1);
 		int etiquetaIesima = knn(imagenCambiada,etiquetasNuevoTrain,cambiada,15);
-		if(etiquetaIesima == etiquetasNuevoTrain.Obtener(j,1)){
+		if(etiquetaIesima == etiquetasNuevoTest.Obtener(j,1)){
 			kesimoPromedio+=1;
 		}
-		kesimoPromedio=kesimoPromedio;
+		//cout<<"era un:"<<etiquetasNuevoTest.Obtener(j,1)<<" diste un: "<<etiquetaIesima<<endl;
 	}
 	kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
 	cout<<"promedio iter "<<i<<" :"<<kesimoPromedio<<endl;
-	cout<<"total: "<<nuevoTest.DameAlto()<<endl;
-	promedioTotal+=kesimoPromedio;
+		promedioTotal+=kesimoPromedio;
 
 
 
@@ -1696,130 +1575,3 @@ else{ //2= pls
 
 
 
-
-
-
-
-
-
-
-
-
-/*
-
-Matriz Matriz::plsCompleto(Matriz x, int gamma){
-
-
-
-
-
-
-
-
-
-	return pls(x.centrarConMedia(), y,gamma);
-}
-*/
-
-
-
-
-
-/*Matriz Matriz::pls(Matriz& x, Matriz& y, int gamma){
-	Matriz result=Matriz(x.DameAncho(),x.DameAncho());
-	for (int i = 1; i <= gamma; i++){
-		Matriz xt=x.copiarMatriz();
-		xt.Traspuesta();
-		Matriz yt=y.copiarMatriz();
-		yt.Traspuesta();
-		
-		//3 definir Mi como cuenta magica
-		Matriz Mi=(xt.multiMatricial(y)).multiMatricial(yt.multiMatricial(x));
-		Matriz wi=Matriz(Mi.DameAlto(),1);
-		wi.randomizar(Mi.DameAlto(),1);
-		
-		//4 calcular wi como el autovector
-		double autoValorGdeMi=Mi.dameAutovalor(wi,30);
-		
-		//5 normalizar
-		double normaWi=wi.norma2Vectorial();
-		double unoSobreNorma=1/normaWi;
-		wi.multiEscalar(unoSobreNorma);
-
-		//6 definir ti como Xwi
-		Matriz ti=x.multiMatricial(wi);
-
-		//7. normalizo ti
-		double normaTi=ti.norma2Vectorial();
-		double unoSobreNormaTi=1/normaTi;
-		ti.multiEscalar(unoSobreNormaTi);
-
-		//8 actualizar X
-		Matriz Tt=x.copiarMatriz();
-		Tt.Traspuesta();
-		Matriz TiTit=ti.multiMatricial(Tt);
-		Matriz TiTitX=TiTit.multiMatricial(x);
-		x = x.restaMatricial(TiTitX);
-
-		//9 actualizar Y
-		y= y.restaMatricial(TiTit.multiMatricial(y));
-
-
-		//meto wi en el resultado
-		result.insertarEnColumna(wi,i);
-
-	}
-	return result;
-
-}*/
-
-
-/*
-Matriz Matriz::plsDa(Matriz x, Matriz y, int gamma){
-	Matriz result=Matriz(x.DameAncho(),x.DameAncho());
-	for (int i = 1; i <= gamma; i++){
-		Matriz xt=x.copiarMatriz();
-		xt.Traspuesta();
-		Matriz yt=y.copiarMatriz();
-		yt.Traspuesta();
-		
-		//3 definir Mi como cuenta magica
-		Matriz Mi=(xt.multiMatricial(y)).multiMatricial(yt.multiMatricial(x));
-		Matriz wi=Matriz(Mi.DameAlto(),1);
-		wi.randomizar(Mi.DameAlto(),1);
-		
-		//4 calcular wi como el autovector
-		double autoValorGdeMi=Mi.dameAutovalor(wi,30);
-		
-		//5 normalizar
-		double normaWi=wi.norma2Vectorial();
-		double unoSobreNorma=1/normaWi;
-		wi.multiEscalar(unoSobreNorma);
-
-		//6 definir ti como Xwi
-		Matriz ti=x.multiMatricial(wi);
-
-		//7. normalizo ti
-		double normaTi=ti.norma2Vectorial();
-		double unoSobreNormaTi=1/normaTi;
-		ti.multiEscalar(unoSobreNormaTi);
-
-		//8 actualizar X
-		Matriz Tt=x.copiarMatriz();
-		Tt.Traspuesta();
-		Matriz TiTit=ti.multiMatricial(Tt);
-		Matriz TiTitX=TiTit.multiMatricial(x);
-		x = x.restaMatricial(TiTitX);
-
-		//9 actualizar Y
-		y= y.restaMatricial(TiTit.multiMatricial(y));
-
-
-		//meto wi en el resultado
-		result.insertarEnColumna(wi,i);
-
-	}
-	return result;
-
-}
-*/
