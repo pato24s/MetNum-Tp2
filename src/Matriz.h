@@ -868,15 +868,18 @@ int moda(std::vector <tuplaDistanciaEtiq> v, int k ){ //k me dice cuantos ver pa
 int knn(Matriz& e, Matriz& etiquetasT, Matriz& t, int k){ //devuelve la etiqueta de la imagen e, comparando con las imagenes de t
     //e imagen para etiquetar
     // etiquetasT tiene las etiquetas de las imagenes de t como un vector columna
+    //cout<<"dame alto"<<endl;
     int n = t.DameAlto(); //n es la cantidad de imagenes qe tengo en mi campo train
+    //cout<<"listo dame alto"<<endl;
     vector<tuplaDistanciaEtiq> distancias;
+   // cout<<n<<endl;
     double aux;
     //cout<<"ciclo distancias"<<endl;
     for (int i = 1; i <= n; ++i)
     {
         //cout<<"norma resta "<<i<<endl;
         //return knn(imagenCambiada,etiquetasT,i);
-
+    	//cout<<"norma resta : "<<i<<endl;
          aux = normaResta(e, t, i); //la distancia entre la imagen e y la i-esima imagen de t
          distancias.push_back(tuplaDistanciaEtiq(etiquetasT.Obtener(i, 1),aux));
     }
@@ -1485,13 +1488,14 @@ else{ //2= pls
 
 Matriz filtrarTrain(Matriz& viejoTrain, Matriz& etiquetasTodas, Matriz& etiquetasNuevoTrain, Matriz& foldM, Matriz& nuevoTest, int indiceFold){ //me devuelve el train
 	int tamanio= 0;
-	for (int i = 1; i <= 42; ++i)
+	for (int i = 1; i <= 42000; ++i)
 	{
 		tamanio+= foldM.Obtener(i,indiceFold);
 	}
 	
 	Matriz nuevoTrain(tamanio,784);
-	Matriz nuevoTest2(42000-tamanio, 784); 
+	Matriz nuevoTest2(42000-tamanio, 784);
+	Matriz etiquetasNuevoTrainNuevo(tamanio,1);
 
 //separa en train y test segun me lo indica foldM (foldM es una matriz y en indiceFold me dice cual de las columnas, cual de los folds es el que uso)
 	int j=1;
@@ -1502,14 +1506,17 @@ Matriz filtrarTrain(Matriz& viejoTrain, Matriz& etiquetasTodas, Matriz& etiqueta
 			{
 						for (int x = 1; x <= 784; ++x)
 						{
+							//cout<<"definir de filtrar train iteracion: "<<x<<endl;
 							nuevoTrain.Definir(j, x, viejoTrain.Obtener(i, x));
 							
 						}
-						etiquetasNuevoTrain.Definir(j, 1, etiquetasTodas.Obtener(i,1));
+						//cout<<"defino las etiquetas nuevas"<<endl;
+						etiquetasNuevoTrainNuevo.Definir(j, 1, etiquetasTodas.Obtener(i,1));
 						j++;
 			}else{
 							for (int x = 1; x <= 784; ++x)
 							{
+								//cout<<"definir else filtrar train"<<endl;
 								nuevoTest2.Definir(l, x, viejoTrain.Obtener(i, x));
 								
 							}
@@ -1519,6 +1526,7 @@ Matriz filtrarTrain(Matriz& viejoTrain, Matriz& etiquetasTodas, Matriz& etiqueta
 
 
 		}
+etiquetasNuevoTrain=etiquetasNuevoTrainNuevo;
 nuevoTest = nuevoTest2;
 return nuevoTrain;
 
@@ -1541,6 +1549,7 @@ double kFoldCrossVal(Matriz& todas, int k, int alfa, int gamma, Matriz& etiqueta
     	Matriz nuevoTest;
     	Matriz etiquetasNuevoTrain;
     	Matriz nuevoTrain = filtrarTrain(todas, etiquetasTodas, etiquetasNuevoTrain, foldM, nuevoTest, i);
+    	//cout<<"ALTOOOOOOOOOO "<<etiquetasNuevoTrain.DameAlto()<<endl;
     	n = nuevoTrain.DameAlto();
     	vector<double> medias = nuevoTrain.dameVectorMedias();
     	nuevoTrain.centrarConMediaNuevo(medias, n);
@@ -1549,11 +1558,18 @@ double kFoldCrossVal(Matriz& todas, int k, int alfa, int gamma, Matriz& etiqueta
 
 if(metodo == 1) //1 = pca
 {
+		//promedioTotal=0;
+		kesimoPromedio=0;
+		cout<<"entre metodo 1"<<endl;
     	Matriz thisT=nuevoTrain.Traspuesta();
+    	cout<<"trasp bien"<<endl;
     	Matriz xtx=thisT.multiXtrans();
+    	cout<<"multiXtrans listo"<<endl;
     	Matriz autovalores(alfa,1);
     	Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
+    	cout<<"mb listo"<<endl;
     	nuevoTrain.cambiarBaseNuevo(mb1);
+    	cout<<"lusto el cambio"<<endl;
     	//todas estan cambiadas de base
 
 	/*        for (int j = ((i-1)*n/k)+1; j <= i*n/k; ++j)
@@ -1571,15 +1587,21 @@ if(metodo == 1) //1 = pca
    		
         for (int x = 1; x <= nuevoTest.DameAncho(); ++x)
         {
+        	//cout<<"copio imagen en kfold: "<<x<<endl;
         	imagenIesima.Definir(1, x, nuevoTest.Obtener(z,x));
         }
+        cout<<"sali del for "<<endl;
         imagenIesima.centrarConMediaNuevo(medias, n);
+        cout<<"ya centre"<<endl;
         Matriz imagenCambiada = imagenIesima.multiMatricial(mb1);
+        cout<<"ya cambie"<<endl;
     	int etiquetaIesima = knn(imagenCambiada, etiquetasNuevoTrain, nuevoTrain,30);
+    	cout<<"ya hice knn"<<endl;
     	if (etiquetaIesima == etiquetasNuevoTrain.Obtener(z,1))
     	{
     		kesimoPromedio+= 1;
    		}
+   		kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
    	
    	}
    	promedioTotal+=kesimoPromedio;
@@ -1587,18 +1609,23 @@ if(metodo == 1) //1 = pca
 }
 
 else{ //2= pls
+	cout<<"entre metodo 2 con i:"<<i<<endl;
 	int n=nuevoTrain.DameAlto();
 	vector<double> medias=nuevoTrain.dameVectorMedias();
     nuevoTrain.centrarConMediaNuevo(medias,n);
     Matriz otroX=nuevoTrain;
     Matriz y=crearY(n);
     Matriz mb1=nuevoTrain.plsDa(y,gamma);//RAVIOL
+    cout<<"listo plsda "<<endl;
     Matriz cambiada=otroX.multiMatricial(mb1);
 
    Matriz imagenIesima(1,784);
 	for(int j=1;j<=nuevoTest.DameAlto();++j){
+		//cout<<"copio imagen en kfold ELSE "<<j<<endl;
+
 		for (int x = 1; x <= nuevoTest.DameAncho(); x++)
 		{
+			        	
 		imagenIesima.Definir(1,i,nuevoTest.Obtener(j,i));
 		}
 		imagenIesima.centrarConMediaNuevo(medias,n);
@@ -1607,7 +1634,11 @@ else{ //2= pls
 		if(etiquetaIesima == etiquetasNuevoTrain.Obtener(j,1)){
 			kesimoPromedio+=1;
 		}
+		kesimoPromedio=kesimoPromedio;
 	}
+	kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
+	cout<<"promedio iter "<<i<<" :"<<kesimoPromedio<<endl;
+	cout<<"total: "<<nuevoTest.DameAlto()<<endl;
 	promedioTotal+=kesimoPromedio;
 
 
