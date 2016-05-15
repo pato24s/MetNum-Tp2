@@ -1622,6 +1622,27 @@ if(metodo == 1) //1 = pca
    		
 
    	}
+	
+	for(int x= 1; x<=10; x++){
+	double promedio = 0;
+	int total =0;
+			for(int y=1; y<=10; y++){
+			total = total + etiquetasMatriz.Obtener(y, x);	
+			}
+		for(int z=1; z<=10; z++){
+		etiquetasMatriz.Definir(z, x, etiquetasMatriz.Obtener(z, x)/ total);
+			
+		}
+
+	}
+
+
+
+
+
+
+
+
 	cout<< "asi etiqueto con PCA"<<endl;
 	cout<<etiquetasMatriz;
    	kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
@@ -1664,6 +1685,22 @@ else{ //2= pls
         	etiquetasMatriz.Definir(etiquetaIesima+1, etiquetasNuevoTest.Obtener(j,1)+1, aux+1);
 		//cout<<"era un:"<<etiquetasNuevoTest.Obtener(j,1)<<" diste un: "<<etiquetaIesima<<endl;
 	}
+
+     for(int x= 1; x<=10; x++){
+        double promedio = 0;
+        int total =0;
+                        for(int y=1; y<=10; y++){
+                        total = total + etiquetasMatriz.Obtener(y, x);
+                        }
+                for(int z=1; z<=10; z++){
+                etiquetasMatriz.Definir(z, x, etiquetasMatriz.Obtener(z, x)/ total);
+
+                }
+
+        }
+
+
+
 	cout<<"asi etiqueto PLS"<<endl;
 	cout<<etiquetasMatriz;
 	kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
