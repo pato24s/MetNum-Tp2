@@ -2,8 +2,33 @@
 #include "lectura.cpp"
 #include <algorithm>    // std::random_shuffle
 #include <vector>
+
 int main(int argc, char const *argv[])
 {
+
+	ifstream imagenesTrain;
+        imagenesTrain.open("../data/train.dat");
+        Matriz etiquetasTrain = Matriz(42000, 1);
+        Matriz imagenesTrainM = lecturaTrain(imagenesTrain, etiquetasTrain);
+        Matriz imagenesTrainMCopia=imagenesTrainM;
+        imagenesTrain.close();
+        Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
+
+        ifstream pepe;
+        pepe.open("./tests/test2 .dat");
+        Matriz foldsM=lecturaFold(pepe,10);
+        pepe.close();
+
+        int metodo=2;
+        int alfa=30;
+        int gamma=15;
+
+	cout<<randomFold(2);
+
+	//cout<<kFoldCrossVal(imagenesTrainM,10,alfa,gamma,etiquetasTrain,metodo,foldsM)<<endl;
+
+
+/*
 	ifstream imagenesTrain;
 	imagenesTrain.open("../data/train.dat");
 	Matriz etiquetasTrain = Matriz(42000, 1);
@@ -72,16 +97,16 @@ for (int k = 1; k <= 10; ++k)
 	
 	Matriz autovalores(50,1);
 	Matriz mb1 = xtx.baseAutovectores(30, autovalores, 50);
-/*	Matriz autovector(784,1);
+	Matriz autovector(784,1);
 	autovector.Definir(50,1, 23);
 	autovector.Definir(53,1, 2);
 	autovector.Definir(58,1, 3);
-	autovector.Definir(10,1, 2);*/
+	autovector.Definir(10,1, 2);
 
 	cout<<"holaa"<<endl;
 	//autovalores.Definir(1,1, xtx.dameAutovalor(autovector, 30));
 	cout<<autovalores;
-/*	Matriz prueba(3,3);
+	Matriz prueba(3,3);
 	Matriz autovalores(3,1);
 	prueba.Definir(1,1,7);                               
 	prueba.Definir(1,2,2);
@@ -92,14 +117,14 @@ for (int k = 1; k <= 10; ++k)
 	prueba.Definir(3,2,-2);
 	prueba.Definir(3,3,-2);
 	prueba.baseAutovectores(30, autovalores, 3);
-	cout<<autovalores;*/
+	cout<<autovalores;
 
 
 
 
 
 
-
+*/
 
 	return 0;
 }

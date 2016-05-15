@@ -237,7 +237,39 @@ cout<<"------------------"<<endl;
     cout<<"------------------";
 
 }
-    
+ 
+
+/*
+Matriz foldRandom(int n,int k){
+Matriz folds(42000,k);
+for (int i = 1; i <= k; ++i)
+        {
+                //srand(time(NULL));
+                        for (int x = 1; x <= n/k ; ++x)
+                        {
+                               cout<<"entra alguna vez aca?"<<endl;
+				 int indice = (rand() % 42000) + 1;
+                               cout<<"defino en el "<<indice<<" "<<i;
+				folds.Definir(indice,i , 1);
+                        }
+        }
+return folds;
+}
+		        Matriz randomFold(int k ){
+        Matriz fold(42000,k);
+        for(int i =1 ; i<= k; ++i){
+                srand(time(NULL));
+                for(int j = 1; j<= 42000/k; ++j){
+                int indice = (rand() % 42000)+1;
+                fold.Definir(indice, i, 1);
+                }
+        }
+        return fold;
+}
+
+   
+*/
+
     
 void Matriz::mostrar() const{
 
@@ -277,6 +309,18 @@ cout<<"------------------";
 //     return sum;
 // }
 
+
+	Matriz randomFold(int k ){
+	Matriz fold(42000,k);
+	for(int i =1 ; i<= k; ++i){
+		//srand(time(NULL));
+		for(int j = 1; j<= 42000/k; ++j){
+		int indice = (rand() % 42000)+1;
+		fold.Definir(indice, i, 1);
+		}
+	}
+	return fold;
+}
 
 void Matriz::Cholesky(){ //modifica la a de modo tal que te queda la L
     int n=this->DameAlto();
