@@ -33,7 +33,7 @@ int main(int argc, char const *argv[])
 	Matriz foldsM=lecturaFold(pepe,5);
 	pepe.close();
 
-	int metodo=1;
+	int metodo=2;
 	int alfa=30;
 	int gamma=15;
 
