@@ -9,7 +9,14 @@
 //#include "lectura.cpp"
 //#include "metodos.cpp"
 using namespace std;
-
+struct tuplaMetricas
+{
+            vector<int> falsosN;
+            vector<int> falsosP;
+            vector<int> verdaderosP;
+            double hitr;
+            tuplaMetricas(vector<int> fn, vector<int> fp, vector<int> vp, double hr) : falsosN(fn) , falsosP(fp) , verdaderosP (vp) , hitr(hr) {};
+};
     // class Matriz;
     // Matriz plsDa(Matriz& x, Matriz& y, int gamma);
 
@@ -1719,78 +1726,85 @@ else{ //2= pls
 
 
 
-double kFoldCrossValConEscritura(ostream& os, Matriz& todas, int k, int alfa, int gamma, Matriz& etiquetasTodas, int metodo, Matriz& foldM){
+tuplaMetricas kFoldCrossValConEscritura(ostream& os, Matriz& todas, int k, int alfa, int gamma, Matriz& etiquetasTodas, int metodo, Matriz& foldM){
     int n=todas.DameAlto();
     
     double promedioTotal = 0;
     double kesimoPromedio = 0;
     int tamanio = n / k;
+    vector<int> verdaderosPositivos(10,0);
+    vector<int> falsosPositivos(10,0);
+    vector<int> falsosNegativos(10,0);
+
 
     for (int i = 1; i <= k; i++){ //CAMBIAR ESTO CUANDO ANDE RAVIOL RAVIOL 
-    	Matriz nuevoTest;
-    	Matriz etiquetasNuevoTrain;
-    	Matriz etiquetasNuevoTest;
-    	Matriz nuevoTrain = filtrarTrain(todas, etiquetasTodas, etiquetasNuevoTrain, foldM, nuevoTest, etiquetasNuevoTest, i);
-    	//cout<<"ALTOOOOOOOOOO "<<etiquetasNuevoTrain.DameAlto()<<endl;
-    	n = nuevoTrain.DameAlto();
-    	vector<double> medias = nuevoTrain.dameVectorMedias();
-    	nuevoTrain.centrarConMediaNuevo(medias, n);
-    	//nuevoTest.centrarConMediaNuevo(medias, n);
-    	//Matriz filtrarTrain(Matriz& viejoTrain, Matriz& foldM, Matriz& nuevoTest, int indiceFold)
-	Matriz etiquetasMatriz(10,10);
+        Matriz nuevoTest;
+        Matriz etiquetasNuevoTrain;
+        Matriz etiquetasNuevoTest;
+        Matriz nuevoTrain = filtrarTrain(todas, etiquetasTodas, etiquetasNuevoTrain, foldM, nuevoTest, etiquetasNuevoTest, i);
+        //cout<<"ALTOOOOOOOOOO "<<etiquetasNuevoTrain.DameAlto()<<endl;
+        n = nuevoTrain.DameAlto();
+        vector<double> medias = nuevoTrain.dameVectorMedias();
+        nuevoTrain.centrarConMediaNuevo(medias, n);
+        //nuevoTest.centrarConMediaNuevo(medias, n);
+        //Matriz filtrarTrain(Matriz& viejoTrain, Matriz& foldM, Matriz& nuevoTest, int indiceFold)
+    Matriz etiquetasMatriz(10,10);
 if(metodo == 1) //1 = pca
 {
-		//promedioTotal=0;
-		kesimoPromedio=0;
-		cout<<"entre metodo 1"<<endl;
-    	Matriz thisT=nuevoTrain.Traspuesta();
-    	cout<<"trasp bien"<<endl;
-    	Matriz xtx=thisT.multiXtrans();
-    	cout<<"multiXtrans listo"<<endl;
-    	Matriz autovalores(alfa,1);
-    	Matriz mb1=xtx.baseAutovectoresConEscritura(os,30, autovalores,alfa);
-    	cout<<"mb listo"<<endl;
-    	nuevoTrain.cambiarBaseNuevo(mb1);
-    	cout<<"lusto el cambio"<<endl;
-    	//todas estan cambiadas de base
+        //promedioTotal=0;
+        kesimoPromedio=0;
+        cout<<"entre metodo 1"<<endl;
+        Matriz thisT=nuevoTrain.Traspuesta();
+        cout<<"trasp bien"<<endl;
+        Matriz xtx=thisT.multiXtrans();
+        cout<<"multiXtrans listo"<<endl;
+        Matriz autovalores(alfa,1);
+        Matriz mb1=xtx.baseAutovectoresConEscritura(os,30, autovalores,alfa);
+        cout<<"mb listo"<<endl;
+        nuevoTrain.cambiarBaseNuevo(mb1);
+        cout<<"lusto el cambio"<<endl;
+        //todas estan cambiadas de base
 
     Matriz imagenIesima(1,784);
-   	for (int z = 1; z <= nuevoTest.DameAlto(); ++z)
-   	{
-   		
+    for (int z = 1; z <= nuevoTest.DameAlto(); ++z)
+    {
+        
         for (int x = 1; x <= nuevoTest.DameAncho(); ++x)
         {
-        	//cout<<"copio imagen en kfold: "<<x<<endl;
-        	imagenIesima.Definir(1, x, nuevoTest.Obtener(z,x));
+            //cout<<"copio imagen en kfold: "<<x<<endl;
+            imagenIesima.Definir(1, x, nuevoTest.Obtener(z,x));
         }
         //cout<<"sali del for "<<endl;
         imagenIesima.centrarConMediaNuevo(medias, n);
         //cout<<"ya centre"<<endl;
         Matriz imagenCambiada = imagenIesima.multiMatricial(mb1);
         //cout<<"ya cambie"<<endl;
-    	int etiquetaIesima = knn(imagenCambiada, etiquetasNuevoTrain, nuevoTrain,30);
-    	//cout<<"ya hice knn"<<endl;
-    	if (etiquetaIesima == etiquetasNuevoTest.Obtener(z,1))
-    	{
-    		kesimoPromedio+= 1;
-   		}
-	int aux = etiquetasMatriz.Obtener(etiquetaIesima+1, etiquetasNuevoTest.Obtener(z,1)+1);
-	etiquetasMatriz.Definir(etiquetaIesima+1, etiquetasNuevoTest.Obtener(z,1)+1, aux+1);
-   		
+        int etiquetaIesima = knn(imagenCambiada, etiquetasNuevoTrain, nuevoTrain,30);
+        //cout<<"ya hice knn"<<endl;
+        if(etiquetaIesima == etiquetasNuevoTest.Obtener(z,1)){
+            kesimoPromedio+=1;
+            verdaderosPositivos[etiquetaIesima]++;
+        }else{
+            falsosPositivos[etiquetaIesima]++;
+            falsosNegativos[etiquetasNuevoTest.Obtener(z,1)]++;
+        }
+    int aux = etiquetasMatriz.Obtener(etiquetaIesima+1, etiquetasNuevoTest.Obtener(z,1)+1);
+    etiquetasMatriz.Definir(etiquetaIesima+1, etiquetasNuevoTest.Obtener(z,1)+1, aux+1);
+        
 
-   	}
-	cout<< "asi etiqueto con PCA"<<endl;
-	cout<<etiquetasMatriz;
-   	kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
-   	cout<<"promedio iter "<<i<<" :"<<kesimoPromedio<<endl;
-   	promedioTotal+=kesimoPromedio;
+    }
+    cout<< "asi etiqueto con PCA"<<endl;
+    cout<<etiquetasMatriz;
+    kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
+    cout<<"promedio iter "<<i<<" :"<<kesimoPromedio<<endl;
+    promedioTotal+=kesimoPromedio;
 
 }
 
 else{ //2= pls
-	cout<<"entre metodo 2 con i:"<<i<<endl;
-	// int n=nuevoTrain.DameAlto();
-	// vector<double> medias=nuevoTrain.dameVectorMedias();
+    cout<<"entre metodo 2 con i:"<<i<<endl;
+    // int n=nuevoTrain.DameAlto();
+    // vector<double> medias=nuevoTrain.dameVectorMedias();
  //    nuevoTrain.centrarConMediaNuevo(medias,n);
     Matriz otroX=nuevoTrain;
     Matriz y=crearY(n);
@@ -1802,37 +1816,43 @@ else{ //2= pls
     Matriz cambiada=otroX.multiMatricial(mb1);
 
    Matriz imagenIesima(1,784);
-	for(int j=1;j<=nuevoTest.DameAlto();++j){
-		//cout<<"copio imagen en kfold ELSE "<<j<<endl;
+    for(int j=1;j<=nuevoTest.DameAlto();++j){
+        //cout<<"copio imagen en kfold ELSE "<<j<<endl;
 
-		for (int x = 1; x <= nuevoTest.DameAncho(); x++)
-		{
-			        	
-		imagenIesima.Definir(1,x,nuevoTest.Obtener(j,x));
-		}
-		imagenIesima.centrarConMediaNuevo(medias,n);
+        for (int x = 1; x <= nuevoTest.DameAncho(); x++)
+        {
+                        
+        imagenIesima.Definir(1,x,nuevoTest.Obtener(j,x));
+        }
+        imagenIesima.centrarConMediaNuevo(medias,n);
 
-		Matriz imagenCambiada=imagenIesima.multiMatricial(mb1);
-		int etiquetaIesima = knn(imagenCambiada,etiquetasNuevoTrain,cambiada,15);
-		if(etiquetaIesima == etiquetasNuevoTest.Obtener(j,1)){
-			kesimoPromedio+=1;
-		}
-		int aux = etiquetasMatriz.Obtener(etiquetaIesima+1, etiquetasNuevoTest.Obtener(j,1)+1);
-        	etiquetasMatriz.Definir(etiquetaIesima+1, etiquetasNuevoTest.Obtener(j,1)+1, aux+1);
-		//cout<<"era un:"<<etiquetasNuevoTest.Obtener(j,1)<<" diste un: "<<etiquetaIesima<<endl;
-	}
-	cout<<"asi etiqueto PLS"<<endl;
-	cout<<etiquetasMatriz;
-	kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
-	cout<<"promedio iter "<<i<<" :"<<kesimoPromedio<<endl;
-		promedioTotal+=kesimoPromedio;
+        Matriz imagenCambiada=imagenIesima.multiMatricial(mb1);
+        int etiquetaIesima = knn(imagenCambiada,etiquetasNuevoTrain,cambiada,15);
+        if(etiquetaIesima == etiquetasNuevoTest.Obtener(j,1)){
+            kesimoPromedio+=1;
+            verdaderosPositivos[etiquetaIesima]++;
+        }else{
+            falsosPositivos[etiquetaIesima]++;
+            falsosNegativos[etiquetasNuevoTest.Obtener(j,1)]++;
+        }
+        int aux = etiquetasMatriz.Obtener(etiquetaIesima+1, etiquetasNuevoTest.Obtener(j,1)+1);
+        etiquetasMatriz.Definir(etiquetaIesima+1, etiquetasNuevoTest.Obtener(j,1)+1, aux+1);
+        //cout<<"era un:"<<etiquetasNuevoTest.Obtener(j,1)<<" diste un: "<<etiquetaIesima<<endl;
+    }
+    cout<<"asi etiqueto PLS"<<endl;
+    cout<<etiquetasMatriz;
+    kesimoPromedio=kesimoPromedio/nuevoTest.DameAlto();
+    cout<<"promedio iter "<<i<<" :"<<kesimoPromedio<<endl;
+        promedioTotal+=kesimoPromedio;
 
 }
 
 
 
 }
-    return promedioTotal/k;
+    promedioTotal= promedioTotal /k;
+    tuplaMetricas result(falsosNegativos,falsosPositivos,verdaderosPositivos,promedioTotal);
+    return result;
 
 }
 
