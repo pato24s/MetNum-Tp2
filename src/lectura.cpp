@@ -195,117 +195,283 @@ void mostrarImagen(const Matriz& i){
 	
 
 }
+void mostrarImagenRecortada(const Matriz& i){
+	
+	double aux;
+	int m = i.DameAncho();
+	//cout << "Su etiqueta es: "<< i.etiqueta<< " y tiene " << i.pixeles.size()  << " pixeles" <<endl;
+	for (int t = 0; t < 19; ++t){
+		cout<<"-";
+	}
 
-// int promedioAltoArriba(Matriz& source){
+	cout<<endl;
+	
+	for (int j = 1; j<m; ++j){
+		aux = i.Obtener(1, j);
+		if(aux != 0){
+			cout  <<RED<<"0"<<RESET;
+		}else{
+			cout<<GREEN<<"0"<<RESET;	
+		}
+		
+		if( j % 17 == 0 && j != 0){cout<<endl;}
+	}
+	cout<<endl;
+	for (int f = 0; f < 19; ++f){
+		cout<<"-";
+	}
+	cout<<endl;
+}
 
-// 	int sumaPromedio=0;
-// 	int fila = source.DameAlto();
 
-// 	for (int i = 0; i < fila; ++i){ //calculo todas mis imagenes 
-// 		bool noEmpeze = true;
-// 		int columna = 0;
-// 		filaDondeEmpieza = 0;
-// 		while(noEmpeze && columna < 784){
-// 			noEmpeze = Obtener(i,columna)) == 0 && empeze;
-// 			if(columna % 28 == 0){
-// 				filaDondeEmpieza++;
-// 			}
-// 			columna++;
-// 		}
-// 		sumaPromedio = sumaPromedio + filaDondeEmpieza;
-// 	}
-// 	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
-// 	return sumaPromedio;
-// }
 
-// int promedioAltoAbajo(Matriz& source){
+bool filaVacia(const Matriz& src,int filaMatriz ,int filaImagen){
+	bool filaEsVacia=true;
+	int i=0;
+	while(i<28){
+		filaEsVacia= (src.Obtener(filaMatriz,filaImagen)==0) && filaEsVacia;
+		i++;
+		filaImagen++;
+	}
+	return filaEsVacia;
+}
 
-// 	int sumaPromedio=0;
-// 	int fila = source.DameAlto();
+void promedioArribaYAbajo(const Matriz& source,int& arriba,int& abajo){
+	int sumaPromedioAlto=0;
+	int sumaPromedioAbajo=0;
+	int fila=source.DameAlto();
+	int sumaFilaArriba;
+	int sumaFilaAbajo;
 
-// 	for (int i = 0; i < fila; ++i){ //calculo todas mis imagenes 
-// 		bool noEmpeze = true;
-// 		int columna = 0;
-// 		filaDondeEmpieza = 0;
-// 		while(noEmpeze && columna > 0){
-// 			noEmpeze = Obtener(i,columna)) == 0 && empeze;
-// 			if(columna % 28 == 0){
-// 				filaDondeEmpieza++;
-// 			}
-// 			columna--;
-// 		}
-// 		sumaPromedio = sumaPromedio + filaDondeEmpieza;
-// 	}
-// 	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
-// 	return sumaPromedio;
-// }
+	for (int i = 1; i <= fila; ++i){
+		bool esAbajo=false;
+		sumaFilaArriba=0;
+		sumaFilaAbajo=0;
+		int t=1;
+		while(t<784){
+			if(esAbajo){
+				if(filaVacia(source,i,t)){
+					sumaFilaAbajo++;
+				}
+			}else{
+				if(filaVacia(source,i,t)){
+					sumaFilaArriba++;
+				}else{
+					esAbajo=true;
+				}
+			}
 
-// int promedioAnchoIzquierda(Matriz& source){
+			t=t+28;
+		}
+		sumaPromedioAlto=sumaPromedioAlto+sumaFilaArriba;
+		sumaPromedioAbajo=sumaPromedioAbajo+sumaFilaAbajo;
 
-// 	int sumaPromedio=0;
-// 	int fila = source.DameAlto();
+	}
+	sumaPromedioAlto=sumaPromedioAlto/fila;
+	sumaPromedioAbajo=sumaPromedioAbajo/fila;
+	arriba=sumaPromedioAlto;
+	abajo=sumaPromedioAbajo;
+}
 
-// 	for (int i = 0; i < fila; ++i){ //calculo todas mis imagenes 
-// 		bool noEmpeze = true;
-// 		int fila = 0;
-// 		filaDondeEmpieza = 0;
-// 		while(noEmpeze){
-// 			noEmpeze = Obtener(i,fila)) == 0 && empeze;
-// 			if(fila % 784 == 0){
-// 				columnaDondeEmpieza++;
-// 			}
-// 			fila = fila+28;
-// 		}
-// 		sumaPromedio = sumaPromedio + columnaDondeEmpieza;
-// 	}
-// 	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
-// 	return sumaPromedio;
-// }
+bool columnaVacia(const Matriz& src,int t,int f){
+	int alto=src.DameAlto();
+	int ancho=src.DameAncho();
+	bool columnaesVacia=true;
+	int i=0;
+	while(i<28){
+		
+		columnaesVacia = (src.Obtener(t,f)==0) && columnaesVacia;
+		//cout<<"Itaracion Numero: "<<f<<" EL VALOR  "<<src.Obtener(t,f)<<endl;
+		f=f+28;
+		i++;
+	}
+	return columnaesVacia;
+}
 
-// int promedioAnchoIzquierda(Matriz& source){
+void promedioAnchoIzqYDer(const Matriz& source,int& izq,int& der){
 
-// 	int sumaPromedio=0;
-// 	int fila = source.DameAlto();
+	int sumaPromedioIzquierda=0;
+	int sumaPromedioDerecha=0;
+	int fila = source.DameAlto();
+	int columnaDondeEmpiezaIzquierda;
+	int columnaDondeEmpiezaDerecha;
 
-// 	for (int i = 0; i < fila; ++i){ //calculo todas mis imagenes 
-// 		bool noEmpeze = true;
-// 		int fila = 0;
-// 		filaDondeEmpieza = 0;
-// 		while(noEmpeze){
-// 			noEmpeze = Obtener(i,fila)) == 0 && empeze;
-// 			if(fila % 784 == 0){
-// 				columnaDondeEmpieza++;
-// 			}
-// 			fila = fila+28;
-// 		}
-// 		sumaPromedio = sumaPromedio + columnaDondeEmpieza;
-// 	}
-// 	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
-// 	return sumaPromedio;
-// }
 
-// int promedioAnchoDerecha(Matriz& source){// revisar esta verga que 
+	for (int i = 1; i <= fila; ++i){ //calculo todas mis imagenes 
+		columnaDondeEmpiezaIzquierda=0;
+		columnaDondeEmpiezaDerecha=0;
+		bool esDerecha=false;
+		for (int t = 1; t <= 28; ++t){
+			if(esDerecha){
+				if(columnaVacia(source,i,t)){
+					columnaDondeEmpiezaDerecha=columnaDondeEmpiezaDerecha+1;
+				}
+			}else{
+				if(columnaVacia(source,i,t)){
+					columnaDondeEmpiezaIzquierda=columnaDondeEmpiezaIzquierda+1;
+					//cout<<"pepeeee :"<<columnaVacia(source,i,t)<<endl;
+					}else{
+					esDerecha=true;
+					}
+				}	
+		}
+		//mostrarImagen(source);
+		sumaPromedioIzquierda = sumaPromedioIzquierda + columnaDondeEmpiezaIzquierda;
+		sumaPromedioDerecha   = sumaPromedioDerecha+columnaDondeEmpiezaDerecha;
+	}
 
-// 	int sumaPromedio=0;
-// 	int fila = source.DameAlto();
+	sumaPromedioIzquierda = sumaPromedioIzquierda/fila;
+	sumaPromedioDerecha= sumaPromedioDerecha/fila;
+	izq =sumaPromedioIzquierda;
+	der =sumaPromedioDerecha;
+}
 
-// 	for (int i = 0; i < fila; ++i){ //calculo todas mis imagenes 
-// 		bool noEmpeze = true;
-// 		int fila = 0;
-// 		filaDondeEmpieza = 784;
-// 		while(noEmpeze){
-// 			noEmpeze = Obtener(i,fila)) == 0 && empeze;
-// 			if(fila % 784 == 0){
-// 				columnaDondeEmpieza++;
-// 			}
-// 			fila = fila-28;
-// 		}
-// 		sumaPromedio = sumaPromedio + columnaDondeEmpieza;
-// 	}
-// 	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
-// 	return sumaPromedio;
-// }
+// TOMA UNA MATRIZ DE 1,784 Y ME DEVUELVE UNA DE 1,357
+Matriz recortarImagen(Matriz& src,int arriba,int abajo,int izq,int der){
+	//HACER UN CROPFLIP PAPA
+	Matriz res(1,357);
+	int tamx=17;//lo hardcodeo a mano
+	int tamy=21;
+	int y=0;
+	int x=0;
+	int primerFila;
+	int columna;
+	int pos=1;
+	//cicloFilas
+	while(y<tamy){
+		//Arrlgo mi fila
+		x=0;
+		primerFila = arriba*28;
+		while(x<tamx){
+			columna = primerFila;
+			double aux= src.Obtener(1,columna);
+			res.Definir(1,pos,aux);
+			x++;
+			columna++;
+			pos++;
+		}
+		primerFila+28;
+		y++;
+	}
+	return res;
+}
+//NUESTRO CASO ES 4,3,6,5 Y NOS DEVUELVE UNA MATRIZ DE 42000 IMAGENES DE TAMANIO 357 matriz(42000,357) es decir el 45% de la imagen original
+Matriz recortarTodas(Matriz& src,int arriba,int abajo,int izq,int der){
+	Matriz res(42000,357);
+	Matriz aux(1,784);
+	int fila = src.DameAlto();
+	for (int i = 1; i <= fila; ++i){
+		//Estoy en la iesima imagen a recortar;
+		src.insertarEnFila1(aux,1,i);
+		Matriz resParcial = recortarImagen(aux,arriba,abajo,izq,der);
+		resParcial.insertarEnFila1(res,i,1);	
+	}
+	return res;
+}
+/*
+int promedioAltoArriba(const Matriz& source){
 
+	int sumaPromedio=0;
+	int fila = source.DameAlto();
+	cout<<"AASDJASHCAJSCHAS "<<fila<<endl;
+	int filaDondeEmpieza;
+	bool Empece;
+
+	for (int i = 1; i < fila; ++i){ //calculo todas mis imagenes 
+		Empece = false;
+		filaDondeEmpieza = 0;
+		for (int t = 0; t < 784; ++t){
+			if(!Empece){
+				if(t%28 ==0){
+					filaDondeEmpieza=filaDondeEmpieza+1;
+				}else{
+					Empece= source.Obtener(i,t) != 0;
+					//cout<<"EL NUMERO QUE ESTA EN "<<i<<", "<<t<<" : "<<source.Obtener(i,t)<<endl;
+					//mostrarImagen(source);
+				}
+			}
+		}
+		//cout<<" FILA DONDE EMPIEZA IMAGEN "<<i<<" "<<filaDondeEmpieza<<endl;
+		sumaPromedio = sumaPromedio + filaDondeEmpieza-1;
+	}
+	
+	sumaPromedio = (sumaPromedio/fila); //ver que onda esto
+	return sumaPromedio;
+}
+
+int promedioAltoAbajo(const Matriz& source){
+
+	int sumaPromedio=0;
+	int fila = source.DameAlto();
+	int filaDondeEmpieza;
+	bool Empece;
+
+	for (int i = 1; i < fila; ++i){ //calculo todas mis imagenes 
+		Empece = false;
+		filaDondeEmpieza = 0;
+
+		Empece = false;
+		filaDondeEmpieza = 0;
+		for (int t = 783; t >=0 ; --t){
+			if(!Empece){
+				if(t%28 ==0){
+					filaDondeEmpieza=filaDondeEmpieza+1;
+				}else{
+					Empece= source.Obtener(i,t) != 0;
+					//cout<<"EL NUMERO QUE ESTA EN "<<i<<", "<<t<<" : "<<source.Obtener(i,t)<<endl;
+					//mostrarImagen(source);
+				}
+			}
+		}
+		
+		sumaPromedio = sumaPromedio + filaDondeEmpieza;
+	}
+	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
+	return sumaPromedio;
+}
+*/
+
+/*
+int promedioAnchoDerecha(const Matriz& source){// revisar esta verga que 
+	
+	int sumaPromedio=0;
+	int fila = source.DameAlto();
+	bool noEmpece;
+	int filaImagen;
+	int filaImagen1;
+	int columnaDondeEmpieza;
+	int contador;
+
+	for (int i = 0; i < fila; ++i){ //calculo todas mis imagenes 
+		noEmpece = true;
+		filaImagen = 0;
+		columnaDondeEmpieza = 0;
+		contador = 0;
+		
+		filaImagen1 = 28;
+		while(noEmpece){
+			 filaImagen = filaImagen1;
+			while(contador < 28){
+				
+				noEmpece = (source.Obtener(i,filaImagen) == 0) && noEmpece;
+				filaImagen = filaImagen+28;
+				
+			}
+			if(noEmpece){
+				columnaDondeEmpieza++;
+			}
+			filaImagen1--;
+									
+		}
+
+		sumaPromedio = sumaPromedio + columnaDondeEmpieza;
+
+	}
+
+	sumaPromedio = sumaPromedio/fila -1; //ver que onda esto
+	return sumaPromedio;
+}
+*/
 /* Matriz convertirAMatrizTrain(Imagenes img, Matriz& etiquetas ){
  	// etiquetas = 784x1
  	assert(etiquetas.DameAlto() == 37000);
