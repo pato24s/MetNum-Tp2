@@ -15,18 +15,18 @@ int main(int argc, char const *argv[])
         Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
 
         ifstream pepe;
-        pepe.open("./tests/test2 .dat");
-        Matriz foldsM=lecturaFold(pepe,10);
+        pepe.open("./tests/test1.dat");
+        Matriz foldsM=lecturaFold(pepe,5);
         pepe.close();
 
-        int metodo=2;
+        int metodo=1;
         int alfa=30;
         int gamma=15;
 
-	cout<<randomFold(2);
-
-	//cout<<kFoldCrossVal(imagenesTrainM,10,alfa,gamma,etiquetasTrain,metodo,foldsM)<<endl;
-
+	//cout<<randomFold(2);
+	for(alfa = 1; alfa<=784; alfa++){
+	cout<<"el promedio en la iteracion "<<alfa<<" de los folds es : "<<kFoldCrossVal(imagenesTrainM,5,alfa,gamma,etiquetasTrain,metodo,foldsM)<<endl;
+}
 
 /*
 	ifstream imagenesTrain;
