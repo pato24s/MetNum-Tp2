@@ -59,6 +59,7 @@ void Identificador::PLS_DA(const Matriz& set, unsigned int gamma ){
 	}
 
 	CentrarDividir(Y);
+
 	Matriz Yt = Y.Transponer();
 
 	this->Vt = Matriz(set.Ancho(), gamma);

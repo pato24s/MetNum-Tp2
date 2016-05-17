@@ -379,7 +379,7 @@ void testGeneral(LevantaDatos& ld){
 	 	cout << "Seteando " << i << "-esimo fold..." << endl;
 	 	ld.SetearKesimoFold(i);
 	 	cout << "Testeando con PCA..." << endl;
-	 	testearKesimoFold(i, ld, 0);
+	 	//testearKesimoFold(i, ld, 0);
 	 	cout << "Testeando con PLS-DA..." << endl;
 		testearKesimoFold(i, ld, 1);
 	}	
@@ -401,10 +401,10 @@ int main(int argc, char const *argv[]){
 	// cout << "    Cantidad vecinos : " << ld.CantidadVecinos() << endl;
 	// cout << "    Alpha : " << ld.Alpha() << endl;
 	// cout << "    Gamma : " << ld.Gamma() << endl;
-	cout << "    Cantidad fold : " << ld.CantidadFolds() << endl;
+	//cout << "    Cantidad fold : " << ld.CantidadFolds() << endl;
 	//testGammaPLS(0,ld,10,20000);
 	// testAlphaPCA(0,ld,10,20000);
-	// testVecinosPLS(0,ld,10,20000);
+	 //testVecinosPLS(0,ld,10,20000);
 	// testVecinosPCA(0,ld,10,20000);
 	// testVecinosSinMetodo(0,ld,10,20000);
 	testGeneral(ld);

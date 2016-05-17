@@ -1,0 +1,50 @@
+{
+    ".deps_version": 2, 
+    "g++ -o ./tp ./main.o ./modulos/identificador.o ./modulos/levanta_datos.o ./utils/matriz.o ./utils/vector.o": {
+        ".": "input-5058f1af8388633f609cadb75a75dc9d", 
+        "main.o": "input-057245886fd0f3cad410935b5ad7794b", 
+        "modulos/identificador.o": "input-1600c1812f9de9736039a4f698dde6f3", 
+        "modulos/levanta_datos.o": "input-b1b5e6ef3c96319f0fe67abe6e9ad28e", 
+        "tp": "output-3b7b0e3ea9c2833ba8ce0a37b3ebef36", 
+        "utils/matriz.o": "input-76ab2390dfb08e56bc0e50addf5d6afd", 
+        "utils/vector.o": "input-93fdf238017a0634a0ae465197328882"
+    }, 
+    "g++ -std=c++11 -O2 -c ./main.cpp -o ./main.o": {
+        ".": "input-5058f1af8388633f609cadb75a75dc9d", 
+        "main.cpp": "input-0ce2a9bd14d6f7349d291f76675f18b2", 
+        "main.o": "output-057245886fd0f3cad410935b5ad7794b", 
+        "modulos/identificador.h": "input-e37740a241d67d67f6334b42d8db510a", 
+        "modulos/levanta_datos.h": "input-aaf259a3b728568d17f8d48f1975e26d", 
+        "utils/matriz.h": "input-6a308069d1fa33bcdab6c9fcb6c29468", 
+        "utils/vector.h": "input-dad65a1ce1e98c91b1b7f33bb2dd42ac"
+    }, 
+    "g++ -std=c++11 -O2 -c ./modulos/identificador.cpp -o ./modulos/identificador.o": {
+        ".": "input-5058f1af8388633f609cadb75a75dc9d", 
+        "modulos/identificador.cpp": "input-252436b9a77e9b6f6e3619e417f82dd5", 
+        "modulos/identificador.h": "input-e37740a241d67d67f6334b42d8db510a", 
+        "modulos/identificador.o": "output-1600c1812f9de9736039a4f698dde6f3", 
+        "utils/matriz.h": "input-6a308069d1fa33bcdab6c9fcb6c29468", 
+        "utils/vector.h": "input-dad65a1ce1e98c91b1b7f33bb2dd42ac"
+    }, 
+    "g++ -std=c++11 -O2 -c ./modulos/levanta_datos.cpp -o ./modulos/levanta_datos.o": {
+        ".": "input-5058f1af8388633f609cadb75a75dc9d", 
+        "modulos/levanta_datos.cpp": "input-1d043454e674cb39bf192c6d79e4750c", 
+        "modulos/levanta_datos.h": "input-aaf259a3b728568d17f8d48f1975e26d", 
+        "modulos/levanta_datos.o": "output-b1b5e6ef3c96319f0fe67abe6e9ad28e", 
+        "utils/matriz.h": "input-6a308069d1fa33bcdab6c9fcb6c29468", 
+        "utils/vector.h": "input-dad65a1ce1e98c91b1b7f33bb2dd42ac"
+    }, 
+    "g++ -std=c++11 -O2 -c ./utils/matriz.cpp -o ./utils/matriz.o": {
+        ".": "input-5058f1af8388633f609cadb75a75dc9d", 
+        "utils/matriz.cpp": "input-5228fc185108db973eeed114083eb37a", 
+        "utils/matriz.h": "input-6a308069d1fa33bcdab6c9fcb6c29468", 
+        "utils/matriz.o": "output-76ab2390dfb08e56bc0e50addf5d6afd", 
+        "utils/vector.h": "input-dad65a1ce1e98c91b1b7f33bb2dd42ac"
+    }, 
+    "g++ -std=c++11 -O2 -c ./utils/vector.cpp -o ./utils/vector.o": {
+        ".": "input-5058f1af8388633f609cadb75a75dc9d", 
+        "utils/vector.cpp": "input-96bcfef3a4022e37b3589563304a1990", 
+        "utils/vector.h": "input-dad65a1ce1e98c91b1b7f33bb2dd42ac", 
+        "utils/vector.o": "output-93fdf238017a0634a0ae465197328882"
+    }
+}

@@ -37,20 +37,35 @@ int main(int argc, char const *argv[])
 	imagenesTrain.close();
 
 
-	ofstream fileOut;
-	fileOut.open(argv[2]); //donde imprimir la mierda
+	ofstream obligatorio;
+	obligatorio.open(argv[2]); //donde imprimir la mierda
 	int metodo=atoi(argv[3]);
-	if(metodo==0){
-		cout<<"pediste knn"<<endl;
-	}else{
-		if(metodo==1){
-				kFoldCrossValConEscritura(fileOut, imagenesTrainM, data.cantFolds, data.alfa, data.gamma, etiquetasTrain, metodo, data.kfold);
+	// if(metodo==0){
+	// 	cout<<"pediste knn"<<endl;
+	// }else{
+	// 	if(metodo==1){
+	// 			kFoldCrossValConEscritura(obligatorio, imagenesTrainM, data.cantFolds, data.alfa, data.gamma, etiquetasTrain, metodo, data.kfold);
 
-		}else{
-			kFoldCrossValConEscritura(fileOut, imagenesTrainM, data.cantFolds, data.alfa, data.gamma, etiquetasTrain, metodo, data.kfold);
+	// 	}else{
+	// 		kFoldCrossValConEscritura(obligatorio, imagenesTrainM, data.cantFolds, data.alfa, data.gamma, etiquetasTrain, metodo, data.kfold);
+	// 	}
+	// }
+	vector<vector<double> > pca=kFoldCrossValConVector(imagenesTrainM, data.cantFolds, data.alfa, data.gamma, etiquetasTrain, 1, data.kfold);
+	vector<vector<double> > pls=kFoldCrossValConVector(imagenesTrainM, data.cantFolds, data.alfa, data.gamma, etiquetasTrain, 2, data.kfold);
+	int i=0;
+	while(i<data.cantFolds){
+		for (int j = 0; j < data.alfa; ++j){
+			obligatorio<<pca[i][j]<<endl;
 		}
+		for (int l = 0; l < data.gamma; ++l){
+			obligatorio<<pls[i][l]<<endl;
+		}
+		i++;
 	}
-	fileOut.close();
+
+
+
+	obligatorio.close();
 
 	return 0;
 }
