@@ -469,7 +469,7 @@ Matriz Matriz::multiXtrans() const{
 		int fila2=1;
 		while(fila2<=DameAlto()){
 			int i=1;
-			int r=0;
+			double r=0;
 			while(i<=DameAncho()){
 				double aux=(_matriz[fila1-1][i-1]);
 				if(fila1==fila2){
@@ -652,11 +652,15 @@ double Matriz::dameAutovalor(Matriz& v , int iter)const{
         double norma = v.norma2Vectorial(); //tiene que darme 1/norma
         norma = pow(norma, -1);
         v.multiEscalar(norma);
+
     }
     Matriz vt = v.Traspuesta();
-    normaCuadrado = v.norma2Cuadrado();
+    Matriz vTv=vt.multiMatricial(v);
+    double denominador=pow(vTv.Obtener(1,1),-1);
+
+    //normaCuadrado = v.norma2Cuadrado();
     Matriz aux = vt.multiMatricial(this->multiMatricial(v));
-    aux.multiEscalar(normaCuadrado);
+    aux.multiEscalar(denominador);
     //x = v; //esto debería dejar en x el autovector
     return aux.Obtener(1,1);
 }
@@ -678,25 +682,7 @@ void Matriz::deflacion(double a, Matriz& v ){
     //vvt.mostrarMatriz(cout);
     this->sumaMatricial(vvt);
 }
-/*Matriz Matriz::baseAutovectores(int iter, Matriz& autovalores, int alfa)const {
-    int m = this->DameAlto();
-    int n = this->DameAncho();
-    assert(m==n);
-    Matriz copia = *this;
-    Matriz resultante = Matriz(m,n);
-    for (int i = 1; i <= alfa; ++i)
-    {
-    	//cout<<"iteracion base numero "<<i<<endl;
-        Matriz autovector = Matriz(m, 1);
-        autovector.randomizar(m, 1);
-        double autovalor = copia.dameAutovalor(autovector, iter); //esto me deja en randi el autovector y devuelve el autovalor
-        autovalores.Definir(i, 1, autovalor);
-        resultante.insertarEnColumna(autovector, i);
-		copia.deflacion(autovalor, autovector);
-    }
-    return resultante;
-}
-*/
+
 
 Matriz Matriz::baseAutovectores(int iter, Matriz& autovalores, int alfa){
     int m = this->DameAlto();
@@ -1183,6 +1169,8 @@ Matriz crearY(int n){
 
 //void Matriz::insertarEnFila2(Matriz& a, int f){
 Matriz etiquetas= lecturaPLSDA();
+//cout<<"salen las etiquetas: "<<endl;
+//cout<<etiquetas;
 int m= 10;
 Matriz res(n,10);
 
@@ -1196,6 +1184,8 @@ for(int i=1; i<=n; i++){
         }
     }
 }
+
+
 
 //cout<< res<<endl;
 
@@ -1222,6 +1212,49 @@ return res;
 
 }
 
+
+Matriz crearYAUX(int n, Matriz etiquetas){
+
+//void Matriz::insertarEnFila2(Matriz& a, int f){
+
+int m= 10;
+Matriz res(n,10);
+
+
+for(int i=1; i<=n; i++){
+    for(int j=1; j<=m; j++){
+        if(j-1== etiquetas.Obtener(i,1)){
+            res.Definir(i,j,1);
+        }else{
+            res.Definir(i,j,(-1));
+        }
+    }
+}
+
+
+
+vector<double> v = res.dameVectorMedias(); //RAVIOL
+
+
+// for(int i=0;i<10;i++){
+// //cout<< "vector" << v[i]<<endl;
+// }
+// double temp;
+// for(int i=1; i<=n; i++){
+//     for(int j=1; j<=m; j++){
+//         temp= v[j-1];
+//         if(j== etiquetas.Obtener(i,1)){
+//             res.Definir(i,j,(1-temp)/sqrt(n-1));
+//         }else{
+//             res.Definir(i,j,((-1)-temp)/sqrt(n-1));
+//         }
+//     }
+// }
+res.centrarConMediaNuevo(v,n);
+
+return res;
+
+}
 
 Matriz Matriz::plsDa(Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN DE GAMMA FILAS X WI COLUMNAS
     //REVISAR  CACA RAVIOL RAVIOL
@@ -1252,9 +1285,9 @@ Matriz Matriz::plsDa(Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN
             //Matriz ytx=yt.multiMatricial(*this);
         	// cout<<"xty iter: "<<i<<endl;
         	// cout<<xty; //parece estar piola
-            Matriz mi = xty.multiXtrans();
-            // Matriz xtyTrans=xty.Traspuesta();
-            // Matriz mi=xty.multiMatricial(xtyTrans);
+            //Matriz mi = xty.multiXtrans();
+            Matriz xtyTrans=xty.Traspuesta();
+            Matriz mi=xty.multiMatricial(xtyTrans);
             
             int fila = mi.DameAlto();
 
@@ -1265,7 +1298,7 @@ Matriz Matriz::plsDa(Matriz& y, int gamma){//ESTA VERGA ME DEVUELVE LA MATRIZ EN
             autovector.randomizar(fila,1);
             Matriz copiaMI = mi;
  	
-            double autovalor = mi.dameAutovalor(autovector, 30); //esto me deja en randi el autovector y devuelve el autovalor RAVIOLI RAVIOLI DAME LA FORMUOLI
+            double autovalor = mi.dameAutovalor(autovector, 300); //esto me deja en randi el autovector y devuelve el autovalor RAVIOLI RAVIOLI DAME LA FORMUOLI
             //cout << "autovalor  " << autovalor <<endl;
             // cout<<"AUTOVECTOR iter: "<<i<<endl;
             // cout<<autovector;
@@ -1342,10 +1375,12 @@ Matriz Matriz::plsDaConEscritura(ostream& os,Matriz& y, int gamma){//ESTA VERGA 
             //Matriz ytx=yt.multiMatricial(*this);
         	// cout<<"xty iter: "<<i<<endl;
         	// cout<<xty; //parece estar piola
-            Matriz mi = xty.multiXtrans();
+           Matriz mi = xty.multiXtrans();
+    
             // Matriz xtyTrans=xty.Traspuesta();
-            // Matriz mi=xty.multiMatricial(xtyTrans);
-            
+             //Matriz mi=xty.multiMatricial(xtyTrans);
+           //cout<<"MIIIIIIIIIIIIIIIIIII"<<endl;
+            //cout<<mi;
             int fila = mi.DameAlto();
 
             //cout<< "MI" << mi<< endl;
@@ -1355,7 +1390,7 @@ Matriz Matriz::plsDaConEscritura(ostream& os,Matriz& y, int gamma){//ESTA VERGA 
             autovector.randomizar(fila,1);
             Matriz copiaMI = mi;
  	
-            double autovalor = mi.dameAutovalor(autovector, 30); //esto me deja en randi el autovector y devuelve el autovalor RAVIOLI RAVIOLI DAME LA FORMUOLI
+            double autovalor = mi.dameAutovalor(autovector, 30000); //esto me deja en randi el autovector y devuelve el autovalor RAVIOLI RAVIOLI DAME LA FORMUOLI
             os<<autovalor<<endl;
             //cout << "autovalor  " << autovalor <<endl;
             // cout<<"AUTOVECTOR iter: "<<i<<endl;
@@ -1683,6 +1718,8 @@ else{ //2= pls
 	// vector<double> medias=nuevoTrain.dameVectorMedias();
  //    nuevoTrain.centrarConMediaNuevo(medias,n);
     Matriz otroX=nuevoTrain;
+
+
     Matriz y=crearY(n);
     ////cout<<y<<endl;
     Matriz mb1=nuevoTrain.plsDa(y,gamma);//RAVIOL
@@ -1835,8 +1872,8 @@ else{ //2= pls
     // vector<double> medias=nuevoTrain.dameVectorMedias();
  //    nuevoTrain.centrarConMediaNuevo(medias,n);
     Matriz otroX=nuevoTrain;
-    Matriz y=crearY(n);
-    //cout<<y<<endl;
+    Matriz y=crearYAUX(otroX.DameAlto(),etiquetasNuevoTrain);
+
     Matriz mb1=nuevoTrain.plsDaConEscritura(os,y,gamma);//RAVIOL
       //cout<<"MB MB MB MB MB MB"<<endl;
       //cout<<mb1;
