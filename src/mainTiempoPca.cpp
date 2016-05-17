@@ -7,13 +7,38 @@
 #include "lectura.cpp"
 #include <algorithm>    // std::random_shuffle
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+//#include <iomanip>	// fruta1
+#include <string>     // fruta2
+#include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
+//#include <stdio.h>
+#include <cstdlib>
+//#include <sys/time.h>
+#include <stdio.h>
+using namespace std;
+
+double timeval_diff(struct timeval *a, struct timeval *b)
+{
+  return
+    (double)(a->tv_sec + (double)a->tv_usec/1000000) -
+    (double)(b->tv_sec + (double)b->tv_usec/1000000);
+}
+
+
 int main(int argc, char const *argv[])
 {
 	
 
 
-
-
+struct timeval t_ini, t_fin;
+  	
+  	double secs;
+  	double promedio=0;
+  	
 
 
 // COSAS PARA AMBOS MAINS VIEJOS
@@ -33,13 +58,54 @@ int main(int argc, char const *argv[])
 	Matriz foldsM=lecturaFold(pepe,5);
 	pepe.close();
 
-	int metodo=2;
-	int alfa=30;
-	int gamma=15;
+
+	// std::stringstream convert(argv[1]);
+	// int cant;
+	// convert >>cant;
+
+	// std::stringstream convert1(argv[2]);
+	// int metodo;
+	// convert1 >> metodo;
+
+	// std::stringstream convert2(argv[3]);
+	// int alfa;
+	// convert2 >> alfa;
+
+	// std::stringstream convert3(argv[4]);
+	// int gamma;
+	// convert3 >>alfa;
+
+ofstream fileOut;
+fileOut.open(argv[1]);
+//ostream os;
+
+int metodo=1;
+int gamma=5;
+tuplaMetricas res;
 
 
-//cout<<kFoldCrossVal(imagenesTrainM,5,alfa,gamma,etiquetasTrain,metodo,foldsM)<<endl;
+for(int alfa=90; alfa<=150;alfa=alfa+10){
+	gettimeofday(&t_ini, NULL);
 
+	res= kFoldCrossVal(imagenesTrainM,5,alfa,gamma,etiquetasTrain,metodo,foldsM);
+		gettimeofday(&t_fin, NULL);
+
+
+	secs = timeval_diff(&t_fin, &t_ini);
+	
+double presT=0;
+double recT=0;	
+for(int i=0; i<=9; i++){
+presT=presT+(res.verdaderosP[i]/(res.verdaderosP[i]+res.falsosP[i]));
+recT= recT+(res.verdaderosP[i]/(res.verdaderosP[i]+res.falsosN[i]));
+}
+presT= presT/10;
+recT=recT/10;
+secs=secs/60;
+fileOut<<alfa<<" "<< secs<<" "<<res.hitr<<" "<<presT<<" "<<recT<<endl;
+}
+
+fileOut.close();
 
 // // 1. MAIN PARA LEVANTAR 1 SOLA IMAGEN Y PROBARLA
 // 	 //Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());

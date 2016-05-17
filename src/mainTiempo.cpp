@@ -7,13 +7,37 @@
 #include "lectura.cpp"
 #include <algorithm>    // std::random_shuffle
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+//#include <iomanip>	// fruta1
+#include <string>     // fruta2
+#include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
+//#include <stdio.h>
+#include <cstdlib>
+//#include <sys/time.h>
+#include <stdio.h>
+
+double timeval_diff(struct timeval *a, struct timeval *b)
+{
+  return
+    (double)(a->tv_sec + (double)a->tv_usec/1000000) -
+    (double)(b->tv_sec + (double)b->tv_usec/1000000);
+}
+
+
 int main(int argc, char const *argv[])
 {
 	
 
 
-
-
+struct timeval t_ini, t_fin;
+  	
+  	double secs;
+  	double promedio=0;
+  	
 
 
 // COSAS PARA AMBOS MAINS VIEJOS
@@ -33,13 +57,36 @@ int main(int argc, char const *argv[])
 	Matriz foldsM=lecturaFold(pepe,5);
 	pepe.close();
 
-	int metodo=2;
-	int alfa=30;
-	int gamma=15;
 
+	std::stringstream convert(argv[1]);
+	int cant;
+	convert >>cant;
 
-//cout<<kFoldCrossVal(imagenesTrainM,5,alfa,gamma,etiquetasTrain,metodo,foldsM)<<endl;
+	std::stringstream convert1(argv[2]);
+	int metodo;
+	convert1 >> metodo;
 
+	std::stringstream convert2(argv[3]);
+	int alfa;
+	convert2 >> alfa;
+
+	std::stringstream convert3(argv[4]);
+	int gamma;
+	convert3 >>alfa;
+
+int c=cant;
+while(c>=1){
+	gettimeofday(&t_ini, NULL);
+
+kFoldCrossVal(imagenesTrainM,5,alfa,gamma,etiquetasTrain,metodo,foldsM);
+
+secs = timeval_diff(&t_fin, &t_ini);
+promedio = promedio + secs;
+
+c--;
+}
+
+cout<< promedio/cant<<endl;
 
 // // 1. MAIN PARA LEVANTAR 1 SOLA IMAGEN Y PROBARLA
 // 	 //Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
