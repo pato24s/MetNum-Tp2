@@ -54,8 +54,8 @@ struct timeval t_ini, t_fin;
 	Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
 	
 	ifstream pepe;
-	pepe.open("./tests/test2 .dat");
-	Matriz foldsM=lecturaFold(pepe,5);
+	pepe.open("./data/imagen.dat");
+	Matriz foldsM=lecturaImagen(pepe);
 	pepe.close();
 
 

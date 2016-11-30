@@ -13,23 +13,23 @@ def guardar(event):
     im = Image.open("test.bmp")
     inverted_image = PIL.ImageOps.invert(im)
     inverted_image.save('invertido.bmp')
-    
-    #img = img.resize((28, 28), Image.ANTIALIAS)
+    #img = Image.open('ivertido.bmp')
+    img = inverted_image.resize((28, 28), Image.ANTIALIAS)
     #img.save('nuevaMedida.bmp')
     #img = Image.open('nuevaMedida.bmp')
-    pix = inverted_image.load()
+    pix = img.load()
     img2 = []
-    for i in range(im.size[0]):
+    my_output = open('../data/numero.dat', 'a')
+    buff = ''
+    for i in range(img.size[0]):
         img2_fila = []
-        for j in range(im.size[1]):
+        for j in range(img.size[1]):
             pixel = pix[i,j]
             pixel_cromatico = 0.2989 * pixel[0] + 0.5870 * pixel[1] + 0.1140 * pixel[2] 
             img2.append(int(pixel_cromatico))
-
-    #print(img2)
-
-
-
+            buff += str(int(pixel_cromatico))+' '
+    buff = buff +'/'
+    my_output.write(buff)
     root.quit()
 
 def dibujar(event):

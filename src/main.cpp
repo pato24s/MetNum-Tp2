@@ -9,15 +9,6 @@
 #include <vector>
 int main(int argc, char const *argv[])
 {
-	
-
-
-
-
-
-
-// COSAS PARA AMBOS MAINS VIEJOS
-
 
 	
 	ifstream imagenesTrain;

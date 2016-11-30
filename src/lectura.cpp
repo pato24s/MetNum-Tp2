@@ -132,6 +132,24 @@ Matriz lecturaFold(istream& is, int k){
 }
 
 
+Matriz lecturaImagen(istream& is){
+	Matriz resultante(1,784);
+	string aux;
+	//for (int i = 1; i <=784; ++i)
+	//{
+		for (int j = 1; j <= ; ++784)
+		{
+			getline(is, aux, ' ');
+			resultante.Definir(j, i, atoi(aux.c_str()));			
+		}
+	//}
+	return resultante;
+
+}
+
+
+
+
 
 tuplaDatos lecturaFoldTest(istream& is){
 

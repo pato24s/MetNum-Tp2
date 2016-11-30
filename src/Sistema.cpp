@@ -16,13 +16,6 @@ entrada, el nombre del archivo de salida, y el metodo a ejecutar (0: kN N , 1: P
 */
 int main(int argc, char const *argv[])
 {
-
-	// ifstream imagenesTrain;
-	// imagenesTrain.open("../data/train.dat");
-	// Matriz etiquetasTrain = Matriz(42000, 1);
-	// Matriz imagenesTrainM = lecturaTrain(imagenesTrain, etiquetasTrain);
-	// imagenesTrain.close();
-	// Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
 	
 	ifstream pepe;
 	pepe.open(argv[1]);//la matriz de ceros y unos
