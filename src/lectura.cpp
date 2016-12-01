@@ -95,6 +95,37 @@ Matriz lecturaTrain(istream& is, Matriz& etiquetas){
 	return result;
 }
 
+
+void mostrarImagen(const Matriz& i){
+	
+	double aux;
+	int m = i.DameAncho();
+	//cout << "Su etiqueta es: "<< i.etiqueta<< " y tiene " << i.pixeles.size()  << " pixeles" <<endl;
+	for (int t = 0; t < 50; ++t){
+		cout<<"-";
+	}
+
+	cout<<endl;
+	
+	for (int j = 1; j<m; ++j){
+		aux = i.Obtener(1, j);
+		if(aux != 0){
+			cout  <<RED<<"0"<<RESET;
+		}else{
+			cout<<GREEN<<"0"<<RESET;	
+		}
+		
+		if( j % 28 == 0 && j != 0){cout<<endl;}
+	}
+	cout<<endl;
+	for (int f = 0; f < 50; ++f){
+		cout<<"-";
+	}
+	cout<<endl;
+	
+
+}
+
 //28000 imagenes
 Matriz lecturaTest(istream& is, Matriz& etiquetas){
 	Matriz resultante = Matriz(28000, 784);
@@ -135,14 +166,14 @@ Matriz lecturaFold(istream& is, int k){
 Matriz lecturaImagen(istream& is){
 	Matriz resultante(1,784);
 	string aux;
-	//for (int i = 1; i <=784; ++i)
-	//{
-		for (int j = 1; j <= ; ++784)
+		for (int j = 1; j <= 784; j++)
 		{
 			getline(is, aux, ' ');
-			resultante.Definir(j, i, atoi(aux.c_str()));			
+			cout<<" "<<aux;
+			resultante.Definir(1, j, atoi(aux.c_str()));			
 		}
-	//}
+	cout<<"parsea bien"<<endl;
+	mostrarImagen(resultante);
 	return resultante;
 
 }
@@ -184,35 +215,7 @@ tuplaDatos lecturaFoldTest(istream& is){
 
 }
 
-void mostrarImagen(const Matriz& i){
-	
-	double aux;
-	int m = i.DameAncho();
-	//cout << "Su etiqueta es: "<< i.etiqueta<< " y tiene " << i.pixeles.size()  << " pixeles" <<endl;
-	for (int t = 0; t < 50; ++t){
-		cout<<"-";
-	}
 
-	cout<<endl;
-	
-	for (int j = 1; j<m; ++j){
-		aux = i.Obtener(1, j);
-		if(aux != 0){
-			cout  <<RED<<"0"<<RESET;
-		}else{
-			cout<<GREEN<<"0"<<RESET;	
-		}
-		
-		if( j % 28 == 0 && j != 0){cout<<endl;}
-	}
-	cout<<endl;
-	for (int f = 0; f < 50; ++f){
-		cout<<"-";
-	}
-	cout<<endl;
-	
-
-}
 void mostrarImagenRecortada(const Matriz& i){
 	
 	double aux;

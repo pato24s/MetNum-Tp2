@@ -488,9 +488,9 @@ Matriz Matriz::multiXtrans() const{
 	Matriz result(DameAlto(),DameAlto());
 	int fila1=1;
 	while(fila1<=DameAlto()){
-      /*  if(fila1 % 100==0){
+        //if(fila1 % 100==0){
 		  cout<<"iteracion "<<fila1<<endl;
-        }*/
+       // }
 		int fila2=1;
 		while(fila2<=DameAlto()){
 			int i=1;
@@ -1642,7 +1642,7 @@ int Matriz::pcaNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int alfa){
     //centrar con media
     vector<double> medias=dameVectorMedias();
     int n=DameAlto();
-   
+    cout<<"entro a pca"<<endl;
 
 
     centrarConMediaNuevo(medias,n);
@@ -1655,10 +1655,10 @@ int Matriz::pcaNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int alfa){
     //obtengo base
   //  cout<<"voy a transponer"<<endl;
     Matriz thisT=Traspuesta();
+    cout<<"armo baseAutovectores"<<endl;
   //  cout<<"voy a hacer xt x"<<endl;
     Matriz xtx=thisT.multiXtrans();
     Matriz autovalores(alfa,1);
-   // cout<<"armo baseAutovectores"<<endl;
     Matriz mb1=xtx.baseAutovectores(30, autovalores,alfa);
    // cout<<"se vienen las mierdas"<<endl;
     this->cambiarBaseNuevo(mb1);
@@ -1671,7 +1671,7 @@ int Matriz::pcaNuevo(Matriz& imagen,Matriz& etiquetasT, int k, int alfa){
 
     Matriz imagenCambiada=imagen.multiMatricial(mb1);
 
-    //cout<<"arranca knn"<<endl;
+    cout<<"arranca knn"<<endl;
     return knn(imagenCambiada,etiquetasT,*this,k);
 
 //  return 1;

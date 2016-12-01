@@ -14,21 +14,26 @@ def guardar(event):
     inverted_image = PIL.ImageOps.invert(im)
     inverted_image.save('invertido.bmp')
     #img = Image.open('ivertido.bmp')
-    img = inverted_image.resize((28, 28), Image.ANTIALIAS)
+    img = inverted_image.resize((28, 28), PIL.Image.NEAREST)
     #img.save('nuevaMedida.bmp')
     #img = Image.open('nuevaMedida.bmp')
     pix = img.load()
+    #print(type (pix))
     img2 = []
-    my_output = open('../data/numero.dat', 'a')
+    my_output = open('../data/numero.dat', 'w')
     buff = ''
+    #print(img.zize())
+    #print(img.size[0])
     for i in range(img.size[0]):
         img2_fila = []
         for j in range(img.size[1]):
-            pixel = pix[i,j]
+            pixel = pix[j,i]
+            print(pixel)
             pixel_cromatico = 0.2989 * pixel[0] + 0.5870 * pixel[1] + 0.1140 * pixel[2] 
             img2.append(int(pixel_cromatico))
             buff += str(int(pixel_cromatico))+' '
     buff = buff +'/'
+    
     my_output.write(buff)
     root.quit()
 

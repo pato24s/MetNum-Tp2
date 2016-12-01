@@ -20,15 +20,17 @@ int main(int argc, char const *argv[])
 	Matriz imagenTrainI=Matriz(1,imagenesTrainM.DameAncho());
 	
 	ifstream pepe;
-	pepe.open("./tests/test2 .dat");
-	Matriz foldsM=lecturaFold(pepe,5);
+	pepe.open("../data/numero.dat");
+	Matriz imagen = lecturaImagen(pepe);
 	pepe.close();
 
 	int metodo=2;
 	int alfa=30;
 	int gamma=15;
-
-
+	//imagenesTrainM.pcaNuevo(imagenTestM2,etiquetasTrain,20,30)
+	//int etiqueta = imagenesTrainM.pcaNuevo(imagen , etiquetasTrain, 7, 300);
+	int etiqueta= imagenesTrainM.plsNuevo(imagen,etiquetasTrain, 7 ,40);
+	cout<<"El numero es: "<<etiqueta<<endl;
 //cout<<kFoldCrossVal(imagenesTrainM,5,alfa,gamma,etiquetasTrain,metodo,foldsM)<<endl;
 
 
