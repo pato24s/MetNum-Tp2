@@ -169,12 +169,12 @@ Matriz lecturaImagen(istream& is){
 		for (int j = 1; j <= 784; j++)
 		{
 			getline(is, aux, ' ');
-			cout<<" "<<aux;
+			//cout<<" "<<aux;
 			resultante.Definir(1, j, atoi(aux.c_str()));			
 		}
-	cout<<"parsea bien"<<endl;
+	//cout<<"parsea bien"<<endl;
 	mostrarImagen(resultante);
-	return resultante;
+	return resultante;:
 
 }
 
